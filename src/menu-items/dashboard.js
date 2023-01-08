@@ -51,7 +51,7 @@ const dashboard = {
             id: 'verifypensioner-page',
             title: 'Verify pensioner',
             type: 'item',
-            url: '/verifypensioner',
+            url: '/',
             permission: [roles.admin],
 
             icon: FingerprintIcon,
@@ -92,7 +92,19 @@ const dashboard = {
             permission: [roles.admin],
             icon: DeselectIcon,
             breadcrumbs: false
+        },
+
+        {
+            id: 'import-page',
+            title: 'import-page',
+            type: 'item',
+            url: '/import-data',
+            permission: [roles.admin],
+            icon: Add,
+            breadcrumbs: false
+
         }
+
     ]
 };
 

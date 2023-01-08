@@ -50,7 +50,10 @@ const AddNewEmployee = () => {
             type: '',
             designation: '',
             category: '',
-            status: ''
+            status: '',
+            stg: '',
+            inc: '',
+            initpay: ''
         },
         salaries: [],
         currentPay: {
@@ -122,14 +125,18 @@ const AddNewEmployee = () => {
             fetchData();
         }
     }, [params.id]);
+    useEffect(() => {
+        console.log("data", employee.basicInfo)
+    }, [employee])
 
     const [flag, setFlag] = useState(false);
 
     console.log('employee data->', employee);
 
     const employeeHandler = (e, type) => {
-        console.log('e', parseInt(e.target.value));
-        console.log('r', e.target.value);
+        // console.log('e', parseInt(e.target.value));
+        // console.log('r', e.target.value);
+      
         if (type === 'name') {
             setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, name: e.target.value } });
         } else if (type === 'email') {
@@ -156,6 +163,25 @@ const AddNewEmployee = () => {
             setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, category: e.target.value } });
         } else if (type === 'status') {
             setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, status: e.target.value } });
+        } else if (type === 'stg' ) {
+            setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, stg: e.target.value ? parseInt(e.target.value) : 0 } });
+            // if (employee.basicInfo.inc > 0 && employee.basicInfo.stg > 0 && employee.basicInfo.initpay > 0) {
+            //     let value = (parseInt(employee.basicInfo.inc) * parseInt(employee.basicInfo.abc)) + parseInt(employee.basicInfo.initpay)
+            //     console.log("value", value)
+            //     setEmployee({
+            //         ...employee,
+            //         currentPay: {
+            //             ...employee.currentPay,
+            //             amolument: { ...employee.currentPay.amolument, basicPay: value }
+            //         }
+            //     });
+            // }
+
+
+        } else if (type === 'inc') {
+            setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, inc: parseInt(e.target.value) } });
+        } else if (type === 'initpay') {
+            setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, initpay: parseInt(e.target.value) } });
         } else if (type === 'basicPay') {
             setEmployee({
                 ...employee,
@@ -714,6 +740,45 @@ const AddNewEmployee = () => {
                             />
                         </Grid>
                         <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee.basicInfo.initpay}
+                                required
+                                onChange={(e) => employeeHandler(e, 'initpay')}
+                                id="initpay"
+                                type="number"
+                                label="Initial Basic Pay"
+                                variant="standard"
+                                placeholder="Enter Employee's Initial Basic Pay"
+                            />
+                        </Grid>
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee.basicInfo.inc}
+                                required
+                                onChange={(e) => employeeHandler(e, 'inc')}
+                                id="inc"
+                                type="number"
+                                label="Increment"
+                                variant="standard"
+                                placeholder="Enter Employee's Increment"
+                            />
+                        </Grid>
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee.basicInfo.stg}
+                                required
+                                onChange={(e) => employeeHandler(e, 'stg')}
+                                id="stg"
+                                type="number"
+                                label="Stg"
+                                variant="standard"
+                                placeholder="Enter Employee's stg"
+                            />
+                        </Grid>
+                        <Grid item xs={6} md={4}>
                             <FormControl fullWidth>
                                 <InputLabel id="department-id">Department</InputLabel>
                                 <Select
@@ -781,6 +846,15 @@ const AddNewEmployee = () => {
                                 </Select>
                             </FormControl>
                         </Grid>
+
+
+
+
+
+
+
+
+
                     </Grid>
                 </CardContent>
             </Card>

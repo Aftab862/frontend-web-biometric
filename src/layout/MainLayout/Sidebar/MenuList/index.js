@@ -12,7 +12,7 @@ import { getAllowedRoutes } from 'utils/AuthRoles';
 const MenuList = () => {
     // const { role } = useSelector((state) => state.user);
   var role= "admin"
-    console.log('nav items ---> ', { ...menuItem.items[0], children: getAllowedRoutes(menuItem.items[0].children, [role]) });
+    // console.log('nav items ---> ', { ...menuItem.items[0], children: getAllowedRoutes(menuItem.items[0].children, [role]) });
     const navItems = menuItem.items.map((item) => {
         switch (item.type) {
             case 'group':

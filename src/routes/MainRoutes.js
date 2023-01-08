@@ -15,11 +15,14 @@ const SearchRecords = Loadable(lazy(() => import('views/SearchRecords/SearchReco
 const SalarySlip = Loadable(lazy(() => import('views/salarySlip/salarySlip')));
 const GpFund = Loadable(lazy(() => import('views/gpFund/gpFund')));
 const LeaveRecord = Loadable(lazy(() => import('views/leaveRecord/leaveRecord')));
+const Adddata = Loadable(lazy(() => import('views/AddData/Adddata')));
 
 // ==============================|| MAIN ROUTING ||============================== //
+console.log("roles", roles)
+
+
 
 const MainRoutes = {
-
     element: <MainLayout />,
     children: [
         {
@@ -51,7 +54,7 @@ const MainRoutes = {
             element: <ViewEmployees />
         },
         {
-            path: '/verifypensioner',
+            path: '/',
             // permission: [roles.admin],
 
             element: <VerifyPensioner />
@@ -79,7 +82,13 @@ const MainRoutes = {
             // permission: [roles.admin],
 
             element: <LeaveRecord />
+        },
+        {
+            path: '/import-data',
+            element: <Adddata />
+
         }
+
     ]
 };
 
