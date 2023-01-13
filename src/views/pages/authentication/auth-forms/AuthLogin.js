@@ -136,19 +136,20 @@ const FirebaseLogin = ({ ...others }) => {
                     password: Yup.string().max(255).required('Password is required')
                 })}
                 onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-                    // try {
-                    // const res = await API.post('/user/login', { email: values.email, password: values.password });
-                    // dispatch(Actions.login(res.data));
-                    // localStorage.setItem('IdToken', res.data.token);
-                    // localStorage.setItem('rcet-userId', res.data.id);
-                    // if (res.data.role === 'admin') {
-                    navigate('/dashboard');
-                    // } else {
-                    // navigate('/search-records');
-                    // }
-                    // } catch (err) {
-                    //     console.error(err);
-                    // }
+                    try {
+                        const res = await API.post('/user/login', { email: values.email, password: values.password });
+                        dispatch(Actions.login(res.data));
+                        console.log("response", res)
+                        localStorage.setItem('IdToken', res.data.token);
+                        localStorage.setItem('rcet-userId', res.data.id);
+                        // if (res.data.role === 'admin') {
+                        navigate('/dashboard');
+                        // } else {
+                        // navigate('/search-records');
+                        // }
+                    } catch (err) {
+                        console.error(err);
+                    }
                 }}
             >
                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (

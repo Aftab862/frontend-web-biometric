@@ -89,8 +89,8 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
     }));
     return (
         <>
-            <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
-                {console.log(employees.find((employee) => employee.id === employeeId)?.salaries)}
+            <Dialog fullScreen open={open} onClose={handleClose} >
+                {/* {console.log(employees.find((employee) => employee.id === employeeId)?.salaries)} */}
                 <AppBar sx={{ position: 'relative' }}>
                     <Toolbar className="h-32 d-flex justify-between">
                         <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">

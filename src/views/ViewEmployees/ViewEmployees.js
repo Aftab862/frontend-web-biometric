@@ -41,7 +41,7 @@ import CsvDownload from 'react-json-to-csv';
 import TabList from '@mui/lab/TabList';
 import jsPDF from 'jspdf';
 import { Tooltip } from '@mui/material';
-// import PDF, { Text, AddPage, Line, Image, Html } from 'jspdf-react';
+import PDF, { Text, AddPage, Line, Image, Html } from 'jspdf-react';
 
 // import TabPanel from '@mui/lab/TabPanel';
 // import ReactHTMLTableToExcel from "react-html-table-to-excel";
@@ -131,7 +131,7 @@ BootstrapDialogTitle.propTypes = {
     onClose: PropTypes.func.isRequired
 };
 
-const downloadCsvHeandler = (employee) => {};
+const downloadCsvHeandler = (employee) => { };
 
 function a11yProps(index) {
     return {
@@ -302,10 +302,10 @@ function ViewEmployees() {
                                 })
                                 .filter((em) => em !== undefined)}
                         >
-                            Download CSV
+                            Download in CSV
                         </CsvDownload>
                     </Button>
-                    <Button
+                    {/* <Button
                         variant="outlined"
                         color="secondary"
                         onClick={() => {
@@ -399,7 +399,7 @@ function ViewEmployees() {
                         }}
                     >
                         Download PDF
-                    </Button>
+                    </Button> */}
                 </ButtonGroup>
             </div>
 
@@ -432,20 +432,20 @@ function ViewEmployees() {
                                         return em;
                                     }
                                 })
-                                .filter((employee) =>{
-                                    if (searchText === ''){
-                                         return employee;
-                                    }
-                                    else if( employee.basicInfo.cnic.toLowerCase().includes(searchText.toLowerCase())){
+                                .filter((employee) => {
+                                    if (searchText === '') {
                                         return employee;
-                                   }
-                                   else if( employee.basicInfo.department.toLowerCase().includes(searchText.toLowerCase())){
-                                    return employee;
-                               }
+                                    }
+                                    else if (employee.basicInfo.cnic.toLowerCase().includes(searchText.toLowerCase())) {
+                                        return employee;
+                                    }
+                                    else if (employee.basicInfo.department.toLowerCase().includes(searchText.toLowerCase())) {
+                                        return employee;
+                                    }
                                     // searchText === '' ? employee : employee.basicInfo.cnic.toLowerCase().includes(searchText.toLowerCase())
                                 }
                                 )
-                             }
+                            }
                             handleClickOpen={handleClickOpen}
                             setEmployees={setemployeeData}
                             tabValue={tabValue}
@@ -482,7 +482,6 @@ function ViewEmployees() {
             </TableContainer>
             <div>
                 <BootstrapDialog onClose={handleClose} aria-labelledby="customized-dialog-title" maxWidth="sm" fullWidth open={open}>
-                    {console.log(data)}
                     <BootstrapDialogTitle className="font-bold text-2xl" onClose={handleClose}>
                         {data?.basicInfo?.name}
                     </BootstrapDialogTitle>
@@ -511,7 +510,7 @@ function ViewEmployees() {
                             Account No: {data?.basicInfo?.accountNo}
                         </Typography>
                         <Typography gutterBottom>
-                           Employee Category: {data?.basicInfo?.category}
+                            Employee Category: {data?.basicInfo?.category}
                         </Typography>
                     </DialogContent>
                     <DialogActions>

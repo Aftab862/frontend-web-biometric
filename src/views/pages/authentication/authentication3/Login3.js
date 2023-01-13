@@ -8,11 +8,11 @@ import picture from '../../../../assets/images/users/1.jpg';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 // project imports
-import AuthWrapper1 from '../AuthWrapper1';
+// import AuthWrapper1 from '../AuthWrapper1';
 import AuthCardWrapper from '../AuthCardWrapper';
 import AuthLogin from '../auth-forms/AuthLogin';
 import Logo from 'ui-component/Logo';
-import AuthFooter from 'ui-component/cards/AuthFooter';
+// import AuthFooter from 'ui-component/cards/AuthFooter';
 import pict from 'assets/images/rchna.jpg';
 // assets
 
