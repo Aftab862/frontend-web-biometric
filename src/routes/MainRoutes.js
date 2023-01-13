@@ -54,7 +54,7 @@ const MainRoutes = {
             element: <ViewEmployees />
         },
         {
-            path: '/',
+            path: '/verify',
             // permission: [roles.admin],
 
             element: <VerifyPensioner />

@@ -2,7 +2,7 @@
     "name": "berry-material-react-free",
     "version": "3.0.0",
     "private": true,
-    "homepage": "http://localhost:3000/login",
+    "homepage": ".",
     "dependencies": {
         "@auth0/auth0-react": "^1.12.0",
         "@babel/eslint-parser": "^7.15.8",

@@ -51,7 +51,7 @@ const dashboard = {
             id: 'verifypensioner-page',
             title: 'Verify pensioner',
             type: 'item',
-            url: '/',
+            url: '/verify',
             permission: [roles.admin],
 
             icon: FingerprintIcon,
