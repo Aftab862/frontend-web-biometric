@@ -62,7 +62,7 @@ const ProfileSection = () => {
         // localStorage.removeItem('IdToken');
         // localStorage.removeItem('rcet-userId');
         // dispatch(Actions.logout());
-        navigate('/login');
+        navigate('/');
     };
 
     const handleClose = (event) => {
