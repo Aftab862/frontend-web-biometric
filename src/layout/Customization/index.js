@@ -71,30 +71,30 @@ const Customization = () => {
 
     // state - font family
     const [fontFamily, setFontFamily] = useState(initialFont);
-    useEffect(() => {
-        let newFont;
-        switch (fontFamily) {
-            case 'Inter':
-                newFont = `'Inter', sans-serif`;
-                break;
-            case 'Roboto':
-                newFont = `'Roboto', sans-serif`;
-                break;
+    // useEffect(() => {
+    //     let newFont;
+    //     switch (fontFamily) {
+    //         case 'Inter':
+    //             newFont = `'Inter', sans-serif`;
+    //             break;
+    //         case 'Roboto':
+    //             newFont = `'Roboto', sans-serif`;
+    //             break;
 
-            case 'Poppins':
-                newFont = `'Poppins', sans-serif`;
-                break;
-            default:
-                newFont = `'Poppins', sans-serif`;
-                break;
-        }
-        dispatch({ type: SET_FONT_FAMILY, fontFamily: newFont });
-    }, [dispatch, fontFamily]);
+    //         case 'Poppins':
+    //             newFont = `'Poppins', sans-serif`;
+    //             break;
+    //         default:
+    //             newFont = `'Poppins', sans-serif`;
+    //             break;
+    //     }
+    //     dispatch({ type: SET_FONT_FAMILY, fontFamily: newFont });
+    // }, [dispatch, fontFamily]);
 
     return (
         <>
             {/* toggle button */}
-            <Tooltip title="Live Customize">
+            {/* <Tooltip title="Live Customize">
                 <Fab
                     component="div"
                     onClick={handleToggle}
@@ -119,7 +119,7 @@ const Customization = () => {
                         </IconButton>
                     </AnimateButton>
                 </Fab>
-            </Tooltip>
+            </Tooltip> */}
 
             <Drawer
                 anchor="right"

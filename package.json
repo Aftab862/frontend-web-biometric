@@ -29,8 +29,6 @@
         "framer-motion": "^4.1.13",
         "get-browser-fingerprint": "^2.1.1",
         "history": "^5.0.0",
-        "jspdf": "^2.5.1",
-        "jspdf-react": "^1.0.11",
         "material-ui-popup-state": "^1.8.0",
         "moment": "^2.29.3",
         "postcss": "^8.4.5",
