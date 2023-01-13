@@ -18,7 +18,7 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Tooltip from '@mui/material/Tooltip';
 import moment from 'moment';
-import jsPDF from 'jspdf';
+// import jsPDF from 'jspdf';
 // import 'jspdf-autotable';
 import EmployeeTableData from 'views/ViewEmployees/EmployeeTableData';
 import API from 'API/api';
@@ -504,16 +504,16 @@ const AddNewEmployee = () => {
                             onClick={() => {
                                 console.log('employee => ', employee);
 
-                                const unit = 'pt';
-                                const size = 'A4'; // Use A1, A2, A3 or A4
-                                const orientation = 'landscape'; // portrait or landscape
+                                // const unit = 'pt';
+                                // const size = 'A4'; // Use A1, A2, A3 or A4
+                                // const orientation = 'landscape'; // portrait or landscape
 
-                                const marginLeft = 40;
-                                const doc = new jsPDF(orientation, unit, size);
+                                // const marginLeft = 40;
+                                // const doc = new jsPDF(orientation, unit, size);
 
-                                doc.setFontSize(20);
+                                // doc.setFontSize(20);
 
-                                const title = 'Salary Slip';
+                                // const title = 'Salary Slip';
                                 // const headers = [['Name','Email','Account No','Amoluments', 'Deductions', 'NetPayable']];
                                 // const data = [
                                 //     [   employee.basicInfo?.name,
