@@ -148,7 +148,7 @@ const FirebaseLogin = ({ ...others }) => {
                         // navigate('/search-records');
                         // }
                     } catch (err) {
-                        console.error(err);
+                        alert(err);
                     }
                 }}
             >
