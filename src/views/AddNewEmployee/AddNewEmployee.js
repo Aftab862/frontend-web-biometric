@@ -19,12 +19,13 @@ import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Tooltip from '@mui/material/Tooltip';
 import moment from 'moment';
-import { Input } from '@mui/material';
-
+import ReactJsAlert from "reactjs-alert"
+import { Alert } from '@mui/material';
 const useStyles = makeStyles((theme) => ({
     // root: {
     //     flexGrow: 1,
     // },
+
     btn: {
         marginRight: theme.spacing(4)
     },
@@ -36,6 +37,9 @@ const AddNewEmployee = () => {
     const classes = useStyles();
     const params = useParams();
     console.log('params.id', params.id);
+    const [alertstatus, setalertstatus] = useState(false)
+    const [alertmsg, setalertmsg] = useState()
+    const [BasicPay, setBasicPay] = useState(0);
     const [employee, setEmployee] = useState({
         basicInfo: {
             name: '',
@@ -60,7 +64,7 @@ const AddNewEmployee = () => {
             date: moment().format('DD-MM-YYYY'),
             verified: false,
             amolument: {
-                basicPay: 0,
+                // basicPay: 0,
                 nonPracticingAllowance: 0,
                 specialHealthCareAllowance: 0,
                 healthProfnlAllowance: 0,
@@ -107,6 +111,7 @@ const AddNewEmployee = () => {
     });
     const navigate = useNavigate();
 
+
     useEffect(() => {
         if (params.id) {
             const fetchData = async () => {
@@ -126,17 +131,34 @@ const AddNewEmployee = () => {
         }
     }, [params.id]);
     useEffect(() => {
-        console.log("data", employee.basicInfo)
+        // console.log("data", employee.basicInfo)
     }, [employee])
+
+
+    useEffect(() => {
+        if (employee.basicInfo.initpay > 0 && employee.basicInfo.stg > 0 && employee.basicInfo.initpay > 0) {
+            setBasicPay(employee.basicInfo.initpay + (employee.basicInfo.inc * employee.basicInfo.stg))
+        }
+        else if (employee.basicInfo.initpay > 0 && employee.basicInfo.inc > 0) {
+            setBasicPay(employee.basicInfo.initpay + employee.basicInfo.inc)
+        }
+        else if (employee.basicInfo.initpay > 0) {
+            setBasicPay(employee.basicInfo.initpay)
+        }
+    }, [employee.basicInfo.initpay, employee.basicInfo.inc, employee.basicInfo.stg])
 
     const [flag, setFlag] = useState(false);
 
-    console.log('employee data->', employee);
+
+
+
+
+    // console.log('employee data->', employee);
 
     const employeeHandler = (e, type) => {
         // console.log('e', parseInt(e.target.value));
         // console.log('r', e.target.value);
-      
+
         if (type === 'name') {
             setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, name: e.target.value } });
         } else if (type === 'email') {
@@ -163,8 +185,8 @@ const AddNewEmployee = () => {
             setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, category: e.target.value } });
         } else if (type === 'status') {
             setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, status: e.target.value } });
-        } else if (type === 'stg' ) {
-            setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, stg: e.target.value ? parseInt(e.target.value) : 0 } });
+        } else if (type === 'stg') {
+            setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, stg: parseInt(e.target.value) } });
             // if (employee.basicInfo.inc > 0 && employee.basicInfo.stg > 0 && employee.basicInfo.initpay > 0) {
             //     let value = (parseInt(employee.basicInfo.inc) * parseInt(employee.basicInfo.abc)) + parseInt(employee.basicInfo.initpay)
             //     console.log("value", value)
@@ -182,15 +204,17 @@ const AddNewEmployee = () => {
             setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, inc: parseInt(e.target.value) } });
         } else if (type === 'initpay') {
             setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, initpay: parseInt(e.target.value) } });
-        } else if (type === 'basicPay') {
-            setEmployee({
-                ...employee,
-                currentPay: {
-                    ...employee.currentPay,
-                    amolument: { ...employee.currentPay.amolument, basicPay: e.target.value !== NaN ? parseInt(e.target.value) : 0 }
-                }
-            });
-        } else if (type === 'nonPracticingAllowance') {
+        }
+        // else if (type === 'basicPay') {
+        //     setEmployee({
+        //         ...employee,
+        //         currentPay: {
+        //             ...employee.currentPay,
+        //             amolument: { ...employee.currentPay.amolument, basicPay: e.target.value !== NaN ? parseInt(e.target.value) : 0 }
+        //         }
+        // });
+        // }
+        else if (type === 'nonPracticingAllowance') {
             setEmployee({
                 ...employee,
                 currentPay: {
@@ -467,7 +491,8 @@ const AddNewEmployee = () => {
     };
 
     let totalAmolumentValue =
-        employee.currentPay.amolument.basicPay +
+        // employee.currentPay.amolument.basicPay +
+        BasicPay+
         employee.currentPay.amolument.chairmanAllowance +
         employee.currentPay.amolument.conPetAllowance +
         employee.currentPay.amolument.healthProfnlAllowance +
@@ -483,7 +508,7 @@ const AddNewEmployee = () => {
         employee.currentPay.amolument.specialReliefAllowance +
         employee.currentPay.amolument.entertainment +
         employee.currentPay.amolument.tTAllowance;
-    console.log('totalAmolmentValue', totalAmolumentValue);
+    // console.log('totalAmolmentValue', totalAmolumentValue);
     // same for total deduction
     let totalDeductionValue =
         employee.currentPay.deductions.incomeTax +
@@ -512,29 +537,113 @@ const AddNewEmployee = () => {
 
     const add = async () => {
         let api;
-        const reqObj = {
-            ...employee,
-            currentPay: { ...employee.currentPay, netPayable: netPayableValue ? netPayableValue : 0 }
-        };
-        if (params.id) {
-            api = API.patch(`/employee/${params.id}`, reqObj, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('IdToken')}`
-                }
-            });
-        } else {
-            api = API.post('/employee/add', reqObj, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('IdToken')}`
-                }
-            });
+
+        if (employee.basicInfo.name.length < 3) {
+            setalertstatus(true)
+            setalertmsg("please enter valid Name ")
         }
-        try {
-            const response = await api;
-            console.log('response', response);
-            navigate(`/viewemployees`);
-        } catch (error) {
-            console.log(error);
+        else if (employee.basicInfo.password.length < 6) {
+            setalertstatus(true)
+            console.log("password-<", employee.basicInfo.password.length)
+            setalertmsg("Password length must be grater than 6 character")
+        }
+
+
+        else if (employee.basicInfo.email.length < 3) {
+            setalertstatus(true)
+            setalertmsg("please enter valid email ")
+        }
+
+        else if (employee.basicInfo.accountNo < 2) {
+            setalertstatus(true)
+            setalertmsg("Please Enter Valid AccountNo: ")
+        }
+        else if (!employee.basicInfo.category) {
+            setalertstatus(true)
+            setalertmsg("Employee Catagory is Required")
+        }
+        else if (employee.basicInfo.cnic < 3) {
+            setalertstatus(true)
+            setalertmsg("please enter valid CNIC ")
+        }
+        else if (!employee.basicInfo.department) {
+            setalertstatus(true)
+            setalertmsg("Department is Required")
+        }
+        else if (!employee.basicInfo.designation) {
+            setalertstatus(true)
+            setalertmsg("Designation is Required")
+        }
+        else if (employee.basicInfo.experience < 1) {
+            setalertstatus(true)
+            setalertmsg("Experience Must be greater than 0")
+
+        }
+        else if (employee.basicInfo.inc < 1) {
+            setalertstatus(true)
+            setalertmsg("Increment is Required")
+        }
+
+        else if (employee.basicInfo.initpay < 1) {
+            setalertstatus(true)
+            setalertmsg("InitialPay is Required")
+
+        }
+        else if (employee.basicInfo.name.length < 3) {
+            setalertstatus(true)
+            setalertmsg("please enter valid Name ")
+        }
+        else if (employee.basicInfo.pageNo < 1) {
+            setalertstatus(true)
+            setalertmsg("PageNo is Required")
+        }
+
+        else if (employee.basicInfo.scale < 1) {
+            setalertstatus(true)
+            setalertmsg("Scale is Required")
+        }
+
+        else if (employee.basicInfo.stg < 1) {
+            setalertstatus(true)
+            setalertmsg("STG is Required")
+        }
+        else if (!employee.basicInfo.type) {
+            setalertstatus(true)
+            setalertmsg("Type is Required")
+        }
+        else if (!employee.basicInfo.status) {
+            setalertstatus(true)
+            setalertmsg("Status is Required")
+
+        }
+
+        else {
+            const reqObj = {
+                ...employee,
+                currentPay: { ...employee.currentPay, netPayable: netPayableValue ? netPayableValue : 0 }
+            };
+
+            if (params.id) {
+                api = API.patch(`/employee/${params.id}`, reqObj, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('IdToken')}`
+                    }
+                });
+            } else {
+                api = API.post('/employee/add', reqObj, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('IdToken')}`
+                    }
+                });
+            }
+            try {
+                console.log('else part',);
+                const response = await api;
+                console.log('response', response);
+                navigate(`/viewemployees`);
+            } catch (error) {
+                console.log(error);
+            }
         }
     };
 
@@ -560,6 +669,10 @@ const AddNewEmployee = () => {
 
 
 
+
+
+
+
     return (
         <div
         // style={{
@@ -569,6 +682,14 @@ const AddNewEmployee = () => {
         //     marginBottom: '2%'
         // }}
         >
+
+            <ReactJsAlert
+                status={alertstatus}   // true or false
+                type="info"   // success, warning, error, info
+                title={alertmsg}   // title you want to display
+                Close={() => setalertstatus(false)}   // callback method for hide
+            />
+
             <AppBar className="mt-4" position="static">
                 <Toolbar className="h-32">
                     <Typography variant="h2" className={classes.title}>
@@ -869,12 +990,12 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.basicPay}
+                                value={BasicPay} //{employee.currentPay.amolument.basicPay}
                                 onChange={(e) => {
                                     console.log('event->', e.target.value);
-                                    employeeHandler(e, 'basicPay');
+                                    // employeeHandler(e, 'basicPay');
                                 }}
-                                id="basicPay"
+                                // id="basicPay"
                                 required
                                 type="number"
                                 label="Basic Pay"
@@ -1379,7 +1500,14 @@ const AddNewEmployee = () => {
                     </Grid>
                 </CardContent>
             </Card>
+
+
+
         </div>
+
+
+
+
     );
 };
 
