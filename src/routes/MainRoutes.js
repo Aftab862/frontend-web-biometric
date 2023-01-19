@@ -4,6 +4,7 @@ import React, { lazy } from 'react';
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
 import { roles } from 'config/roles';
+import EditProfile from 'views/EditProfile';
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 
@@ -86,6 +87,11 @@ const MainRoutes = {
         {
             path: '/import-data',
             element: <Adddata />
+
+        },
+        {
+            path: '/edit-profile',
+            element: <EditProfile />
 
         }
 

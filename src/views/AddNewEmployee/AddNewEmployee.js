@@ -44,7 +44,7 @@ const AddNewEmployee = () => {
         basicInfo: {
             name: '',
             email: '',
-            password: '',
+            password: 12345678,
             cnic: 0,
             pageNo: 0,
             accountNo: '',
@@ -64,7 +64,7 @@ const AddNewEmployee = () => {
             date: moment().format('DD-MM-YYYY'),
             verified: false,
             amolument: {
-                // basicPay: 0,
+                basicPay: 0,
                 nonPracticingAllowance: 0,
                 specialHealthCareAllowance: 0,
                 healthProfnlAllowance: 0,
@@ -138,6 +138,13 @@ const AddNewEmployee = () => {
     useEffect(() => {
         if (employee.basicInfo.initpay > 0 && employee.basicInfo.stg > 0 && employee.basicInfo.initpay > 0) {
             setBasicPay(employee.basicInfo.initpay + (employee.basicInfo.inc * employee.basicInfo.stg))
+            setEmployee({
+                ...employee,
+                currentPay: {
+                    ...employee.currentPay,
+                    amolument: { ...employee.currentPay.amolument, basicPay: BasicPay }
+                }
+            });
         }
         else if (employee.basicInfo.initpay > 0 && employee.basicInfo.inc > 0) {
             setBasicPay(employee.basicInfo.initpay + employee.basicInfo.inc)
@@ -492,7 +499,7 @@ const AddNewEmployee = () => {
 
     let totalAmolumentValue =
         // employee.currentPay.amolument.basicPay +
-        BasicPay+
+        BasicPay +
         employee.currentPay.amolument.chairmanAllowance +
         employee.currentPay.amolument.conPetAllowance +
         employee.currentPay.amolument.healthProfnlAllowance +
