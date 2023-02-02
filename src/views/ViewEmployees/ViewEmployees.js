@@ -1,6 +1,7 @@
 /* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import Button from '@mui/material/Button';
 import { styled, alpha } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
@@ -39,9 +40,11 @@ import EmployeeTable from './EmployeeTableData';
 import CsvDownload from 'react-json-to-csv';
 // import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
-import { Tooltip } from '@mui/material';
-//import PDF, { Text, AddPage, Line, Image, Html } from 'jspdf-react';
-
+import { Input, TextField, Tooltip } from '@mui/material';
+import MoonLoader from 'react-spinners/MoonLoader';
+import PDF, { Text, AddPage, Line, Image, Html } from 'jspdf-react';
+import { jsPDF } from "jspdf";
+import * as autoTable from 'jspdf-autotable'
 // import TabPanel from '@mui/lab/TabPanel';
 // import ReactHTMLTableToExcel from "react-html-table-to-excel";
 // import CsvDownload from 'react-json-to-csv'
@@ -57,6 +60,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
+    color: "whitesmoke",
     borderRadius: theme.shape.borderRadius,
     backgroundColor: alpha(theme.palette.common.white, 0.15),
     '&:hover': {
@@ -80,10 +84,14 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
     justifyContent: 'center'
 }));
 
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'white',
+const input = styled(InputBase)(({ theme }) => ({
+    //     ::placeholder:{
+    //     color: "#909"
+    // },
+    // color: 'white',
     '&::placeholder': {
-        color: 'black'
+        color: 'yellow',
+        backgroundColor: "white"
     },
     '& .MuiInputBase-input': {
         padding: theme.spacing(1, 1, 1, 0),
@@ -142,18 +150,23 @@ function a11yProps(index) {
 function ViewEmployees() {
     // const head = [['Name', 'Email', 'CNIC', 'Account No', 'Employee Catagory']];
     // const body = [(data = [employees.filter((emp) => emp.id === employee.id)])];
+    let [loading, setLoading] = useState(false);
+    let [color, setColor] = useState("#36d7b7");
 
     const [data, showData] = useState({});
     const [employeeData, setemployeeData] = useState([]);
     const [tabValue, setTabValue] = useState(0);
+    const [Comit, setCommit] = useState();
 
     const handleChange = (newValue) => {
         console.log('newVal', newValue);
         setTabValue(newValue);
     };
-    console.log('employeeData', employeeData);
+    // console.log('employeeData', employeeData);
 
     useEffect(() => {
+        setLoading(true)
+
         const fetchData = async () => {
             try {
                 const res = await API.get('/employee', {
@@ -161,15 +174,23 @@ function ViewEmployees() {
                         Authorization: `Bearer ${localStorage.getItem('IdToken')}`
                     }
                 });
-                console.log('response', res.data);
+                // console.log('response', res.data);
                 setemployeeData(res.data.results);
             } catch (error) {
-                console.log(error);
+                alert("Connection Error")
             }
         };
         fetchData();
+        setTimeout(() => {
+            setLoading(false)
+        }, 2000);
         // setemployeeData(data);
-    }, []);
+
+        if (Comit) {
+            console.log("comit", Comit)
+        }
+
+    }, [Comit]);
 
     const [open, setOpen] = React.useState(false);
 
@@ -185,6 +206,28 @@ function ViewEmployees() {
     };
 
     const [searchText, setSearchText] = useState('');
+
+
+
+    // console.log(
+    //     'dummy test->',
+    //     employeeData
+    //         .map((ed) => {
+    //             if (tabValue === 0 && ed?.basicInfo?.category === 'Current Employee') {
+    //                 return {
+    //                     ...ed.basicInfo,
+    //                     ...{ ...ed.currentPay.amolument, ...ed.deductions, netPayable: ed.currentPay.netPayable }
+    //                 };
+    //             } else if (tabValue === 1 && ed?.basicInfo?.category === 'Pensioner') {
+    //                 return {
+    //                     ...ed.basicInfo,
+    //                     ...{ ...ed.currentPay.amolument, ...ed.deductions, netPayable: ed.currentPay.netPayable }
+    //                 };
+    //             }
+    //         })
+    //         .filter((em) => em !== undefined)
+    // );
+
 
     // function download_DIVPdf(divid) {
     //     var pdf = new jsPDF('p', 'pt', 'letter');
@@ -223,24 +266,119 @@ function ViewEmployees() {
     //         margins
     //     );
     // }
-    console.log(
-        'dummy test->',
-        employeeData
-            .map((ed) => {
-                if (tabValue === 0 && ed?.basicInfo?.category === 'Current Employee') {
-                    return {
-                        ...ed.basicInfo,
-                        ...{ ...ed.currentPay.amolument, ...ed.deductions, netPayable: ed.currentPay.netPayable }
-                    };
-                } else if (tabValue === 1 && ed?.basicInfo?.category === 'Pensioner') {
-                    return {
-                        ...ed.basicInfo,
-                        ...{ ...ed.currentPay.amolument, ...ed.deductions, netPayable: ed.currentPay.netPayable }
-                    };
+    var totalPayable = 0;
+    const pdfGenerator = () => {
+        return employeeData
+            // .filter((em) => {
+            //     if (tabValue === 0 && em.basicInfo.category === 'Current Employee') {
+            //         return em;
+            //     } else if (tabValue === 1 && em.basicInfo.category === 'Pensioner') {
+            //         return em;
+            //     }
+            // })
+            .map((employee) => [
+                employee?.basicInfo?.name,
+                // employee?.basicInfo?.email,
+                employee?.basicInfo?.cnic,
+                employee?.basicInfo?.accountNo,
+                employee?.basicInfo?.category,
+                // employee?.basicInfo?.status,
+                employee.currentPay?.amolument?.basicPay +
+                employee?.currentPay?.amolument?.chairmanAllowance +
+                employee?.currentPay?.amolument?.conPetAllowance +
+                employee?.currentPay?.amolument?.entertainment +
+                employee?.currentPay?.amolument?.healthProfnlAllowance +
+                employee?.currentPay?.amolument?.houseRent +
+                employee?.currentPay?.amolument?.medicalAllowance +
+                employee?.currentPay?.amolument?.nonPracticingAllowance +
+                employee?.currentPay?.amolument?.personalAllowance +
+                employee?.currentPay?.amolument?.qualificationAllowance +
+                employee?.currentPay?.amolument?.rTWardenAllowance +
+                employee?.currentPay?.amolument?.seniorPostAllowance +
+                employee?.currentPay?.amolument?.socialSecuirtyBenefit +
+                employee?.currentPay?.amolument?.specialHealthCareAllowance +
+                employee?.currentPay?.amolument?.specialReliefAllowance +
+                employee?.currentPay?.amolument?.tTAllowance,
+                employee?.currentPay?.deductions?.accomadationCharges +
+                employee?.currentPay?.deductions?.benevolentFund +
+                employee?.currentPay?.deductions?.busCharges +
+                employee?.currentPay?.deductions?.convRecovery +
+                employee?.currentPay?.deductions?.conveyanceAllowance +
+                employee?.currentPay?.deductions?.disableAllowance +
+                employee?.currentPay?.deductions?.eidAdvance +
+                employee?.currentPay?.deductions?.gIP +
+                employee?.currentPay?.deductions?.gPFSubscription +
+                employee?.currentPay?.deductions?.groupInsurance +
+                employee?.currentPay?.deductions?.houseRentR +
+                employee?.currentPay?.deductions?.incomeTax +
+                employee?.currentPay?.deductions?.integratedAllowance +
+                employee?.currentPay?.deductions?.recEidAdvance +
+                employee?.currentPay?.deductions?.recGPF +
+                employee?.currentPay?.deductions?.sSB +
+                employee?.currentPay?.deductions?.shortDays +
+                employee?.currentPay?.deductions?.speciialIncentive +
+                employee?.currentPay?.deductions?.tSAFund +
+                employee?.currentPay?.deductions?.uniTTAllowance +
+                employee?.currentPay?.deductions?.waterCharges,
+                employee?.currentPay?.netPayable,
+                totalPayable = totalPayable + employee?.currentPay?.netPayable,
+            ],
+
+
+            );
+    }
+
+
+    const ComitSalarRecord = async () => {
+        let arrayOfObjects = new Array();
+        employeeData.map((e, index) => {
+            arrayOfObjects[index] = {
+                id: e.id,
+                Salary: e?.salaries[e.salaries.length - 1],
+            };
+        })
+        // console.log("arrayofSalaries", arrayOfObjects)
+        // employeeData.forEach((employee, index) => {
+        // let obj = {};
+        //     // obj.Emoulments = e.currentPay.amolument;
+        //     // obj.deductions = e.currentPay.deductions;
+        //     // obj.totalPaid = e.currentPay.netPayable;
+        //     arrayOfObjects[index] = {
+        //         id: employee.id,
+        //         obj: employee,
+        //         salaries: employee?.salaries[employee?.salaries?.length - 1],
+        //         totalPaid: employee?.salaries[employee?.salaries?.length - 1]?.obj?.totalPaid
+        //     };
+        // })
+        // console.log("salaries length", arrayOfObjects)
+
+        setLoading(true)
+        let PaySlip = {};
+        pdfGenerator()
+        PaySlip.Date = moment().format('DD-MM-YYYY');
+        PaySlip.Data = arrayOfObjects;
+        PaySlip.TotalIncome = totalPayable;
+        // console.log("Record", data)
+
+        try {
+            let a = await API.post('/employee/comit', PaySlip, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('IdToken')}`
                 }
-            })
-            .filter((em) => em !== undefined)
-    );
+            });
+
+            alert("Successfully Committed")
+            setTimeout(() => {
+                setLoading(false)
+                totalPayable = 0
+            }, 2000);
+
+        } catch (error) {
+            alert("Connection Error")
+        }
+
+    }
+
 
     return (
         <div className="h-full w-full">
@@ -249,21 +387,27 @@ function ViewEmployees() {
                     <Typography variant="h2">
                         <div className="text-white">Employees</div>
                     </Typography>
-                    {/* <Tooltip title="Search by CNIC" placement="bottom"> */}
-                    <Search>
-                        <SearchIconWrapper>
-                            <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                            onChange={(event) => {
-                                setSearchText(event.target.value);
-                            }}
-                            style={{ color: 'black' }}
-                            placeholder="Search by CNIC or department"
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </Search>
-                    {/* </Tooltip> */}
+                    <Tooltip title="Search by CNIC" >
+                        <Search>
+                            <SearchIconWrapper>
+                                <SearchIcon />
+                            </SearchIconWrapper>
+                            <TextField
+                                label="Search by CNIC"
+                                onChange={(event) => {
+                                    setSearchText(event.target.value);
+                                }}
+                                // style={{ color: 'white' }}
+                                InputLabelProps={{
+
+                                    style: {
+                                        color: 'grey'
+                                    }
+                                }}
+                                inputProps={{ 'aria-label': 'search' }}
+                            />
+                        </Search>
+                    </Tooltip>
                     {/* <Button variant="contained" className="float-right">
                         <CsvDownload data={employeeData} />
                     </ Button> */}
@@ -280,6 +424,10 @@ function ViewEmployees() {
                     <Tab label="Pensioner" />
                 </Tabs>
                 <ButtonGroup variant="text">
+                    <Button onClick={ComitSalarRecord} variant="outlined"
+                        color="success">
+                        Save&Commit
+                    </Button>
                     <Button variant="outlined" color="primary">
                         <CsvDownload
                             title="Download CSV"
@@ -304,7 +452,7 @@ function ViewEmployees() {
                             Download in CSV
                         </CsvDownload>
                     </Button>
-                    {/* <Button
+                    <Button
                         variant="outlined"
                         color="secondary"
                         onClick={() => {
@@ -312,145 +460,132 @@ function ViewEmployees() {
                             const size = 'A4'; // Use A1, A2, A3 or A4
                             const orientation = 'landscape'; // portrait or landscape
 
-                            const marginLeft = 40;
-                            const doc = new jsPDF(orientation, unit, size);
+                            // const marginLeft = 40;
+                            const doc = new jsPDF();
 
                             doc.setFontSize(20);
 
-                            const title = 'Current Month Data';
+                            const title = 'RACHNA COLLEGE OF ENGINEERING & TECHNOLOGY, GUJRANWALA';
                             const headers = [
                                 [
                                     'Name',
-                                    'Email',
+                                    // 'Email',
                                     'CNIC',
                                     'Account No',
                                     'Category',
-                                    'Status',
+                                    // 'Status',
                                     'Total Amolument',
                                     'Total Deduction',
                                     'NetPayable'
                                 ]
                             ];
-                            const data = employeeData
-                                .filter((em) => {
-                                    if (tabValue === 0 && em.basicInfo.category === 'Current Employee') {
-                                        return em;
-                                    } else if (tabValue === 1 && em.basicInfo.category === 'Pensioner') {
-                                        return em;
-                                    }
-                                })
-                                .map((employee) => [
-                                    employee?.basicInfo?.name,
-                                    employee?.basicInfo?.email,
-                                    employee?.basicInfo?.cnic,
-                                    employee?.basicInfo?.accountNo,
-                                    employee?.basicInfo?.category,
-                                    employee?.basicInfo?.status,
-                                    employee.currentPay?.amolument?.basicPay +
-                                        employee?.currentPay?.amolument?.chairmanAllowance +
-                                        employee?.currentPay?.amolument?.conPetAllowance +
-                                        employee?.currentPay?.amolument?.entertainment +
-                                        employee?.currentPay?.amolument?.healthProfnlAllowance +
-                                        employee?.currentPay?.amolument?.houseRent +
-                                        employee?.currentPay?.amolument?.medicalAllowance +
-                                        employee?.currentPay?.amolument?.nonPracticingAllowance +
-                                        employee?.currentPay?.amolument?.personalAllowance +
-                                        employee?.currentPay?.amolument?.qualificationAllowance +
-                                        employee?.currentPay?.amolument?.rTWardenAllowance +
-                                        employee?.currentPay?.amolument?.seniorPostAllowance +
-                                        employee?.currentPay?.amolument?.socialSecuirtyBenefit +
-                                        employee?.currentPay?.amolument?.specialHealthCareAllowance +
-                                        employee?.currentPay?.amolument?.specialReliefAllowance +
-                                        employee?.currentPay?.amolument?.tTAllowance,
-                                    employee?.currentPay?.deductions?.accomadationCharges +
-                                        employee?.currentPay?.deductions?.benevolentFund +
-                                        employee?.currentPay?.deductions?.busCharges +
-                                        employee?.currentPay?.deductions?.convRecovery +
-                                        employee?.currentPay?.deductions?.conveyanceAllowance +
-                                        employee?.currentPay?.deductions?.disableAllowance +
-                                        employee?.currentPay?.deductions?.eidAdvance +
-                                        employee?.currentPay?.deductions?.gIP +
-                                        employee?.currentPay?.deductions?.gPFSubscription +
-                                        employee?.currentPay?.deductions?.groupInsurance +
-                                        employee?.currentPay?.deductions?.houseRentR +
-                                        employee?.currentPay?.deductions?.incomeTax +
-                                        employee?.currentPay?.deductions?.integratedAllowance +
-                                        employee?.currentPay?.deductions?.recEidAdvance +
-                                        employee?.currentPay?.deductions?.recGPF +
-                                        employee?.currentPay?.deductions?.sSB +
-                                        employee?.currentPay?.deductions?.shortDays +
-                                        employee?.currentPay?.deductions?.speciialIncentive +
-                                        employee?.currentPay?.deductions?.tSAFund +
-                                        employee?.currentPay?.deductions?.uniTTAllowance +
-                                        employee?.currentPay?.deductions?.waterCharges,
-                                    employee?.currentPay?.netPayable
-                                ]);
+
+                            const data = pdfGenerator()
 
                             let content = {
-                                startY: 50,
+                                startY: 40,
+                                colSpan: 2,
+                                rowSpan: 2,
                                 head: headers,
                                 body: data
                             };
+                            setCommit(data)
+                            doc.setFontSize(16);
+                            doc.text(10, 18, 'RACHNA COLLEGE OF ENGINEERING & TECHNOLOGY, GUJRANWALA')
+                            doc.setFontSize(12);
+                            doc.text(30, 25, '(A Constituent College of University of Engineering & Technology, Lahore.)')
+                            // doc.text(title, 10, 25);
+                            doc.setFontSize(12);
+                            doc.text(14, 38, `Date : ${moment().format('DD-MM-YYYY')}`)
 
-                            doc.text(title, marginLeft, 40);
+                            doc.setFontSize(12);
+                            doc.text(14, 200, `NET Payable AMOUNT  : ${totalPayable}`)
+
+                            doc.setFontSize(12);
+                            doc.text(130, 200, "Signature  : _________________")
+
                             doc.autoTable(content);
                             doc.save('employees.pdf');
+
                         }}
                     >
                         Download PDF
-                    </Button> */}
+                    </Button>
                 </ButtonGroup>
             </div>
 
             {/* <Paper> */}
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 450 }} className="mt-2" id="emp-table">
-                    <TableHead className="bg-gray-900">
-                        <TableRow>
-                            <TableCell className="text-gray-200">Open</TableCell>
-                            <TableCell className="text-gray-200">Name</TableCell>
-                            <TableCell className="text-gray-200">Email</TableCell>
-                            <TableCell className="text-gray-200">CNIC</TableCell>
-                            <TableCell className="text-gray-200">Account No</TableCell>
-                            <TableCell className="text-gray-200">Employee Category</TableCell>
-                            <TableCell className="text-gray-200">Status</TableCell>
-                            <TableCell className="text-gray-200">Previous Salaries</TableCell>
-                            {tabValue === 1 && <TableCell className="text-gray-200">Verified</TableCell>}
-                            <TableCell className="text-gray-200">Edit</TableCell>
-                            <TableCell className="text-gray-200">Monthly Report</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {/* <TabPanel value={tabValue} index={0}> */}
-                        <EmployeeTable
-                            employees={employeeData
-                                .filter((em) => {
-                                    if (tabValue === 0 && em.basicInfo.category === 'Current Employee') {
-                                        return em;
-                                    } else if (tabValue === 1 && em.basicInfo.category === 'Pensioner') {
-                                        return em;
+
+
+            {loading ?
+                <MoonLoader
+                    color={color}
+                    loading={loading}
+                    size={60}
+                    cssOverride={
+                        {
+                            margin: "3rem auto",
+                            borderColor: "red",
+                        }
+                    }
+
+                />
+
+                :
+
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 450 }} className="mt-2" id="emp-table">
+                        <TableHead className="bg-gray-900">
+                            <TableRow>
+                                <TableCell className="text-gray-200">Open</TableCell>
+                                <TableCell className="text-gray-200">Name</TableCell>
+                                <TableCell className="text-gray-200">Email</TableCell>
+                                <TableCell className="text-gray-200">CNIC</TableCell>
+                                <TableCell className="text-gray-200">Account No</TableCell>
+                                <TableCell className="text-gray-200">Employee Category</TableCell>
+                                <TableCell className="text-gray-200">Status</TableCell>
+                                <TableCell className="text-gray-200">Previous Salaries</TableCell>
+                                {tabValue === 1 && <TableCell className="text-gray-200">Verified</TableCell>}
+                                <TableCell className="text-gray-200">Edit</TableCell>
+                                <TableCell className="text-gray-200">Monthly Report</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+
+                            {/* <TabPanel value={tabValue} index={0}> */}
+
+                            <EmployeeTable
+                                employees={employeeData
+                                    .filter((em) => {
+                                        if (tabValue === 0 && em.basicInfo.category === 'Current Employee') {
+                                            return em;
+                                        } else if (tabValue === 1 && em.basicInfo.category === 'Pensioner') {
+                                            return em;
+                                        }
+                                    })
+                                    .filter((employee) => {
+                                        if (searchText === '') {
+                                            return employee;
+                                        }
+                                        else if (employee.basicInfo.cnic.toLowerCase().includes(searchText.toLowerCase())) {
+                                            return employee;
+                                        }
+                                        else if (employee.basicInfo.department.toLowerCase().includes(searchText.toLowerCase())) {
+                                            return employee;
+                                        }
+                                        // searchText === '' ? employee : employee.basicInfo.cnic.toLowerCase().includes(searchText.toLowerCase())
                                     }
-                                })
-                                .filter((employee) => {
-                                    if (searchText === '') {
-                                        return employee;
-                                    }
-                                    else if (employee.basicInfo.cnic.toLowerCase().includes(searchText.toLowerCase())) {
-                                        return employee;
-                                    }
-                                    else if (employee.basicInfo.department.toLowerCase().includes(searchText.toLowerCase())) {
-                                        return employee;
-                                    }
-                                    // searchText === '' ? employee : employee.basicInfo.cnic.toLowerCase().includes(searchText.toLowerCase())
+                                    )
                                 }
-                                )
-                            }
-                            handleClickOpen={handleClickOpen}
-                            setEmployees={setemployeeData}
-                            tabValue={tabValue}
-                        />
-                        {/* </TabPanel> */}
-                        {/* {employeeData
+                                handleClickOpen={handleClickOpen}
+                                setEmployees={setemployeeData}
+                                tabValue={tabValue}
+                            />
+
+
+
+                            {/* </TabPanel> */}
+                            {/* {employeeData
                             .filter((employee) =>
                                 searchText === '' ? employee.name : employee.name.toLowerCase().includes(searchText.toLowerCase())
                             )
@@ -466,10 +601,10 @@ function ViewEmployees() {
                                     <TableCell>{employee.category}</TableCell>
                                 </TableRow>
                             ))} */}
-                    </TableBody>
-                </Table>
+                        </TableBody>
+                    </Table>
 
-                {/* <ReactHTMLTableToExcel
+                    {/* <ReactHTMLTableToExcel
                 className="btn btn-info"
                 table="emp-table"
                 filename="Emp Excel File"
@@ -477,8 +612,10 @@ function ViewEmployees() {
                 buttonText="Export of Excel"
 
                 /> */}
-                {/* </Paper> */}
-            </TableContainer>
+                    {/* </Paper> */}
+                </TableContainer>
+            }
+
             <div>
                 <BootstrapDialog onClose={handleClose} aria-labelledby="customized-dialog-title" maxWidth="sm" fullWidth open={open}>
                     <BootstrapDialogTitle className="font-bold text-2xl" onClose={handleClose}>

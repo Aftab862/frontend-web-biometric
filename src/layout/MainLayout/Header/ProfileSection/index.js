@@ -94,16 +94,31 @@ const ProfileSection = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const res = await API.get(`/employee/${employeeId}`, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('IdToken')}`
-                    }
-                });
-                setEmployeeData({ ...res.data });
-            } catch (error) {
-                console.log('error', error);
-            }
+
+            let userId = localStorage.getItem('rcet-userId')
+            console.log("userID", userId)
+            // console.log("userID", employeeId)
+
+            // try {
+            //     const res = await API.get(`/employee/${userId}`, {
+            //         headers: {
+            //             Authorization: `Bearer ${localStorage.getItem('IdToken')}`
+            //         }
+            //     });
+            //     console.log("response ", res)
+            // } catch (error) {
+            //     alert("error")
+            // }
+            // try {
+            //     const res = await API.get(`/employee/${employeeId}`, {
+            //         headers: {
+            //             Authorization: `Bearer ${localStorage.getItem('IdToken')}`
+            //         }
+            //     });
+            //     setEmployeeData({ ...res.data });
+            // } catch (error) {
+            //     console.log('error', error);
+            // }
         };
         fetchData();
     }, []);

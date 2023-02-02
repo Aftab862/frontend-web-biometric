@@ -31,9 +31,9 @@ import Paper from '@mui/material/Paper';
 import API from 'API/api';
 
 const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue }) => {
-    console.log('employees', employees);
+    // console.log('employees', employees);
     const data = employees[0]?.salaries[0]
-    console.log("salary", data)
+    // console.log("salary", data)
     const [employeeId, setEmployeeId] = useState(null);
     const navigate = useNavigate();
 
@@ -74,7 +74,7 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
             color: theme.palette.common.white
         },
         [`&.${tableCellClasses.body}`]: {
-            fontSize: 14
+            fontSize: 20
         }
     }));
 
@@ -109,10 +109,10 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
                         <TableHead>
                             <TableRow>
                                 <StyledTableCell>Date(MM-YYYY)</StyledTableCell>
-                                <StyledTableCell align="right">Total Emoulments</StyledTableCell>
-                                <StyledTableCell align="right">Total Deductions</StyledTableCell>
-                                <StyledTableCell align="right">Net Payable</StyledTableCell>
-                                <StyledTableCell align="right">Download CSV</StyledTableCell>
+                                <StyledTableCell align="center">Total Emoulments</StyledTableCell>
+                                <StyledTableCell align="center">Total Deductions</StyledTableCell>
+                                <StyledTableCell align="center">Net Payable</StyledTableCell>
+                                <StyledTableCell align="center">Download CSV</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         {/* <TableBody>
@@ -133,77 +133,80 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
                             {employees
                                 .find((employee) => employee.id === employeeId)
                                 ?.salaries?.map((row, index) => (
-                                    <StyledTableRow key={row.date}>
+                                    <StyledTableRow key={row?.obj?.date}>
+                                        {console.log("map fun", row.obj)}
+
                                         <StyledTableCell component="th" scope="row">
-                                            {row.date}
+                                            {row?.obj?.date}
                                         </StyledTableCell>
-                                        <StyledTableCell align="right">
-                                            {parseInt(row.amolument?.basicPay) +
-                                                parseInt(row.amolument?.chairmanAllowance) +
-                                                parseInt(row.amolument?.conPetAllowance) +
-                                                parseInt(row.amolument?.entertainment) +
-                                                parseInt(row.amolument?.healthProfnlAllowance) +
-                                                parseInt(row.amolument?.houseRent) +
-                                                parseInt(row.amolument?.medicalAllowance) +
-                                                parseInt(row.amolument?.nonPracticingAllowance) +
-                                                parseInt(row.amolument?.personalAllowance) +
-                                                parseInt(row.amolument?.qualificationAllowance) +
-                                                parseInt(row.amolument?.rTWardenAllowance) +
-                                                parseInt(row.amolument?.seniorPostAllowance) +
-                                                parseInt(row.amolument?.socialSecuirtyBenefit) +
-                                                parseInt(row.amolument?.specialHealthCareAllowance) +
-                                                parseInt(row.amolument?.specialReliefAllowance) +
-                                                parseInt(row.amolument?.tTAllowance)}
+                                        <StyledTableCell align="center" font="larger">
+                                               {parseInt(row?.obj?.Emoulments?.basicPay) +
+                                                parseInt(row?.obj?.Emoulments?.chairmanAllowance) +
+                                                parseInt(row?.obj?.Emoulments?.conPetAllowance) +
+                                                parseInt(row?.obj?.Emoulments?.entertainment) +
+                                                parseInt(row?.obj?.Emoulments?.healthProfnlAllowance) +
+                                                parseInt(row?.obj?.Emoulments?.houseRent) +
+                                                parseInt(row?.obj?.Emoulments?.medicalAllowance) +
+                                                parseInt(row?.obj?.Emoulments?.nonPracticingAllowance) +
+                                                parseInt(row?.obj?.Emoulments?.personalAllowance) +
+                                                parseInt(row?.obj?.Emoulments?.qualificationAllowance) +
+                                                parseInt(row?.obj?.Emoulments?.rTWardenAllowance) +
+                                                parseInt(row?.obj?.Emoulments?.seniorPostAllowance) +
+                                                parseInt(row?.obj?.Emoulments?.socialSecuirtyBenefit) +
+                                                parseInt(row?.obj?.Emoulments?.specialHealthCareAllowance) +
+                                                parseInt(row?.obj?.Emoulments?.specialReliefAllowance) +
+                                                parseInt(row?.obj?.Emoulments?.tTAllowance)}
                                         </StyledTableCell>
-                                        <StyledTableCell align="right">
-                                            {parseInt(row.deductions?.accomadationCharges) +
-                                                parseInt(row.deductions?.benevolentFund) +
-                                                parseInt(row.deductions?.busCharges) +
-                                                parseInt(row.deductions?.convRecovery) +
-                                                parseInt(row.deductions?.conveyanceAllowance) +
-                                                parseInt(row.deductions?.disableAllowance) +
-                                                parseInt(row.deductions?.eidAdvance) +
-                                                parseInt(row.deductions?.gIP) +
-                                                parseInt(row.deductions?.gPFSubscription) +
-                                                parseInt(row.deductions?.groupInsurance) +
-                                                parseInt(row.deductions?.houseRentR) +
-                                                parseInt(row.deductions?.incomeTax) +
-                                                parseInt(row.deductions?.integratedAllowance) +
-                                                parseInt(row.deductions?.recEidAdvance) +
-                                                parseInt(row.deductions?.recGPF) +
-                                                parseInt(row.deductions?.sSB) +
-                                                parseInt(row.deductions?.shortDays) +
-                                                parseInt(row.deductions?.speciialIncentive) +
-                                                parseInt(row.deductions?.tSAFund) +
-                                                parseInt(row.deductions?.uniTTAllowance) +
-                                                parseInt(row.deductions?.waterCharges)}
+                                        <StyledTableCell align="center">
+                                               {parseInt(row?.obj?.deductions?.accomadationCharges) +
+                                                parseInt(row?.obj?.deductions?.benevolentFund) +
+                                                parseInt(row?.obj?.deductions?.busCharges) +
+                                                parseInt(row?.obj?.deductions?.convRecovery) +
+                                                parseInt(row?.obj?.deductions?.conveyanceAllowance) +
+                                                parseInt(row?.obj?.deductions?.disableAllowance) +
+                                                parseInt(row?.obj?.deductions?.eidAdvance) +
+                                                parseInt(row?.obj?.deductions?.gIP) +
+                                                parseInt(row?.obj?.deductions?.gPFSubscription) +
+                                                parseInt(row?.obj?.deductions?.groupInsurance) +
+                                                parseInt(row?.obj?.deductions?.houseRentR) +
+                                                parseInt(row?.obj?.deductions?.incomeTax) +
+                                                parseInt(row?.obj?.deductions?.integratedAllowance) +
+                                                parseInt(row?.obj?.deductions?.recEidAdvance) +
+                                                parseInt(row?.obj?.deductions?.recGPF) +
+                                                parseInt(row?.obj?.deductions?.sSB) +
+                                                parseInt(row?.obj?.deductions?.shortDays) +
+                                                parseInt(row?.obj?.deductions?.speciialIncentive) +
+                                                parseInt(row?.obj?.deductions?.tSAFund) +
+                                                parseInt(row?.obj?.deductions?.uniTTAllowance) +
+                                                parseInt(row?.obj?.deductions?.waterCharges)}
                                         </StyledTableCell>
-                                        <StyledTableCell align="right">{row.netPayable}</StyledTableCell>
+                                        <StyledTableCell align="center">{row?.obj?.totalPaid}</StyledTableCell>
                                         <StyledTableCell align="right">
-                                            <Button   variant="outlined"
+                                            <Button variant="outlined"
                                                 color="secondary">
-                                            <CsvDownload
-                                              
-                                                title="Download CSV"
-                                                filename="previous_data.csv"
-                                                // data={employees.find((employee, index) => (employee.id === employeeId)?.salaries[index])}
-                                                data={
-                                                    employees
-                                                        .find((employee) => employee.id === employeeId).salaries
-                                                        .map((sal, ind) => {
-                                                            if (ind === index) {
-                                                                return {
-                                                                    ...sal.amolument, ...sal.deductions, netPayable: sal.netPayable
+                                                <CsvDownload
+
+                                                    title="Download CSV"
+                                                    filename="previous_data.csv"
+                                                    // data={employees.find((employee, index) => (employee.id === employeeId)?.salaries[index])}
+                                                    data={
+                                                        employees
+                                                            .find((employee) => employee.id === employeeId).salaries
+                                                            .map((sal, ind) => {
+                                                                if (ind === index) {
+                                                                    return {
+                                                                        ...sal.amolument, ...sal.deductions, netPayable: sal.netPayable
+                                                                    }
                                                                 }
-                                                            }
-                                                            return undefined
-                                                        })
-                                                        .filter((em) => em !== undefined)
-                                                }
-                                            >
-                                                Download
-                                                
-                                            </CsvDownload>
+                                                                return undefined
+                                                            })
+                                                            .filter((em) => em !== undefined)
+                                                    }
+
+                                                >
+                                                    Download
+
+                                                </CsvDownload>
                                             </Button>
                                         </StyledTableCell>
 
@@ -291,6 +294,7 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
                             </Tooltip>
                         </TableCell>
                         <TableCell>
+
                             <Tooltip title="Download the monthly Report">
                                 <Button variant="outlined" color="primary" startIcon={<DownloadIcon />}>
                                     <CsvDownload
@@ -310,8 +314,12 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
                                                 return null;
                                             })
                                             .filter((em) => em !== null)}
+                                        delimiter="          "
+
                                     >
                                         Report
+
+
                                     </CsvDownload>
                                 </Button>
                             </Tooltip>

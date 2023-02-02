@@ -95,8 +95,8 @@ const dashboard = {
         },
 
         {
-            id: 'import-page',
-            title: 'import-page',
+            id: 'ScaleWise Increments',
+            title: 'Increments',
             type: 'item',
             url: '/import-data',
             permission: [roles.admin],

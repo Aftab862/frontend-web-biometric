@@ -21,18 +21,19 @@ import Tooltip from '@mui/material/Tooltip';
 import moment from 'moment';
 import ReactJsAlert from "reactjs-alert"
 import { Alert } from '@mui/material';
+import { MoonLoader } from 'react-spinners';
 const useStyles = makeStyles((theme) => ({
-    // root: {
-    //     flexGrow: 1,
-    // },
-
     btn: {
         marginRight: theme.spacing(4)
     },
     title: {
         flexGrow: 1
-    }
+    },
 }));
+
+
+
+
 const AddNewEmployee = () => {
     const classes = useStyles();
     const params = useParams();
@@ -40,6 +41,9 @@ const AddNewEmployee = () => {
     const [alertstatus, setalertstatus] = useState(false)
     const [alertmsg, setalertmsg] = useState()
     const [BasicPay, setBasicPay] = useState(0);
+    let [loading, setLoading] = useState(false);
+    let [color, setColor] = useState("#36d7b7");
+
     const [employee, setEmployee] = useState({
         basicInfo: {
             name: '',
@@ -55,9 +59,9 @@ const AddNewEmployee = () => {
             designation: '',
             category: '',
             status: '',
-            stg: '',
-            inc: '',
-            initpay: ''
+            stg: 0,
+            increment: 0,
+            initialpay: 0
         },
         salaries: [],
         currentPay: {
@@ -132,30 +136,7 @@ const AddNewEmployee = () => {
     }, [params.id]);
     useEffect(() => {
         // console.log("data", employee.basicInfo)
-    }, [employee])
-
-
-    useEffect(() => {
-        if (employee.basicInfo.initpay > 0 && employee.basicInfo.stg > 0 && employee.basicInfo.initpay > 0) {
-            setBasicPay(employee.basicInfo.initpay + (employee.basicInfo.inc * employee.basicInfo.stg))
-            setEmployee({
-                ...employee,
-                currentPay: {
-                    ...employee.currentPay,
-                    amolument: { ...employee.currentPay.amolument, basicPay: BasicPay }
-                }
-            });
-        }
-        else if (employee.basicInfo.initpay > 0 && employee.basicInfo.inc > 0) {
-            setBasicPay(employee.basicInfo.initpay + employee.basicInfo.inc)
-        }
-        else if (employee.basicInfo.initpay > 0) {
-            setBasicPay(employee.basicInfo.initpay)
-        }
-    }, [employee.basicInfo.initpay, employee.basicInfo.inc, employee.basicInfo.stg])
-
-    const [flag, setFlag] = useState(false);
-
+    }, [])
 
 
 
@@ -207,10 +188,10 @@ const AddNewEmployee = () => {
             // }
 
 
-        } else if (type === 'inc') {
-            setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, inc: parseInt(e.target.value) } });
-        } else if (type === 'initpay') {
-            setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, initpay: parseInt(e.target.value) } });
+        } else if (type === 'increment') {
+            setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, increment: parseInt(e.target.value) } });
+        } else if (type === 'initialpay') {
+            setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, initialpay: parseInt(e.target.value) } });
         }
         // else if (type === 'basicPay') {
         //     setEmployee({
@@ -498,8 +479,7 @@ const AddNewEmployee = () => {
     };
 
     let totalAmolumentValue =
-        // employee.currentPay.amolument.basicPay +
-        BasicPay +
+        employee.basicInfo.initialpay + (employee.basicInfo.increment * employee.basicInfo.stg) +
         employee.currentPay.amolument.chairmanAllowance +
         employee.currentPay.amolument.conPetAllowance +
         employee.currentPay.amolument.healthProfnlAllowance +
@@ -586,12 +566,12 @@ const AddNewEmployee = () => {
             setalertmsg("Experience Must be greater than 0")
 
         }
-        else if (employee.basicInfo.inc < 1) {
+        else if (employee.basicInfo.increment < 1) {
             setalertstatus(true)
             setalertmsg("Increment is Required")
         }
 
-        else if (employee.basicInfo.initpay < 1) {
+        else if (employee.basicInfo.initialpay < 1) {
             setalertstatus(true)
             setalertmsg("InitialPay is Required")
 
@@ -625,12 +605,20 @@ const AddNewEmployee = () => {
         }
 
         else {
+            setLoading(true)
+            let obj = {};
+            obj.Emoulments = employee.currentPay.amolument;
+            obj.deductions = employee.currentPay.deductions;
+            obj.totalPaid = netPayableValue;
+            obj.date = moment().format('DD-MM-YYYY');
+
             const reqObj = {
                 ...employee,
-                currentPay: { ...employee.currentPay, netPayable: netPayableValue ? netPayableValue : 0 }
-            };
+                salaries: [...employee.salaries, { obj }],
+            }
 
             if (params.id) {
+                console.log("latest", employee.currentPay)
                 api = API.patch(`/employee/${params.id}`, reqObj, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('IdToken')}`
@@ -647,9 +635,14 @@ const AddNewEmployee = () => {
                 console.log('else part',);
                 const response = await api;
                 console.log('response', response);
-                navigate(`/viewemployees`);
+                setTimeout(() => {
+                    setLoading(false)
+                    navigate(`/viewemployees`);
+                }, 2000);
             } catch (error) {
-                console.log(error);
+                setalertstatus(true)
+                setalertmsg("Email Already Added ")
+
             }
         }
     };
@@ -678,33 +671,67 @@ const AddNewEmployee = () => {
 
 
 
+    useEffect(() => {
+        if (employee.basicInfo.initialpay > 0 && employee.basicInfo.stg > 0 && employee.basicInfo.initialpay > 0) {
+            console.log("inside 3")
+            // setBasicPay()
+            setEmployee({
+                ...employee,
+                currentPay: {
+                    ...employee.currentPay,
+                    amolument: { ...employee.currentPay.amolument, basicPay: employee.basicInfo.initialpay + (employee.basicInfo.increment * employee.basicInfo.stg) },
+                    netPayable: netPayableValue
+                }
+            });
+        }
+        else if (employee.basicInfo.initialpay > 0 && employee.basicInfo.increment > 0) {
+            console.log("inside 2")
+
+            setBasicPay(employee.basicInfo.initialpay + employee.basicInfo.increment)
+        }
+        else if (employee.basicInfo.initialpay > 0) {
+            console.log("inside 1")
+
+            setBasicPay(employee.basicInfo.initialpay)
+        }
+
+    }, [employee.basicInfo.initialpay, employee.basicInfo.increment, employee.basicInfo.stg, employee.currentPay.amolument.basicPay])
+
+    console.log("basicpay value", employee.currentPay.amolument.basicPay)
+
+
 
 
     return (
-        <div
-        // style={{
-        //     marginTop: '2%',
-        //     marginLeft: '2%',
-        //     marginRight: '2%',
-        //     marginBottom: '2%'
-        // }}
-        >
+        <>
 
+
+            <MoonLoader
+                color={color}
+                loading={loading}
+                size={50}
+                cssOverride={
+                    {
+                        margin: "auto auto",
+                        borderColor: "red",
+                    }
+                }
+
+            />
             <ReactJsAlert
                 status={alertstatus}   // true or false
                 type="info"   // success, warning, error, info
                 title={alertmsg}   // title you want to display
                 Close={() => setalertstatus(false)}   // callback method for hide
             />
-
             <AppBar className="mt-4" position="static">
                 <Toolbar className="h-32">
                     <Typography variant="h2" className={classes.title}>
-                        <div className="text-white">{params.id ? 'Update Employee' : 'Add New Employee'}</div>
+                        <div className="text-white">{params.id ? 'Save & Commit' : 'Add New Employee'}</div>
                     </Typography>
                     <Tooltip title={params.id ? 'Update Data' : 'Add Employee'}>
                         <Button
-                            disabled={netPayableValue < 0}
+                            disabled={employee.currentPay.netPayable < 0}
                             onClick={add}
                             size="medium"
                             className="bg-blue-800 text-white hover:bg-blue-800 hover:text-white m-4"
@@ -712,24 +739,6 @@ const AddNewEmployee = () => {
                             {params.id ? 'Update Data' : 'Add Employee'}
                         </Button>
                     </Tooltip>
-
-
-                    {/* <Tooltip title='Import from CSV'>
-                        <input
-                            type="file"
-                            accept=".csv,.xlsx,.xls"
-                            onChange={handleFileUpload}
-                            size="medium"
-                            className="bg-blue-800 text-white hover:bg-blue-800 hover:text-white"
-                        >
-
-                        </input>
-                    </Tooltip> */}
-
-
-
-
-
 
                 </Toolbar>
             </AppBar>
@@ -870,10 +879,10 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.basicInfo.initpay}
+                                value={employee.basicInfo.initialpay}
                                 required
-                                onChange={(e) => employeeHandler(e, 'initpay')}
-                                id="initpay"
+                                onChange={(e) => employeeHandler(e, 'initialpay')}
+                                id="initialpay"
                                 type="number"
                                 label="Initial Basic Pay"
                                 variant="standard"
@@ -883,10 +892,10 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.basicInfo.inc}
+                                value={employee.basicInfo.increment}
                                 required
-                                onChange={(e) => employeeHandler(e, 'inc')}
-                                id="inc"
+                                onChange={(e) => employeeHandler(e, 'increment')}
+                                id="increment"
                                 type="number"
                                 label="Increment"
                                 variant="standard"
@@ -974,15 +983,6 @@ const AddNewEmployee = () => {
                                 </Select>
                             </FormControl>
                         </Grid>
-
-
-
-
-
-
-
-
-
                     </Grid>
                 </CardContent>
             </Card>
@@ -997,7 +997,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={BasicPay} //{employee.currentPay.amolument.basicPay}
+                                value={employee.basicInfo.initialpay + (employee.basicInfo.increment * employee.basicInfo.stg)}
                                 onChange={(e) => {
                                     console.log('event->', e.target.value);
                                     // employeeHandler(e, 'basicPay');
@@ -1508,9 +1508,7 @@ const AddNewEmployee = () => {
                 </CardContent>
             </Card>
 
-
-
-        </div>
+        </>
 
 
 

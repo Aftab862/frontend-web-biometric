@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { TailSpin } from 'react-loader-spinner';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Avatar from '@mui/material/Avatar';
@@ -224,3 +224,235 @@ export default function EditProfile() {
 
 
 
+
+
+
+
+// Here are the steps and code to create a simple React.js demo project that uses WebAuthn for authentication:
+
+// Create a new React.js project using create - react - app:
+// Copy code
+// npx create - react - app my - webauthn - demo
+// cd my - webauthn - demo
+// Install the necessary dependencies:
+// Copy code
+// npm install--save react - router - dom
+// npm install--save @material-ui / core
+// Create a new component for the login page:
+// Copy code
+// src / components / Login.js
+// Add the following code to the Login.js file:
+// Copy code
+// import React, { useState } from "react";
+// import { makeStyles } from "@material-ui/core/styles";
+// import Button from "@material-ui/core/Button";
+// import TextField from "@material-ui/core/TextField";
+
+// const useStyles = makeStyles((theme) => ({
+//     root: {
+//         "& > *": {
+//             margin: theme.spacing(1),
+//             width: "25ch",
+//         },
+//     },
+// }));
+
+// export default function Login() {
+//     const classes = useStyles();
+//     const [status, setStatus] = useState("");
+//     const [username, setUsername] = useState("");
+
+//     const handleLogin = async () => {
+//         try {
+//             const publicKey = {
+//                 rpId: "example.com",
+//                 challenge: new Uint8Array(32),
+//                 allowCredentials: [{
+//                     type: "public-key",
+//                     id: new Uint8Array(32),
+//                     transports: ["internal"]
+//                 }],
+//                 userVerification: "required",
+//                 timeout: 10000
+//             };
+//             const credentials = await navigator.credentials.get({ publicKey });
+//             const data = {
+//                 id: credentials.id,
+//                 rawId: credentials.rawId,
+//                 response: {
+//                     clientDataJSON: credentials.response.clientDataJSON,
+//                     authenticatorData: credentials.response.authenticatorData,
+//                     signature: credentials.response.signature,
+//                     userHandle: credentials.response.userHandle
+//                 },
+//                 username: username
+//             };
+//             const response = await fetch("/login", {
+//                 method: "POST",
+//                 body: JSON.stringify(data)
+//             });
+//             const json = await response.json();
+//             if (json.status === "success") {
+//                 setStatus("Login Successful");
+//             } else {
+//                 setStatus("Login Failed");
+//             }
+//         } catch (error) {
+//             setStatus("Login Failed: " + error);
+//         }
+//     };
+
+//     return (
+//         <div>
+//             <form className={classes.root} noValidate autoComplete="off">
+//                 <TextField
+//                     id="username"
+//                     label="Username"
+//                     variant="outlined"
+//                     value={username}
+//                     onChange={(e) => setUsername(e.target.value)}
+//                 />
+//             </form>
+//             <Button variant="contained" color="primary" onClick={handleLogin}>
+//                 Login with WebAuthn
+//             </Button>
+//             <p>{status}</p>
+
+
+//             continue the remaining code
+//             Sure, here is the remaining code to complete the Login.js component:
+
+//             Copy code
+//         </div>
+//     );
+// }
+// Create a new component for the registration page:
+// Copy code
+// src / components / Registration.js
+// Add the following code to the Registration.js file:
+// Copy code
+// import React, { useState } from "react";
+// import { makeStyles } from "@material-ui/core/styles";
+// import Button from "@material-ui/core/Button";
+// import TextField from "@material-ui/core/TextField";
+
+// const useStyles = makeStyles((theme) => ({
+//     root: {
+//         "& > *": {
+//             margin: theme.spacing(1),
+//             width: "25ch",
+//         },
+//     },
+// }));
+
+// export default function Registration() {
+//     const classes = useStyles();
+//     const [status, setStatus] = useState("");
+//     const [username, setUsername] = useState("");
+//     const [email, setEmail] = useState("");
+
+//     const handleRegistration = async () => {
+//         try {
+//             const publicKey = {
+//                 rp: {
+//                     name: "Example RP"
+//                 },
+//                 user: {
+//                     id: new Uint8Array([1, 2, 3]),
+//                     name: email,
+//                     displayName: username
+//                 },
+//                 challenge: new Uint8Array([1, 2, 3]),
+//                 pubKeyCredParams: [{
+//                     alg: -7,
+//                     type: "public-key"
+//                 }]
+//             };
+//             const credentials = await navigator.credentials.create({ publicKey });
+//             const data = {
+//                 id: credentials.id,
+//                 rawId: credentials.rawId,
+//                 response: {
+//                     clientDataJSON: credentials.response.clientDataJSON,
+//                     attestationObject: credentials.response.attestationObject
+//                 },
+//                 username: username,
+//                 email: email
+//             };
+//             const response = await fetch("/register", {
+//                 method: "POST",
+//                 body: JSON.stringify(data)
+//             });
+//             const json = await response.json();
+//             if (json.status === "success") {
+//                 setStatus("Registration Successful");
+//             } else {
+//                 setStatus("Registration Failed");
+//             }
+//         } catch (error) {
+//             setStatus("Registration Failed: " + error);
+//         }
+//     };
+
+//     return (
+//         <div>
+//             <form className={classes.root} noValidate autoComplete="off">
+//                 <TextField
+//                     id="username"
+//                     label="Username
+
+
+// continue the remaining code 
+// Sure, here is the remaining code to complete the Registration.js component:
+
+// Copy code
+//           variant="outlined"
+//                 value={username}
+//                 onChange={(e) => setUsername(e.target.value)}
+//         />
+//                 <TextField
+//                     id="email"
+//                     label="Email"
+//                     variant="outlined"
+//                     value={email}
+//                     onChange={(e) => setEmail(e.target.value)}
+//                 />
+//             </form>
+//             <Button variant="contained" color="primary" onClick={handleRegistration}>
+//                 Register with WebAuthn
+//             </Button>
+//             <p>{status}</p>
+//         </div>
+//     );
+// }
+// In the src / App.js file, import the Login and Registration components and add them to the routes using react - router - dom:
+// Copy code
+// import { BrowserRouter as Router, Route } from "react-router-dom";
+// import Login from "./components/Login";
+// import Registration from "./components/Registration";
+
+// function App() {
+//     return (
+//         <Router>
+//             <div>
+//                 <Route exact path="/" component={Login}
+
+
+//                     continue the remaining part
+//                     Sure, here's the remaining code to complete the App.js file:
+
+//                 Copy code
+//         />
+//                 <Route path="/register" component={Registration} />
+//             </div>
+//         </Router>
+//     );
+// }
+
+// export default App;
+// Start the development server by running npm start.The application should now be running on http://localhost:3000.
+// Please note that this is just a simple example, in a real - world application, you will have to handle more edge cases and security aspects, also you should use a more complex and a more secure way to generate and store the public / private keys.Additionally, you should also handle the user's session and the communication between the client and the server.
+
+// Also, you should use a real endpoint for the registration and login instead of using the / register and / login that I used in the example.
+
+// You can also use a library like webauthn - js to make it easy to work with WebAuthn.
