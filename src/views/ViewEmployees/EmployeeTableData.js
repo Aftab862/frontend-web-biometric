@@ -134,13 +134,12 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
                                 .find((employee) => employee.id === employeeId)
                                 ?.salaries?.map((row, index) => (
                                     <StyledTableRow key={row?.obj?.date}>
-                                        {console.log("map fun", row.obj)}
 
                                         <StyledTableCell component="th" scope="row">
                                             {row?.obj?.date}
                                         </StyledTableCell>
                                         <StyledTableCell align="center" font="larger">
-                                               {parseInt(row?.obj?.Emoulments?.basicPay) +
+                                            {parseInt(row?.obj?.Emoulments?.basicPay) +
                                                 parseInt(row?.obj?.Emoulments?.chairmanAllowance) +
                                                 parseInt(row?.obj?.Emoulments?.conPetAllowance) +
                                                 parseInt(row?.obj?.Emoulments?.entertainment) +
@@ -158,7 +157,7 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
                                                 parseInt(row?.obj?.Emoulments?.tTAllowance)}
                                         </StyledTableCell>
                                         <StyledTableCell align="center">
-                                               {parseInt(row?.obj?.deductions?.accomadationCharges) +
+                                            {parseInt(row?.obj?.deductions?.accomadationCharges) +
                                                 parseInt(row?.obj?.deductions?.benevolentFund) +
                                                 parseInt(row?.obj?.deductions?.busCharges) +
                                                 parseInt(row?.obj?.deductions?.convRecovery) +
