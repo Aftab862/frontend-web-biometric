@@ -57,7 +57,7 @@ function VerifyPensioner() {
                             color="primary"
                             onClick={loginWithRedirect}
                         >
-                            Log in
+                          Verify 
                         </Button>
 
                     </CardActions>

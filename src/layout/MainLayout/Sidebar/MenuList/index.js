@@ -10,8 +10,9 @@ import { getAllowedRoutes } from 'utils/AuthRoles';
 // ==============================|| SIDEBAR MENU LIST ||============================== //
 
 const MenuList = () => {
-    // const { role } = useSelector((state) => state.user);
-  var role= "admin"
+    const abc = useSelector((state) => state.user);
+    console.log("hello abc", abc)
+    var role = "admin"
     // console.log('nav items ---> ', { ...menuItem.items[0], children: getAllowedRoutes(menuItem.items[0].children, [role]) });
     const navItems = menuItem.items.map((item) => {
         switch (item.type) {
@@ -25,7 +26,6 @@ const MenuList = () => {
                 );
         }
     });
-
     return <>{navItems}</>;
 };
 

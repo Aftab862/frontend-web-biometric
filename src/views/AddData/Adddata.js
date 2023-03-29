@@ -115,18 +115,26 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    padding: "65px",
-    background: "ghostwhite"
+
+    background: "ghostwhite",
+    height: "80vh ",
   },
   button: {
     width: 200,
-    background: "royalblue"
+    background: "royalblue",
+    margin: "15px 0"
   },
   textField: {
     width: 200,
-    margin: 15,
+    marginTop: 10,
     fontWeight: "lighter"
   },
+  error: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative"
+  }
 }));
 
 export default function Adddata() {
@@ -136,11 +144,12 @@ export default function Adddata() {
   const [department, setDepartment] = useState("");
   const [alertstatus, setalertstatus] = useState(false)
   const [alertmsg, setalertmsg] = useState()
-  const [value, setvalue] = useState();
+  const [value, setvalue] = useState(0);
   const [rangeFrom, setrangeFrom] = useState();
   const [rangeTo, setrangeTo] = useState();
-
+  const [year, setYear] = useState("");
   const [open, setOpen] = useState(false);
+  const [isdisabled, setisdisabled] = useState(true)
   function handleClose() {
     setOpen(false);
   };
@@ -155,12 +164,10 @@ export default function Adddata() {
     handleToggle()
     let reqObj = {}
     reqObj.allowanceType = Allowance;
-    reqObj.department = department;
     reqObj.allowancevalue = value
     reqObj.rangeFrom = rangeFrom
     reqObj.rangeTo = rangeTo
-
-
+    reqObj.year = year
     try {
       var res = API.patch("employee/updateall", reqObj, {
         headers: {
@@ -181,6 +188,26 @@ export default function Adddata() {
   }
 
 
+  const handleInputChange = (e) => {
+    const inputYear = Number(e.target.value);
+    setYear(inputYear);
+  };
+
+
+
+  useEffect(() => {
+    if (Allowance.length > 1 && year > 2000 && rangeFrom != undefined && rangeTo != undefined && rangeFrom > 0) {
+      console.log("inside if condition", Allowance.length, rangeFrom, rangeTo, year);
+      setisdisabled(false)
+    }
+    else {
+      setisdisabled(true)
+      console.log("else part")
+
+    }
+
+  }, [rangeTo, rangeFrom, year, Allowance])
+
 
 
   return (
@@ -193,7 +220,6 @@ export default function Adddata() {
         <CircularProgress color="secondary" />
       </Backdrop>
 
-
       <ReactjsAlert
         status={alertstatus}   // true or false
         type="info"   // success, warning, error, info
@@ -204,15 +230,18 @@ export default function Adddata() {
       <AppBar className="mt-4" position="static">
         <Toolbar className="h-32">
           <Typography variant="h2" className={classes.title}>
-            <div className="text-white">Add New Allowance</div>
+            <div className="text-white">Allowance Increments</div>
           </Typography>
         </Toolbar>
       </AppBar>
 
       <form className={classes.container} onSubmit={submithandler}>
         <FormControl className={classes.textField} required>
-          <InputLabel >Select Allowance</InputLabel>
+          <InputLabel >Select Field</InputLabel>
+
+
           <Select value={Allowance} onChange={(e) => setAllowance(e.target.value)}>
+            <MenuItem value="basicPay">Basic Pay</MenuItem>
             <MenuItem value="houseRent">Home Rent</MenuItem>
             <MenuItem value="medicalAllowance">Medical Allowance</MenuItem>
             <MenuItem value="qualificationAllowance">Qualification Allowance</MenuItem>
@@ -233,8 +262,7 @@ export default function Adddata() {
             <MenuItem value="Machenical Engineering">ME Department</MenuItem>
           </Select>
         </FormControl> : null} */}
-
-        {Allowance ?
+        {/* {Allowance=="basicPay" ?
           <TextField
             required
             id="input-field-3"
@@ -244,9 +272,50 @@ export default function Adddata() {
             // size="small"
             onChange={(e) => setrangeFrom(e.target.value)}
             type="number"
-          /> : null}
+          /> : null} */}
 
-        {rangeFrom ?
+
+        {/* {Allowance=="basicPay" ? */}
+        {/* {Allowance ? */}
+
+
+        {/* <div className={classes.error}> */}
+
+
+        <TextField
+          required
+          label="Year:"
+          type="text"
+          value={year}
+          onChange={handleInputChange}
+          placeholder="YYYY"
+          inputProps={{ maxLength: 4 }}
+          className={classes.textField}
+
+        />
+        {/* {year < 2000 && <p style={{ color: 'red', position: "absolute", right: "-110%", marginLeft: "20px" }}>Enter Valid Year 2023</p>}
+        </div> */}
+
+        <div className={classes.error}>
+
+          <TextField
+            required
+            id="input-field-3"
+            label="Scale range from"
+            className={classes.textField}
+            margin="normal"
+            // size="small"
+            onChange={(e) => setrangeFrom(Number(e.target.value))}
+            type="text"
+            inputProps={{ maxLength: 2 }}
+
+          />
+          {rangeFrom > 22 && <p style={{ color: 'red', position: "absolute", right: "-110%", marginLeft: "20px" }}>* Enter Valid Scale Range 1-22</p>}
+        </div>
+        {/* : null}
+
+        {rangeFrom ? */}
+        <div className={classes.error}>
           <TextField
             required
             id="input-field-3"
@@ -254,21 +323,52 @@ export default function Adddata() {
             // size="small"
             className={classes.textField}
             margin="normal"
-            onChange={(e) => setrangeTo(e.target.value)}
-            type="number"
-          /> : null}
-        {rangeTo ?
+            onChange={(e) => setrangeTo(Number(e.target.value))}
+            type="text"
+            inputProps={{ maxLength: 2 }}
+          />
+          {rangeTo > 22 && <p style={{ color: 'red', position: "absolute", right: "-110%" }}>* Enter Valid Scale Range 1-22</p>}
+        </div>
+
+        {/* : null}
+        {rangeTo ? */}
+        <div className={classes.error}>
           <TextField
             required
             id="input-field-3"
-            label="Amount"
+            label="Percentage Amount"
             className={classes.textField}
             margin="normal"
-            onChange={(e) => setvalue(e.target.value)}
-            type="number"
-          /> : null}
+            onChange={(e) => setvalue(Number(e.target.value))}
+            type="text"
+            inputProps={{ maxLength: 2 }}
+          />
+          <p style={{ color: 'green', position: "absolute", right: "-110%" }}>{value}% Increment will be added</p>
+        </div>
 
-        {/* <Checkbox
+        {/* : null} */}
+
+        <Button disabled={isdisabled} type="submit" variant="contained" color="secondary" size="large" className={classes.button}>
+          Submit
+        </Button>
+      </form>
+    </>
+
+  );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+{/* <Checkbox
           id="checkbox-1"
           label="Checkbox 1"
           className={classes.textField}
@@ -277,9 +377,9 @@ export default function Adddata() {
         <Typography variant="h2" className={classes.title}>
           <div className="text-white"></div>
         </Typography> */}
-        {/* <div style={{ width: "20rem" }}> */}
+{/* <div style={{ width: "20rem" }}> */ }
 
-        {/* <FormControl required>
+{/* <FormControl required>
           <InputLabel >Gender</InputLabel>
           <Select value={gender} onChange={(e) => setGender(e.target.value)}>
             <MenuItem value="male">Male</MenuItem>
@@ -299,11 +399,3 @@ export default function Adddata() {
         </FormControl>
       </div> */}
 
-        <Button type="submit" variant="contained" color="secondary" size="large" className={classes.button}>
-          Submit
-        </Button>
-      </form>
-    </>
-
-  );
-}

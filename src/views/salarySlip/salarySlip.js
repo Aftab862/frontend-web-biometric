@@ -108,6 +108,7 @@ const AddNewEmployee = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        const employeeId = localStorage.getItem('rcet-userId')
         const fetchData = async () => {
             try {
                 const res = await API.get(`/employee/${employeeId}`, {
@@ -116,6 +117,7 @@ const AddNewEmployee = () => {
                     }
                 });
                 setEmployee({ ...res.data });
+                console.log("abc data", res.data)
             } catch (error) {
                 console.log('error', error);
             }
@@ -123,11 +125,11 @@ const AddNewEmployee = () => {
         fetchData();
     }, []);
 
-    console.log('employee Data->', employee);
+    // console.log('employee Data->', employee);
 
     const [flag, setFlag] = useState(false);
 
-    console.log('employee data->', employee);
+    // console.log('employee data->', employee);
 
     const employeeHandler = (e, type) => {
         console.log('e', parseInt(e.target.value));

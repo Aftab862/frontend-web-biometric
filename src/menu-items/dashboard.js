@@ -52,7 +52,8 @@ const dashboard = {
             title: 'Verify pensioner',
             type: 'item',
             url: '/verify',
-            permission: [roles.admin],
+            permission: [roles.employee
+            ],
 
             icon: FingerprintIcon,
             breadcrumbs: false
@@ -84,15 +85,15 @@ const dashboard = {
             icon: ArticleIcon,
             breadcrumbs: false
         },
-        {
-            id: 'leaverecords-page',
-            title: 'Leave Record',
-            type: 'item',
-            url: '/leave-record',
-            permission: [roles.admin],
-            icon: DeselectIcon,
-            breadcrumbs: false
-        },
+        // {
+        //     id: 'leaverecords-page',
+        //     title: 'Leave Record',
+        //     type: 'item',
+        //     url: '/leave-record',
+        //     permission: [roles.admin],
+        //     icon: DeselectIcon,
+        //     breadcrumbs: false
+        // },
 
         {
             id: 'ScaleWise Increments',

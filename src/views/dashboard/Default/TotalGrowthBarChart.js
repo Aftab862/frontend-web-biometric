@@ -97,7 +97,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
                     <Grid container spacing={gridSpacing}>
                         <Grid item xs={12}>
                             <Grid container alignItems="center" justifyContent="space-between">
-                                <Grid item>
+                                {/* <Grid item>
                                     <Grid container direction="column" spacing={1}>
                                         <Grid item>
                                             <Typography variant="subtitle2">Total Income</Typography>
@@ -106,8 +106,8 @@ const TotalGrowthBarChart = ({ isLoading }) => {
                                             <Typography variant="h3">Rs 2,324.00</Typography>
                                         </Grid>
                                     </Grid>
-                                </Grid>
-                                <Grid item>
+                                </Grid> */}
+                                {/* <Grid item>
                                     <TextField
                                         id="standard-select-currency"
                                         select
@@ -120,7 +120,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
                                             </MenuItem>
                                         ))}
                                     </TextField>
-                                </Grid>
+                                </Grid> */}
                             </Grid>
                         </Grid>
                         <Grid item xs={12}>

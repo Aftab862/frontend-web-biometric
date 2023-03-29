@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 const AddNewEmployee = () => {
     const classes = useStyles();
     const params = useParams();
-    console.log('params.id', params.id);
+
     const [alertstatus, setalertstatus] = useState(false)
     const [alertmsg, setalertmsg] = useState()
     const [BasicPay, setBasicPay] = useState(0);
@@ -46,22 +46,23 @@ const AddNewEmployee = () => {
 
     const [employee, setEmployee] = useState({
         basicInfo: {
-            name: '',
-            email: '',
+            name: 'test',
+            email: 'abc@gmail.com',
             password: 12345678,
-            cnic: 0,
-            pageNo: 0,
-            accountNo: '',
-            department: '',
-            scale: 0,
-            experience: 0,
-            type: '',
-            designation: '',
-            category: '',
-            status: '',
-            stg: 0,
-            increment: 0,
-            initialpay: 0
+            cnic: 2340,
+            pageNo: 120,
+            accountNo: '13241',
+            department: 'jaks f',
+            scale: 10,
+            experience: 20,
+            type: 'asdf',
+            designation: 'Assistant Prof.',
+            category: 'asdf',
+            status: 'asdf',
+            stg: 230,
+            increment: 230,
+            initialpay: 30,
+
         },
         salaries: [],
         currentPay: {
@@ -83,7 +84,17 @@ const AddNewEmployee = () => {
                 seniorPostAllowance: 0,
                 chairmanAllowance: 0,
                 rTWardenAllowance: 0,
-                specialReliefAllowance: 0
+                specialReliefAllowance: 0,
+                adhocReliefAllowance: 0,
+                conveyanceAllowance: 0,
+                uniTeachingAllowance: 0,
+                ssbAllowance: 0,
+                specialIncentiveAllowance: 0,
+                darenessAllowance: 0,
+                disableAllowance: 0,
+                extraAllowance: 0,
+                totalAmoluments: 0
+
             },
             deductions: {
                 incomeTax: 0,
@@ -93,21 +104,20 @@ const AddNewEmployee = () => {
                 waterCharges: 0,
                 shortDays: 0,
                 convRecovery: 0,
-                uniTTAllowance: 0,
+                houseBuildingAdvance: 0,
                 tSAFund: 0,
                 benevolentFund: 0,
                 groupInsurance: 0,
                 eidAdvance: 0,
                 busCharges: 0,
-                speciialIncentive: 0,
-
-                conveyanceAllowance: 0,
-                integratedAllowance: 0,
-                disableAllowance: 0,
-                sSB: 0,
+                extraCausalLeaves: 0,
+                tradeTax: 0,
+                electricityCharges: 0,
                 gIP: 0,
-                recEidAdvance: 0,
+                carScooterAdvance: 0,
                 accomadationCharges: 0,
+                otherCharges: 0,
+                totalDeductions: 0,
                 verified: 'true'
             },
             netPayable: 0
@@ -133,10 +143,17 @@ const AddNewEmployee = () => {
             };
             fetchData();
         }
+
+        // setEmployee({
+        //     ...employee,
+        //     currentPay: {
+        //         ...employee.currentPay,
+        //         // amolument: { ...employee.currentPay.amolument, basicPay: employee.basicInfo.initialpay + (employee.basicInfo.increment * employee.basicInfo.stg)},
+        //         netPayable: netPayableValue
+        //     }
+        // });
+
     }, [params.id]);
-    useEffect(() => {
-        // console.log("data", employee.basicInfo)
-    }, [])
 
 
 
@@ -144,7 +161,7 @@ const AddNewEmployee = () => {
     // console.log('employee data->', employee);
 
     const employeeHandler = (e, type) => {
-        // console.log('e', parseInt(e.target.value));
+
         // console.log('r', e.target.value);
 
         if (type === 'name') {
@@ -175,18 +192,6 @@ const AddNewEmployee = () => {
             setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, status: e.target.value } });
         } else if (type === 'stg') {
             setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, stg: parseInt(e.target.value) } });
-            // if (employee.basicInfo.inc > 0 && employee.basicInfo.stg > 0 && employee.basicInfo.initpay > 0) {
-            //     let value = (parseInt(employee.basicInfo.inc) * parseInt(employee.basicInfo.abc)) + parseInt(employee.basicInfo.initpay)
-            //     console.log("value", value)
-            //     setEmployee({
-            //         ...employee,
-            //         currentPay: {
-            //             ...employee.currentPay,
-            //             amolument: { ...employee.currentPay.amolument, basicPay: value }
-            //         }
-            //     });
-            // }
-
 
         } else if (type === 'increment') {
             setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, increment: parseInt(e.target.value) } });
@@ -210,7 +215,134 @@ const AddNewEmployee = () => {
                     amolument: { ...employee.currentPay.amolument, nonPracticingAllowance: parseInt(e.target.value) }
                 }
             });
-        } else if (type === 'specialHealthCareAllowance') {
+
+        }
+
+        else if (type === 'adhocReliefAllowance') {
+            setEmployee({
+                ...employee,
+                currentPay: {
+                    ...employee.currentPay,
+                    amolument: { ...employee.currentPay.amolument, adhocReliefAllowance: parseInt(e.target.value) }
+                }
+            });
+
+        }
+
+
+        else if (type === 'disableAllowance') {
+            setEmployee({
+                ...employee,
+                currentPay: {
+                    ...employee.currentPay,
+                    amolument: { ...employee.currentPay.amolument, disableAllowance: parseInt(e.target.value) }
+                }
+            });
+
+        }
+
+
+        else if (type === 'conveyanceAllowance') {
+            setEmployee({
+                ...employee,
+                currentPay: {
+                    ...employee.currentPay,
+                    amolument: { ...employee.currentPay.amolument, conveyanceAllowance: parseInt(e.target.value) }
+                }
+            });
+
+        }
+        else if (type === 'uniTeachingAllowance') {
+            setEmployee({
+                ...employee,
+                currentPay: {
+                    ...employee.currentPay,
+                    amolument: { ...employee.currentPay.amolument, uniTeachingAllowance: parseInt(e.target.value) }
+                }
+            });
+
+        }
+        else if (type === 'ssbAllowance') {
+            setEmployee({
+                ...employee,
+                currentPay: {
+                    ...employee.currentPay,
+                    amolument: { ...employee.currentPay.amolument, ssbAllowance: parseInt(e.target.value) }
+                }
+            });
+
+        }
+        else if (type === 'specialIncentiveAllowance') {
+            setEmployee({
+                ...employee,
+                currentPay: {
+                    ...employee.currentPay,
+                    amolument: { ...employee.currentPay.amolument, specialIncentiveAllowance: parseInt(e.target.value) }
+                }
+            });
+
+        }
+        else if (type === 'darenessAllowance') {
+            setEmployee({
+                ...employee,
+                currentPay: {
+                    ...employee.currentPay,
+                    amolument: { ...employee.currentPay.amolument, darenessAllowance: parseInt(e.target.value) }
+                }
+            });
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        else if (type === 'specialHealthCareAllowance') {
             setEmployee({
                 ...employee,
                 currentPay: {
@@ -263,7 +395,9 @@ const AddNewEmployee = () => {
                     amolument: { ...employee.currentPay.amolument, personalAllowance: parseInt(e.target.value) }
                 }
             });
-        } else if (type === 'tTAllowance') {
+
+        }
+        else if (type === 'tTAllowance') {
             setEmployee({
                 ...employee,
                 currentPay: {
@@ -271,7 +405,24 @@ const AddNewEmployee = () => {
                     amolument: { ...employee.currentPay.amolument, tTAllowance: parseInt(e.target.value) }
                 }
             });
-        } else if (type === 'medicalAllowance') {
+        }
+
+        else if (type === 'extraAllowance') {
+            setEmployee({
+                ...employee,
+                currentPay: {
+                    ...employee.currentPay,
+                    amolument: { ...employee.currentPay.amolument, extraAllowance: parseInt(e.target.value) }
+                }
+            });
+        }
+
+
+
+
+
+
+        else if (type === 'medicalAllowance') {
             setEmployee({
                 ...employee,
                 currentPay: {
@@ -372,12 +523,13 @@ const AddNewEmployee = () => {
                     deductions: { ...employee.currentPay.deductions, convRecovery: parseInt(e.target.value) }
                 }
             });
-        } else if (type === 'uniTTAllowance') {
+        }
+        else if (type === 'houseBuildingAdvance') {
             setEmployee({
                 ...employee,
                 currentPay: {
                     ...employee.currentPay,
-                    deductions: { ...employee.currentPay.deductions, uniTTAllowance: parseInt(e.target.value) }
+                    deductions: { ...employee.currentPay.deductions, houseBuildingAdvance: parseInt(e.target.value) }
                 }
             });
         } else if (type === 'tSAFund') {
@@ -417,57 +569,61 @@ const AddNewEmployee = () => {
                     deductions: { ...employee.currentPay.deductions, busCharges: parseInt(e.target.value) }
                 }
             });
-        } else if (type === 'speciialIncentive') {
+        }
+        else if (type === 'extraCausalLeaves') {
             setEmployee({
                 ...employee,
                 currentPay: {
                     ...employee.currentPay,
-                    deductions: { ...employee.currentPay.deductions, speciialIncentive: parseInt(e.target.value) }
+                    deductions: { ...employee.currentPay.deductions, extraCausalLeaves: parseInt(e.target.value) }
                 }
             });
-        } else if (type === 'conveyanceAllowance') {
+        } else if (type === 'tradeTax') {
             setEmployee({
                 ...employee,
                 currentPay: {
                     ...employee.currentPay,
-                    deductions: { ...employee.currentPay.deductions, conveyanceAllowance: parseInt(e.target.value) }
+                    deductions: { ...employee.currentPay.deductions, tradeTax: parseInt(e.target.value) }
                 }
             });
-        } else if (type === 'integratedAllowance') {
+        }
+        else if (type === 'electricityCharges') {
             setEmployee({
                 ...employee,
                 currentPay: {
                     ...employee.currentPay,
-                    deductions: { ...employee.currentPay.deductions, integratedAllowance: parseInt(e.target.value) }
+                    deductions: { ...employee.currentPay.deductions, electricityCharges: parseInt(e.target.value) }
                 }
             });
-        } else if (type === 'disableAllowance') {
+            // }
+            //  else if (type === 'disableAllowance') {
+            //     setEmployee({
+            //         ...employee,
+            //         currentPay: {
+            //             ...employee.currentPay,
+            //             deductions: { ...employee.currentPay.deductions, disableAllowance: parseInt(e.target.value) }
+            //         }
+            //     });
+        } else if (type === 'otherCharges') {
             setEmployee({
                 ...employee,
-                currentPay: {
-                    ...employee.currentPay,
-                    deductions: { ...employee.currentPay.deductions, disableAllowance: parseInt(e.target.value) }
-                }
-            });
-        } else if (type === 'sSB') {
-            setEmployee({
-                ...employee,
-                currentPay: { ...employee.currentPay, deductions: { ...employee.currentPay.deductions, sSB: parseInt(e.target.value) } }
+                currentPay: { ...employee.currentPay, deductions: { ...employee.currentPay.deductions, otherCharges: parseInt(e.target.value) } }
             });
         } else if (type === 'gIP') {
             setEmployee({
                 ...employee,
                 currentPay: { ...employee.currentPay, deductions: { ...employee.currentPay.deductions, gIP: parseInt(e.target.value) } }
             });
-        } else if (type === 'recEidAdvance') {
+        } else if (type === 'carScooterAdvance') {
             setEmployee({
                 ...employee,
                 currentPay: {
                     ...employee.currentPay,
-                    deductions: { ...employee.currentPay.deductions, recEidAdvance: parseInt(e.target.value) }
+                    deductions: { ...employee.currentPay.deductions, carScooterAdvance: parseInt(e.target.value) }
                 }
             });
-        } else if (type === 'accomadationChgarges') {
+        } else if (type === 'accomadationCharges') {
+
             setEmployee({
                 ...employee,
                 currentPay: {
@@ -482,7 +638,27 @@ const AddNewEmployee = () => {
         employee.basicInfo.initialpay + (employee.basicInfo.increment * employee.basicInfo.stg) +
         employee.currentPay.amolument.chairmanAllowance +
         employee.currentPay.amolument.conPetAllowance +
+        employee.currentPay.amolument.conveyanceAllowance +
         employee.currentPay.amolument.healthProfnlAllowance +
+
+
+
+        employee.currentPay.amolument.disableAllowance +
+        employee.currentPay.amolument.extraAllowance +
+        employee.currentPay.amolument.darenessAllowance +
+        employee.currentPay.amolument.specialIncentiveAllowance +
+        employee.currentPay.amolument.ssbAllowance +
+        employee.currentPay.amolument.uniTeachingAllowance +
+        employee.currentPay.amolument.adhocReliefAllowance +
+
+
+
+
+
+
+
+
+
         employee.currentPay.amolument.houseRent +
         employee.currentPay.amolument.medicalAllowance +
         employee.currentPay.amolument.nonPracticingAllowance +
@@ -505,22 +681,24 @@ const AddNewEmployee = () => {
         employee.currentPay.deductions.waterCharges +
         employee.currentPay.deductions.shortDays +
         employee.currentPay.deductions.convRecovery +
-        employee.currentPay.deductions.uniTTAllowance +
+        employee.currentPay.deductions.houseBuildingAdvance +
         employee.currentPay.deductions.tSAFund +
         employee.currentPay.deductions.benevolentFund +
         employee.currentPay.deductions.groupInsurance +
         employee.currentPay.deductions.eidAdvance +
         employee.currentPay.deductions.busCharges +
-        employee.currentPay.deductions.speciialIncentive +
-        employee.currentPay.deductions.conveyanceAllowance +
-        employee.currentPay.deductions.integratedAllowance +
-        employee.currentPay.deductions.disableAllowance +
-        employee.currentPay.deductions.sSB +
+        employee.currentPay.deductions.extraCausalLeaves +
+        employee.currentPay.deductions.tradeTax +
+        employee.currentPay.deductions.electricityCharges +
+        // employee.currentPay.deductions.disableAllowance +
+        employee.currentPay.deductions.otherCharges +
         employee.currentPay.deductions.gIP +
-        employee.currentPay.deductions.recEidAdvance +
+        employee.currentPay.deductions.carScooterAdvance +
         employee.currentPay.deductions.accomadationCharges;
 
     let netPayableValue = parseInt(totalAmolumentValue) - parseInt(totalDeductionValue);
+
+
 
     const add = async () => {
         let api;
@@ -606,15 +784,15 @@ const AddNewEmployee = () => {
 
         else {
             setLoading(true)
-            let obj = {};
-            obj.Emoulments = employee.currentPay.amolument;
-            obj.deductions = employee.currentPay.deductions;
-            obj.totalPaid = netPayableValue;
-            obj.date = moment().format('DD-MM-YYYY');
+            // let obj = {};
+            // obj.Emoulments = employee.currentPay.amolument;
+            // obj.deductions = employee.currentPay.deductions;
+            // obj.totalPaid = netPayableValue;
+            // obj.date = moment().format('YYYY');
 
             const reqObj = {
                 ...employee,
-                salaries: [...employee.salaries, { obj }],
+                // salaries: [...employee.salaries, { obj }],
             }
 
             if (params.id) {
@@ -625,6 +803,7 @@ const AddNewEmployee = () => {
                     }
                 });
             } else {
+
                 api = API.post('/employee/add', reqObj, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('IdToken')}`
@@ -632,7 +811,8 @@ const AddNewEmployee = () => {
                 });
             }
             try {
-                console.log('else part',);
+                console.log('else part', netPayableValue);
+
                 const response = await api;
                 console.log('response', response);
                 setTimeout(() => {
@@ -642,6 +822,10 @@ const AddNewEmployee = () => {
             } catch (error) {
                 setalertstatus(true)
                 setalertmsg("Email Already Added ")
+                setTimeout(() => {
+                    setLoading(false)
+                    // navigate(`/viewemployees`);
+                }, 2000);
 
             }
         }
@@ -670,36 +854,39 @@ const AddNewEmployee = () => {
 
 
 
-
     useEffect(() => {
         if (employee.basicInfo.initialpay > 0 && employee.basicInfo.stg > 0 && employee.basicInfo.initialpay > 0) {
             console.log("inside 3")
-            // setBasicPay()
             setEmployee({
                 ...employee,
                 currentPay: {
                     ...employee.currentPay,
-                    amolument: { ...employee.currentPay.amolument, basicPay: employee.basicInfo.initialpay + (employee.basicInfo.increment * employee.basicInfo.stg) },
-                    netPayable: netPayableValue
+                    amolument: { ...employee.currentPay.amolument, basicPay: employee.basicInfo.initialpay + (employee.basicInfo.increment * employee.basicInfo.stg) }
                 }
             });
         }
         else if (employee.basicInfo.initialpay > 0 && employee.basicInfo.increment > 0) {
             console.log("inside 2")
-
             setBasicPay(employee.basicInfo.initialpay + employee.basicInfo.increment)
         }
         else if (employee.basicInfo.initialpay > 0) {
             console.log("inside 1")
-
             setBasicPay(employee.basicInfo.initialpay)
         }
 
-    }, [employee.basicInfo.initialpay, employee.basicInfo.increment, employee.basicInfo.stg, employee.currentPay.amolument.basicPay])
-
-    console.log("basicpay value", employee.currentPay.amolument.basicPay)
+    }, [])
 
 
+
+
+    useEffect(() => {
+        setEmployee(employee => ({
+            ...employee, currentPay: {
+                ...employee.currentPay,
+                netPayable: netPayableValue
+            }
+        }));
+    }, [netPayableValue])
 
 
     return (
@@ -998,15 +1185,16 @@ const AddNewEmployee = () => {
                             <TextField
                                 fullWidth
                                 value={employee.basicInfo.initialpay + (employee.basicInfo.increment * employee.basicInfo.stg)}
-                                onChange={(e) => {
-                                    console.log('event->', e.target.value);
-                                    // employeeHandler(e, 'basicPay');
-                                }}
+                                // onChange={(e) => {
+                                //     console.log('event->', e.target.value);
+                                //     // employeeHandler(e, 'basicPay');
+                                // }}
                                 // id="basicPay"
                                 required
                                 type="number"
                                 label="Basic Pay"
                                 variant="standard"
+                                disabled
                             />
                         </Grid>
                         <Grid item xs={6} md={4}>
@@ -1021,6 +1209,127 @@ const AddNewEmployee = () => {
                                 variant="standard"
                             />
                         </Grid>
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee.currentPay.amolument.adhocReliefAllowance}
+                                onChange={(e) => employeeHandler(e, 'adhocReliefAllowance')}
+                                id="adhocReliefAllowance"
+                                required
+                                type="number"
+                                label="Adhoc Relief Allowance"
+                                variant="standard"
+                            />
+                        </Grid>
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee.currentPay.amolument.conveyanceAllowance}
+                                onChange={(e) => employeeHandler(e, 'conveyanceAllowance')}
+                                id="conveyanceAllowance"
+                                required
+                                type="number"
+                                label="Conveyance Allowance"
+                                variant="standard"
+                            />
+                        </Grid>
+
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee.currentPay.amolument.uniTeachingAllowance}
+                                onChange={(e) => employeeHandler(e, 'uniTeachingAllowance')}
+                                id="uniTeachingAllowance"
+                                required
+                                type="number"
+                                label="Univ. Tech. Teaching Allowance "
+                                variant="standard"
+                            />
+                        </Grid>
+
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee.currentPay.amolument.ssbAllowance}
+                                onChange={(e) => employeeHandler(e, 'ssbAllowance')}
+                                id="ssbAllowance"
+                                required
+                                type="number"
+                                label="S.S.B Allowance "
+                                variant="standard"
+                            />
+                        </Grid>
+
+
+
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee.currentPay.amolument.specialIncentiveAllowance}
+                                onChange={(e) => employeeHandler(e, 'specialIncentiveAllowance')}
+                                id="pecialIncentiveAllowance"
+                                required
+                                type="number"
+                                label="Special Incentive Allowance For RCET, Regular Faculty"
+                                variant="standard"
+                            />
+                        </Grid>
+
+
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee.currentPay.amolument.darenessAllowance}
+                                onChange={(e) => employeeHandler(e, 'darenessAllowance')}
+                                id="darenessAllowance"
+                                required
+                                type="number"
+                                label="Dareness Allowance"
+                                variant="standard"
+                            />
+                        </Grid>
+
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee.currentPay.amolument.disableAllowance}
+                                onChange={(e) => employeeHandler(e, 'disableAllowance')}
+                                id="disableAllowance"
+                                required
+                                type="number"
+                                label="Disable Allowance"
+                                variant="standard"
+                            />
+                        </Grid>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
@@ -1190,6 +1499,22 @@ const AddNewEmployee = () => {
                             />
                         </Grid>
 
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee.currentPay.amolument.extraAllowance}
+                                onChange={(e) => employeeHandler(e, 'extraAllowance')}
+                                id="extraAllowance"
+                                required
+                                type="number"
+                                label="Extra Allowance"
+                                variant="standard"
+                            />
+                        </Grid>
+
+
+
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
@@ -1297,12 +1622,12 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.uniTTAllowance}
-                                onChange={(e) => employeeHandler(e, 'uniTTAllowance')}
-                                id="uniTTAllowance"
+                                value={employee.currentPay.deductions.houseBuildingAdvance}
+                                onChange={(e) => employeeHandler(e, 'houseBuildingAdvance')}
+                                id="houseBuildingAdvance"
                                 required
                                 type="number"
-                                label="Uni-TT-Allowance"
+                                label="House Building Advance"
                                 variant="standard"
                             />
                         </Grid>
@@ -1369,63 +1694,41 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.speciialIncentive}
-                                onChange={(e) => employeeHandler(e, 'speciialIncentive')}
-                                id="speciialIncentive"
+                                value={employee.currentPay.deductions.extraCausalLeaves}
+                                onChange={(e) => employeeHandler(e, 'extraCausalLeaves')}
+                                id="extraCausalLeaves"
                                 required
                                 type="number"
-                                label="Special Incentive"
+                                label="Extra Causal Leaves"
                                 variant="standard"
                             />
                         </Grid>
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.conveyanceAllowance}
-                                onChange={(e) => employeeHandler(e, 'conveyanceAllowance')}
-                                id="conveyanceAllowance"
+                                value={employee.currentPay.deductions.tradeTax}
+                                onChange={(e) => employeeHandler(e, 'tradeTax')}
+                                id="tradeTax"
                                 required
                                 type="number"
-                                label="Conveyance Allowance"
+                                label="Trade Tax"
                                 variant="standard"
                             />
                         </Grid>
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.integratedAllowance}
-                                onChange={(e) => employeeHandler(e, 'integratedAllowance')}
-                                id="integratedAllowance"
+                                value={employee.currentPay.deductions.electricityCharges}
+                                onChange={(e) => employeeHandler(e, 'electricityCharges')}
+                                id="electricityCharges"
                                 required
                                 type="number"
-                                label="Integrated Allowance"
+                                label="Electricity Charges"
                                 variant="standard"
                             />
                         </Grid>
-                        <Grid item xs={6} md={4}>
-                            <TextField
-                                fullWidth
-                                value={employee.currentPay.deductions.disableAllowance}
-                                onChange={(e) => employeeHandler(e, 'disableAllowance')}
-                                id="disableAllowance"
-                                required
-                                type="number"
-                                label="Disable Allowance"
-                                variant="standard"
-                            />
-                        </Grid>
-                        <Grid item xs={6} md={4}>
-                            <TextField
-                                fullWidth
-                                value={employee.currentPay.deductions.sSB}
-                                onChange={(e) => employeeHandler(e, 'sSB')}
-                                id="sSB"
-                                required
-                                type="number"
-                                label="SSB"
-                                variant="standard"
-                            />
-                        </Grid>
+
+
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
@@ -1441,12 +1744,12 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.recEidAdvance}
-                                onChange={(e) => employeeHandler(e, 'recEidAdvance')}
-                                id="recEidAdvance"
+                                value={employee.currentPay.deductions.carScooterAdvance}
+                                onChange={(e) => employeeHandler(e, 'carScooterAdvance')}
+                                id="carScooterAdvance"
                                 required
                                 type="number"
-                                label="Rec Eid Advance"
+                                label="Car Scooter Advance"
                                 variant="standard"
                             />
                         </Grid>
@@ -1476,6 +1779,21 @@ const AddNewEmployee = () => {
                                 disabled
                             />
                         </Grid> */}
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee.currentPay.deductions.otherCharges}
+                                onChange={(e) => employeeHandler(e, 'otherCharges')}
+                                id="otherCharges"
+                                required
+                                type="number"
+                                label="Other Charges"
+                                variant="standard"
+                            />
+                        </Grid>
+
+
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
@@ -1485,9 +1803,12 @@ const AddNewEmployee = () => {
                                 disabled
                             />
                         </Grid>
+
                         <Tooltip title="Net Payable">
                             <Typography variant="h3" className="my-11 mx-3 " gutterBottom>
+
                                 Net Payable : {netPayableValue}
+
                                 {netPayableValue < 0 && <p style={{ color: 'red' }}>Net payable should not be in negative</p>}
                             </Typography>
                         </Tooltip>

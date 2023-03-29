@@ -19,7 +19,7 @@ const LeaveRecord = Loadable(lazy(() => import('views/leaveRecord/leaveRecord'))
 const Adddata = Loadable(lazy(() => import('views/AddData/Adddata')));
 
 // ==============================|| MAIN ROUTING ||============================== //
-console.log("roles", roles)
+// console.log("roles", roles)
 
 
 
@@ -78,12 +78,12 @@ const MainRoutes = {
 
             element: <GpFund />
         },
-        {
-            path: '/leave-record',
-            // permission: [roles.admin],
+        // {
+        //     path: '/leave-record',
+        //     // permission: [roles.admin],
 
-            element: <LeaveRecord />
-        },
+        //     element: <LeaveRecord />
+        // },
         {
             path: '/import-data',
             element: <Adddata />

@@ -35,6 +35,7 @@ import CloseIcon from '@mui/icons-material/Close';
 const SearchRecords = () => {
     const [employeeData, setEmployeeData] = useState({});
     const { employeeId, name } = useSelector((state) => state.user);
+    console.log("employeid", employeeId)
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
         [`&.${tableCellClasses.head}`]: {
             backgroundColor: theme.palette.common.black,
@@ -107,14 +108,16 @@ const SearchRecords = () => {
     }));
 
     useEffect(() => {
+        const id = localStorage.getItem('rcet-userId')
         const fetchData = async () => {
             try {
-                const res = await API.get(`/employee/${employeeId}`, {
+                const res = await API.get(`/employee/${id}`, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('IdToken')}`
                     }
                 });
                 setEmployeeData({ ...res.data });
+                console.log("emploueedata", res.data)
             } catch (error) {
                 console.log('error', error);
             }
@@ -201,7 +204,7 @@ const SearchRecords = () => {
                     <Table sx={{ minWidth: 700 }} aria-label="customized table">
                         <TableHead>
                             <TableRow>
-                                <StyledTableCell>Month-Year(MM-YYYY) </StyledTableCell>
+                                <StyledTableCell>Month-Year</StyledTableCell>
                                 <StyledTableCell align="right">Amoluments</StyledTableCell>
                                 <StyledTableCell align="right">Deductions</StyledTableCell>
                                 <StyledTableCell align="right">netPayable</StyledTableCell>
@@ -216,22 +219,22 @@ const SearchRecords = () => {
                                         {empd.date}
                                     </StyledTableCell>
                                     <StyledTableCell align="right">
-                                        {empd.amolument?.basicPay +
-                                            empd.amolument?.chairmanAllowance +
-                                            empd.amolument?.conPetAllowance +
-                                            empd.amolument?.entertainment +
-                                            empd.amolument?.healthProfnlAllowance +
-                                            empd.amolument?.houseRent +
-                                            empd.amolument?.medicalAllowance +
-                                            empd.amolument?.nonPracticingAllowance +
-                                            empd.amolument?.personalAllowance +
-                                            empd.amolument?.qualificationAllowance +
-                                            empd.amolument?.rTWardenAllowance +
-                                            empd.amolument?.seniorPostAllowance +
-                                            empd.amolument?.socialSecuirtyBenefit +
-                                            empd.amolument?.specialHealthCareAllowance +
-                                            empd.amolument?.specialReliefAllowance +
-                                            empd.amolument?.tTAllowance}
+                                           {empd.Emoulments?.basicPay +
+                                            empd.Emoulments?.chairmanAllowance +
+                                            empd.Emoulments?.conPetAllowance +
+                                            empd.Emoulments?.entertainment +
+                                            empd.Emoulments?.healthProfnlAllowance +
+                                            empd.Emoulments?.houseRent +
+                                            empd.Emoulments?.medicalAllowance +
+                                            empd.Emoulments?.nonPracticingAllowance +
+                                            empd.Emoulments?.personalAllowance +
+                                            empd.Emoulments?.qualificationAllowance +
+                                            empd.Emoulments?.rTWardenAllowance +
+                                            empd.Emoulments?.seniorPostAllowance +
+                                            empd.Emoulments?.socialSecuirtyBenefit +
+                                            empd.Emoulments?.specialHealthCareAllowance +
+                                            empd.Emoulments?.specialReliefAllowance +
+                                            empd.Emoulments?.tTAllowance}
                                     </StyledTableCell>
                                     <StyledTableCell align="right">
                                         {empd.deductions?.accomadationCharges +
@@ -256,7 +259,7 @@ const SearchRecords = () => {
                                             empd.deductions?.uniTTAllowance +
                                             empd.deductions?.waterCharges}
                                     </StyledTableCell>
-                                    <StyledTableCell align="right">{empd.netPayable}</StyledTableCell>
+                                    <StyledTableCell align="right">{empd.totalPaid}</StyledTableCell>
                                     <StyledTableCell align="right"><Button variant="outlined" onClick={() => handleClickOpen(empd._id)}>View</Button></StyledTableCell>
                                     <StyledTableCell align="right">
                                         <Button variant="outlined"
@@ -322,44 +325,44 @@ const SearchRecords = () => {
 
                         </Typography>
                         <DialogContent dividers>
-                        <Typography variant="h4" gutterBottom>
-                            Deductions
-                        </Typography>
+                            <Typography variant="h4" gutterBottom>
+                                Deductions
+                            </Typography>
                             <Typography gutterBottom>
-                            accomadationCharges :{employeepopup?.deductions?.accomadationCharges}<br />
-                            benevolentFund :{employeepopup?.deductions?.benevolentFund}<br />
-                            busCharges :{employeepopup?.deductions?.busCharges}<br />
-                            convRecovery :{employeepopup?.deductions?.convRecovery}<br />
-                            conveyanceAllowance :{employeepopup?.deductions?.benevolentFund}<br />
-                            disableAllowance :{employeepopup?.deductions?.disableAllowance}<br />
-                            eidAdvance :{employeepopup?.deductions?.eidAdvance}<br />
-                            gIP :{employeepopup?.deductions?.gIP}<br />
-                            gPFSubscription :{employeepopup?.deductions?.gPFSubscription}<br />
-                            groupInsurance :{employeepopup?.deductions?.groupInsurance}<br />
-                            houseRentR :{employeepopup?.deductions?.houseRentR}<br />
-                            incomeTax :{employeepopup?.deductions?.incomeTax}<br />
-                            integratedAllowance :{employeepopup?.deductions?.integratedAllowance}<br />
-                            recEidAdvance :{employeepopup?.deductions?.recEidAdvance}<br />
-                            recGPF :{employeepopup?.deductions?.recGPF}<br />
-                            sSB :{employeepopup?.deductions?.sSB}<br />
-                            shortDays :{employeepopup?.deductions?.shortDays}<br />
-                            speciialIncentive :{employeepopup?.deductions?.speciialIncentive}<br />
-                            tSAFund :{employeepopup?.deductions?.tSAFund}<br />
-                            uniTTAllowance :{employeepopup?.deductions?.uniTTAllowance}<br />
-                            waterCharges :{employeepopup?.deductions?.waterCharges}<br />
+                                accomadationCharges :{employeepopup?.deductions?.accomadationCharges}<br />
+                                benevolentFund :{employeepopup?.deductions?.benevolentFund}<br />
+                                busCharges :{employeepopup?.deductions?.busCharges}<br />
+                                convRecovery :{employeepopup?.deductions?.convRecovery}<br />
+                                conveyanceAllowance :{employeepopup?.deductions?.benevolentFund}<br />
+                                disableAllowance :{employeepopup?.deductions?.disableAllowance}<br />
+                                eidAdvance :{employeepopup?.deductions?.eidAdvance}<br />
+                                gIP :{employeepopup?.deductions?.gIP}<br />
+                                gPFSubscription :{employeepopup?.deductions?.gPFSubscription}<br />
+                                groupInsurance :{employeepopup?.deductions?.groupInsurance}<br />
+                                houseRentR :{employeepopup?.deductions?.houseRentR}<br />
+                                incomeTax :{employeepopup?.deductions?.incomeTax}<br />
+                                integratedAllowance :{employeepopup?.deductions?.integratedAllowance}<br />
+                                recEidAdvance :{employeepopup?.deductions?.recEidAdvance}<br />
+                                recGPF :{employeepopup?.deductions?.recGPF}<br />
+                                sSB :{employeepopup?.deductions?.sSB}<br />
+                                shortDays :{employeepopup?.deductions?.shortDays}<br />
+                                speciialIncentive :{employeepopup?.deductions?.speciialIncentive}<br />
+                                tSAFund :{employeepopup?.deductions?.tSAFund}<br />
+                                uniTTAllowance :{employeepopup?.deductions?.uniTTAllowance}<br />
+                                waterCharges :{employeepopup?.deductions?.waterCharges}<br />
                             </Typography>
                         </DialogContent>
                         <DialogContent dividers>
-                        <Typography variant="h4" gutterBottom>
-                            Net Payable
-                        </Typography>
+                            <Typography variant="h4" gutterBottom>
+                                Net Payable
+                            </Typography>
                             <Typography gutterBottom>
-                            {employeepopup?.netPayable}<br />
-                           
+                                {employeepopup?.netPayable}<br />
+
                             </Typography>
                         </DialogContent>
 
-                        
+
                     </DialogContent>
 
                 </BootstrapDialog>

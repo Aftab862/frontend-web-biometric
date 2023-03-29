@@ -42,9 +42,13 @@ import CsvDownload from 'react-json-to-csv';
 import TabList from '@mui/lab/TabList';
 import { Input, TextField, Tooltip } from '@mui/material';
 import MoonLoader from 'react-spinners/MoonLoader';
-import PDF, { Text, AddPage, Line, Image, Html } from 'jspdf-react';
+// import PDF, { Text, AddPage, Line, Image, Html } from 'jspdf-react';
 import { jsPDF } from "jspdf";
 import * as autoTable from 'jspdf-autotable'
+
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
 // import TabPanel from '@mui/lab/TabPanel';
 // import ReactHTMLTableToExcel from "react-html-table-to-excel";
 // import CsvDownload from 'react-json-to-csv'
@@ -159,14 +163,11 @@ function ViewEmployees() {
     const [Comit, setCommit] = useState();
 
     const handleChange = (newValue) => {
-        console.log('newVal', newValue);
         setTabValue(newValue);
     };
-    // console.log('employeeData', employeeData);
 
     useEffect(() => {
         setLoading(true)
-
         const fetchData = async () => {
             try {
                 const res = await API.get('/employee', {
@@ -176,21 +177,15 @@ function ViewEmployees() {
                 });
                 // console.log('response', res.data);
                 setemployeeData(res.data.results);
+                setLoading(false)
             } catch (error) {
                 alert("Connection Error")
             }
         };
         fetchData();
-        setTimeout(() => {
-            setLoading(false)
-        }, 2000);
-        // setemployeeData(data);
+        if (employeeData.length != 0) setLoading(false)
 
-        if (Comit) {
-            console.log("comit", Comit)
-        }
-
-    }, [Comit]);
+    }, [setemployeeData]);
 
     const [open, setOpen] = React.useState(false);
 
@@ -206,6 +201,67 @@ function ViewEmployees() {
     };
 
     const [searchText, setSearchText] = useState('');
+
+
+
+
+
+    function generateXLSX(xlxdata) {
+        const worksheet = XLSX.utils.json_to_sheet(xlxdata);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+        const xlsxBuffer = XLSX.write(workbook, { type: 'buffer' });
+        const fileName = 'EmployeesData.xlsx';
+        saveAs(new Blob([xlsxBuffer], { type: 'application/octet-stream' }), fileName);
+    }
+    const handleDownload = () => {
+        // {employeeData
+        //     .map((ed) => {
+        //         if (tabValue === 0 && ed?.basicInfo?.category === 'Current Employee') {
+        //             return {
+        //                 ...ed.basicInfo,
+        //                 ...{ ...ed.currentPay.amolument, ...ed.currentPay.deductions, netPayable: ed.currentPay.netPayable }
+        //             };
+        //         } else if (tabValue === 1 && ed?.basicInfo?.category === 'Pensioner') {
+        //             return {
+        //                 ...ed.basicInfo,
+        //                 ...{ ...ed.currentPay.amolument, ...ed.currentPay.deductions, netPayable: ed.currentPay.netPayable }
+        //             };
+        //         }
+        //     })
+        //     .filter((em) => em !== undefined)}
+
+
+
+        let array = [];
+        employeeData.map((e) => {
+            if (tabValue === 0 && e?.basicInfo?.category === 'Current Employee') {
+                const newObj = {
+                    ...e?.basicInfo,
+                    ...e?.currentPay?.amolument,
+                    ...e?.currentPay?.deductions,
+                    netPayable: e?.currentPay?.netPayable,
+                };
+                array.push(newObj);
+            } else if (tabValue === 1 && e?.basicInfo?.category === 'Pensioner') {
+                const newObj = {
+                    ...e?.basicInfo,
+                    ...e?.currentPay?.amolument,
+                    ...e?.currentPay?.deductions,
+                    netPayable: e?.currentPay?.netPayable,
+                };
+                array.push(newObj);
+
+            }
+        }).filter((em) => em !== undefined)
+        console.log(array)
+        const xlxdata = array
+        generateXLSX(xlxdata);
+    }
+
+
+
+
 
 
 
@@ -331,34 +387,27 @@ function ViewEmployees() {
 
     const ComitSalarRecord = async () => {
         let arrayOfObjects = new Array();
+        // console.log("employee", employeeData)
+
         employeeData.map((e, index) => {
+            let obj = {};
+            obj.Emoulments = e.currentPay.amolument;
+            obj.deductions = e.currentPay.deductions;
+            obj.totalPaid = e.currentPay.netPayable;
+            obj.year = moment().format('YYYY');
+            obj.date = moment().format('DD-MM-YYYY');
             arrayOfObjects[index] = {
                 id: e.id,
-                Salary: e?.salaries[e.salaries.length - 1],
+                // Salary: e?.salaries[e?.salaries.length - 1] ?? null,
+                Salary: obj
             };
         })
-        // console.log("arrayofSalaries", arrayOfObjects)
-        // employeeData.forEach((employee, index) => {
-        // let obj = {};
-        //     // obj.Emoulments = e.currentPay.amolument;
-        //     // obj.deductions = e.currentPay.deductions;
-        //     // obj.totalPaid = e.currentPay.netPayable;
-        //     arrayOfObjects[index] = {
-        //         id: employee.id,
-        //         obj: employee,
-        //         salaries: employee?.salaries[employee?.salaries?.length - 1],
-        //         totalPaid: employee?.salaries[employee?.salaries?.length - 1]?.obj?.totalPaid
-        //     };
-        // })
-        // console.log("salaries length", arrayOfObjects)
-
         setLoading(true)
         let PaySlip = {};
         pdfGenerator()
         PaySlip.Date = moment().format('DD-MM-YYYY');
         PaySlip.Data = arrayOfObjects;
         PaySlip.TotalIncome = totalPayable;
-        // console.log("Record", data)
 
         try {
             let a = await API.post('/employee/comit', PaySlip, {
@@ -376,7 +425,6 @@ function ViewEmployees() {
         } catch (error) {
             alert("Connection Error")
         }
-
     }
 
 
@@ -428,29 +476,11 @@ function ViewEmployees() {
                         color="success">
                         Save&Commit
                     </Button>
-                    <Button variant="outlined" color="primary">
-                        <CsvDownload
-                            title="Download CSV"
-                            filename="employees.csv"
-                            // [{name:"ali",rollNo:"401"}]
-                            data={employeeData
-                                .map((ed) => {
-                                    if (tabValue === 0 && ed?.basicInfo?.category === 'Current Employee') {
-                                        return {
-                                            ...ed.basicInfo,
-                                            ...{ ...ed.currentPay.amolument, ...ed.currentPay.deductions, netPayable: ed.currentPay.netPayable }
-                                        };
-                                    } else if (tabValue === 1 && ed?.basicInfo?.category === 'Pensioner') {
-                                        return {
-                                            ...ed.basicInfo,
-                                            ...{ ...ed.currentPay.amolument, ...ed.currentPay.deductions, netPayable: ed.currentPay.netPayable }
-                                        };
-                                    }
-                                })
-                                .filter((em) => em !== undefined)}
-                        >
-                            Download in CSV
-                        </CsvDownload>
+                    <Button variant="outlined" color="primary"
+                        onClick={handleDownload}
+                    >
+                        Download Excel
+
                     </Button>
                     <Button
                         variant="outlined"
@@ -466,30 +496,36 @@ function ViewEmployees() {
                             doc.setFontSize(20);
 
                             const title = 'RACHNA COLLEGE OF ENGINEERING & TECHNOLOGY, GUJRANWALA';
-                            const headers = [
-                                [
-                                    'Name',
-                                    // 'Email',
-                                    'CNIC',
-                                    'Account No',
-                                    'Category',
-                                    // 'Status',
-                                    'Total Amolument',
-                                    'Total Deduction',
-                                    'NetPayable'
-                                ]
-                            ];
+                            // const headers = [
+                            //     [
+                            //         'Name',
+                            //         // 'Email',
+                            //         'CNIC',
+                            //         'Account No',
+                            //         'Category',
+                            //         // 'Status',
+                            //         'Total Amolument',
+                            //         'Total Deduction',
+                            //         'NetPayable'
+                            //     ]
+                            // ];
 
                             const data = pdfGenerator()
 
+                            const headers = [
+                                ['Name', totalPayable],
+                                ['Email', totalPayable]
+                            ]
+
                             let content = {
                                 startY: 40,
-                                colSpan: 2,
-                                rowSpan: 2,
                                 head: headers,
-                                body: data
+                                columnStyles: { theme: 'plain' },
+                                body: data,
+
                             };
-                            setCommit(data)
+
+
                             doc.setFontSize(16);
                             doc.text(10, 18, 'RACHNA COLLEGE OF ENGINEERING & TECHNOLOGY, GUJRANWALA')
                             doc.setFontSize(12);
@@ -503,6 +539,9 @@ function ViewEmployees() {
 
                             doc.setFontSize(12);
                             doc.text(130, 200, "Signature  : _________________")
+
+
+
 
                             doc.autoTable(content);
                             doc.save('employees.pdf');
