@@ -52,8 +52,7 @@ const dashboard = {
             title: 'Verify pensioner',
             type: 'item',
             url: '/verify',
-            permission: [roles.employee
-            ],
+            permission: [roles.pensioner, roles.employee],
 
             icon: FingerprintIcon,
             breadcrumbs: false

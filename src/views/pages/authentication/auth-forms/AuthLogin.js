@@ -142,6 +142,8 @@ const FirebaseLogin = ({ ...others }) => {
                         console.log("response", res)
                         localStorage.setItem('IdToken', res.data.token);
                         localStorage.setItem('rcet-userId', res.data.id);
+                        localStorage.setItem('role', res.data.role);
+                        
                         if (res.data.role === 'admin') {
                             navigate('/dashboard');
                         } else {

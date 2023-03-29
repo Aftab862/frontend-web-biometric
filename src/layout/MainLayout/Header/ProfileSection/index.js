@@ -58,9 +58,10 @@ const ProfileSection = () => {
     const anchorRef = useRef(null);
     const handleLogout = async () => {
         // console.log('Logout');
-        // localStorage.removeItem('IdToken');
-        // localStorage.removeItem('rcet-userId');
-        // dispatch(Actions.logout());
+        localStorage.removeItem('IdToken');
+        localStorage.removeItem('rcet-userId');
+        localStorage.removeItem('role');
+        dispatch(Actions.logout());
         navigate('/');
     };
 
