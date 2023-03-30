@@ -14,8 +14,10 @@ import store from 'store';
 import './index.css';
 import { Auth0Provider } from '@auth0/auth0-react'
 
-const domain = 'dev-g5ci65g8w1dhap1m.us.auth0.com'
-const clientId = 'Dlk1iQdCWIVFFMJuArf3ZGGILCxf4VBd'
+const domain = 'dev-3yazdzkwmmxseotc.us.auth0.com';
+const clientId ="rIN9KRKBRH0kYxxI0LFj39iFlUGZPwIp";
+ //'Dlk1iQdCWIVFFMJuArf3ZGGILCxf4VBd'
+
 
 // ==============================|| REACT DOM RENDER  ||============================== //
 
@@ -24,7 +26,7 @@ ReactDOM.render(
         <Auth0Provider
             domain={domain}
             clientId={clientId}
-            redirectUri={window.location.origin}
+            // redirectUri={window.location.origin}
         >
             <BrowserRouter>
                 <App />
