@@ -8,6 +8,8 @@ import { Button, CardActionArea, CardActions } from '@mui/material';
 import Toolbar from '@mui/material/Toolbar';
 import AppBar from '@mui/material/AppBar';
 import pic from 'assets/images/user.png';
+import verified from 'assets/images/verified.webp';
+
 import { useAuth0 } from '@auth0/auth0-react';
 
 function VerifyPensioner() {
@@ -18,50 +20,74 @@ function VerifyPensioner() {
 
     if (isAuthenticated) {
         return (
-            <div>
-                verified
-            </div>
+            <>
+                <AppBar className="mt-4" position="static">
+                    <Toolbar className="h-32">
+                        <Typography variant="h2">
+                            <div className="text-white"> Verification Complete</div>
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
+                <div className="flex justify-center items-center pt-16">
+
+                    <Card className="justify-center w-96">
+                        <CardActionArea>
+                            <CardMedia component="img" height="60" image={verified} alt="green iguana" />
+                        </CardActionArea>
+
+                        <CardActions>
+
+                            <Button
+                                size="small"
+                                color="primary"
+                                onClick={() => logout({ returnTo: "https://frontend-web-biometric.vercel.app/verify" })}
+                            >
+                                Again  Verification
+                            </Button>
+
+                        </CardActions>
+                    </Card>
+                </div>
+            </>
         );
-    }
+    } else
+        return (
+            <>
+                <AppBar className="mt-4" position="static">
+                    <Toolbar className="h-32">
+                        <Typography variant="h2">
+                            <div className="text-white"> Pensioner Verification</div>
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
+                <div className="flex justify-center items-center pt-16">
+                    <Card className="justify-center w-96">
+                        <CardActionArea>
+                            <CardMedia component="img" height="60" image={pic} alt="green iguana" />
+                            <CardContent>
+                                <Typography gutterBottom variant="h5" component="div">
+                                    Biometric Verification
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    Click the below button for Verification
+                                </Typography>
+                            </CardContent>
+                        </CardActionArea>
+                        <CardActions>
 
+                            <Button
+                                size="small"
+                                color="primary"
+                                onClick={loginWithRedirect}
+                            >
+                                Verify
+                            </Button>
 
-    return (
-        <>
-            <AppBar className="mt-4" position="static">
-                <Toolbar className="h-32">
-                    <Typography variant="h2">
-                        <div className="text-white"> Pensioner Verification</div>
-                    </Typography>
-                </Toolbar>
-            </AppBar>
-            <div className="flex justify-center items-center pt-16">
-                <Card className="justify-center w-96">
-                    <CardActionArea>
-                        <CardMedia component="img" height="60" image={pic} alt="green iguana" />
-                        <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">
-                                Biometric Verification
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                Click the below button for Verification
-                            </Typography>
-                        </CardContent>
-                    </CardActionArea>
-                    <CardActions>
-
-                        <Button
-                            size="small"
-                            color="primary"
-                            onClick={loginWithRedirect}
-                        >
-                            Verify
-                        </Button>
-
-                    </CardActions>
-                </Card>
-            </div>
-        </>
-    )
+                        </CardActions>
+                    </Card>
+                </div>
+            </>
+        )
 }
 
 export default VerifyPensioner;

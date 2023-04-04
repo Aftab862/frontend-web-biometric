@@ -17,6 +17,7 @@ import { Auth0Provider } from '@auth0/auth0-react'
 const domain = 'dev-3yazdzkwmmxseotc.us.auth0.com';
 const clientId ="rIN9KRKBRH0kYxxI0LFj39iFlUGZPwIp";
  //'Dlk1iQdCWIVFFMJuArf3ZGGILCxf4VBd'
+ const redirectUri = 'https://frontend-web-biometric.vercel.app/verify'; // Replace with your desired URL
 
 
 // ==============================|| REACT DOM RENDER  ||============================== //
@@ -26,7 +27,7 @@ ReactDOM.render(
         <Auth0Provider
             domain={domain}
             clientId={clientId}
-            redirectUri={window.location.origin}
+            redirectUri={redirectUri}
         >
             <BrowserRouter>
                 <App />
