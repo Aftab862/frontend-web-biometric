@@ -46,22 +46,22 @@ const AddNewEmployee = () => {
 
     const [employee, setEmployee] = useState({
         basicInfo: {
-            name: 'test',
-            email: 'abc@gmail.com',
+            name: '',
+            email: '',
             password: 12345678,
-            cnic: 2340,
-            pageNo: 120,
-            accountNo: '13241',
-            department: 'jaks f',
-            scale: 10,
-            experience: 20,
-            type: 'asdf',
-            designation: 'Assistant Prof.',
-            category: 'asdf',
-            status: 'asdf',
-            stg: 230,
-            increment: 230,
-            initialpay: 30,
+            cnic: "",
+            pageNo: '',
+            accountNo: '',
+            department: '',
+            scale: "",
+            experience: '',
+            type: '',
+            designation: '',
+            category: '',
+            status: '',
+            stg: "",
+            increment: "",
+            initialpay: '',
 
         },
         salaries: [],
@@ -118,7 +118,6 @@ const AddNewEmployee = () => {
                 accomadationCharges: 0,
                 otherCharges: 0,
                 totalDeductions: 0,
-                verified: 'true'
             },
             netPayable: 0
         }
@@ -127,28 +126,32 @@ const AddNewEmployee = () => {
 
 
     useEffect(() => {
+        console.log("i am add new employe component")
         if (params.id) {
             const fetchData = async () => {
-                try {
-                    const response = await API.get(`/employee/${params.id}`, {
-                        headers: {
-                            Authorization: `Bearer ${localStorage.getItem('IdToken')}`
-                        }
-                    });
-                    console.log('response', response);
-                    setEmployee(response.data);
-                } catch (error) {
-                    console.log('error', error);
-                }
+                // try {
+                await fetch(`https://tender-gear-cod.cyclic.app/api/employee/${params.id} `, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('IdToken')}`
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => setEmployee(data))
+                    .catch(error => alert.error(error));
+
+                // setEmployee(response.data);
+
+                // } catch (error) {
+                //     console.log('error', error);
+                // }
             };
             fetchData();
         }
-
         // setEmployee({
         //     ...employee,
         //     currentPay: {
         //         ...employee.currentPay,
-        //         // amolument: { ...employee.currentPay.amolument, basicPay: employee.basicInfo.initialpay + (employee.basicInfo.increment * employee.basicInfo.stg)},
+        //         // amolument: { ...employee?.currentPay?.amolument?, basicPay: employee?.basicInfo?.initialpay + (employee?.basicInfo?.increment * employee?.basicInfo?.stg)},
         //         netPayable: netPayableValue
         //     }
         // });
@@ -158,7 +161,7 @@ const AddNewEmployee = () => {
 
 
 
-    // console.log('employee data->', employee);
+    console.log('employee data->', employee);
 
     const employeeHandler = (e, type) => {
 
@@ -181,7 +184,7 @@ const AddNewEmployee = () => {
         } else if (type === 'scale') {
             setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, scale: e.target.value } });
         } else if (type === 'experience') {
-            setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, experience: e.target.value } });
+            setEmployee({ ...employee, basicInfo: { ...employee?.basicInfo, experience: e.target.value } });
         } else if (type === 'type') {
             setEmployee({ ...employee, basicInfo: { ...employee.basicInfo, type: e.target.value } });
         } else if (type === 'designation') {
@@ -203,7 +206,7 @@ const AddNewEmployee = () => {
         //         ...employee,
         //         currentPay: {
         //             ...employee.currentPay,
-        //             amolument: { ...employee.currentPay.amolument, basicPay: e.target.value !== NaN ? parseInt(e.target.value) : 0 }
+        //             amolument: { ...employee?.currentPay?.amolument?, basicPay: e.target.value !== NaN ? parseInt(e.target.value) : 0 }
         //         }
         // });
         // }
@@ -635,66 +638,54 @@ const AddNewEmployee = () => {
     };
 
     let totalAmolumentValue =
-        employee.basicInfo.initialpay + (employee.basicInfo.increment * employee.basicInfo.stg) +
-        employee.currentPay.amolument.chairmanAllowance +
-        employee.currentPay.amolument.conPetAllowance +
-        employee.currentPay.amolument.conveyanceAllowance +
-        employee.currentPay.amolument.healthProfnlAllowance +
-
-
-
-        employee.currentPay.amolument.disableAllowance +
-        employee.currentPay.amolument.extraAllowance +
-        employee.currentPay.amolument.darenessAllowance +
-        employee.currentPay.amolument.specialIncentiveAllowance +
-        employee.currentPay.amolument.ssbAllowance +
-        employee.currentPay.amolument.uniTeachingAllowance +
-        employee.currentPay.amolument.adhocReliefAllowance +
-
-
-
-
-
-
-
-
-
-        employee.currentPay.amolument.houseRent +
-        employee.currentPay.amolument.medicalAllowance +
-        employee.currentPay.amolument.nonPracticingAllowance +
-        employee.currentPay.amolument.personalAllowance +
-        employee.currentPay.amolument.qualificationAllowance +
-        employee.currentPay.amolument.rTWardenAllowance +
-        employee.currentPay.amolument.seniorPostAllowance +
-        employee.currentPay.amolument.socialSecuirtyBenefit +
-        employee.currentPay.amolument.specialHealthCareAllowance +
-        employee.currentPay.amolument.specialReliefAllowance +
-        employee.currentPay.amolument.entertainment +
-        employee.currentPay.amolument.tTAllowance;
+        employee?.basicInfo?.initialpay + (employee?.basicInfo?.increment * employee?.basicInfo?.stg) +
+        employee?.currentPay?.amolument?.chairmanAllowance +
+        employee?.currentPay?.amolument?.conPetAllowance +
+        employee?.currentPay?.amolument?.conveyanceAllowance +
+        employee?.currentPay?.amolument?.healthProfnlAllowance +
+        employee?.currentPay?.amolument?.disableAllowance +
+        employee?.currentPay?.amolument?.extraAllowance +
+        employee?.currentPay?.amolument?.darenessAllowance +
+        employee?.currentPay?.amolument?.specialIncentiveAllowance +
+        employee?.currentPay?.amolument?.ssbAllowance +
+        employee?.currentPay?.amolument?.uniTeachingAllowance +
+        employee?.currentPay?.amolument?.adhocReliefAllowance +
+        employee?.currentPay?.amolument?.houseRent +
+        employee?.currentPay?.amolument?.medicalAllowance +
+        employee?.currentPay?.amolument?.nonPracticingAllowance +
+        employee?.currentPay?.amolument?.personalAllowance +
+        employee?.currentPay?.amolument?.qualificationAllowance +
+        employee?.currentPay?.amolument?.rTWardenAllowance +
+        employee?.currentPay?.amolument?.seniorPostAllowance +
+        employee?.currentPay?.amolument?.socialSecuirtyBenefit +
+        employee?.currentPay?.amolument?.specialHealthCareAllowance +
+        employee?.currentPay?.amolument?.specialReliefAllowance +
+        employee?.currentPay?.amolument?.entertainment +
+        employee?.currentPay?.amolument?.tTAllowance;
     // console.log('totalAmolmentValue', totalAmolumentValue);
     // same for total deduction
     let totalDeductionValue =
-        employee.currentPay.deductions.incomeTax +
-        employee.currentPay.deductions.gPFSubscription +
-        employee.currentPay.deductions.recGPF +
-        employee.currentPay.deductions.houseRentR +
-        employee.currentPay.deductions.waterCharges +
-        employee.currentPay.deductions.shortDays +
-        employee.currentPay.deductions.convRecovery +
-        employee.currentPay.deductions.houseBuildingAdvance +
-        employee.currentPay.deductions.tSAFund +
-        employee.currentPay.deductions.benevolentFund +
-        employee.currentPay.deductions.groupInsurance +
-        employee.currentPay.deductions.eidAdvance +
-        employee.currentPay.deductions.busCharges +
-        employee.currentPay.deductions.extraCausalLeaves +
-        employee.currentPay.deductions.tradeTax +
-        employee.currentPay.deductions.electricityCharges +
-        // employee.currentPay.deductions.disableAllowance +
-        employee.currentPay.deductions.otherCharges +
-        employee.currentPay.deductions.gIP +
-        employee.currentPay.deductions.carScooterAdvance +
-        employee.currentPay.deductions.accomadationCharges;
+        employee?.currentPay?.deductions?.incomeTax +
+        employee?.currentPay?.deductions?.gPFSubscription +
+        employee?.currentPay?.deductions?.recGPF +
+        employee?.currentPay?.deductions?.houseRentR +
+        employee?.currentPay?.deductions?.waterCharges +
+        employee?.currentPay?.deductions?.shortDays +
+        employee?.currentPay?.deductions?.convRecovery +
+        employee?.currentPay?.deductions?.houseBuildingAdvance +
+        employee?.currentPay?.deductions?.tSAFund +
+        employee?.currentPay?.deductions?.benevolentFund +
+        employee?.currentPay?.deductions?.groupInsurance +
+        employee?.currentPay?.deductions?.eidAdvance +
+        employee?.currentPay?.deductions?.busCharges +
+        employee?.currentPay?.deductions?.extraCausalLeaves +
+        employee?.currentPay?.deductions?.tradeTax +
+        employee?.currentPay?.deductions?.electricityCharges +
+        // emplo?yee.current?Pay.deducti?ons.disableAllowance +
+        employee?.currentPay?.deductions?.otherCharges +
+        employee?.currentPay?.deductions?.gIP +
+        employee?.currentPay?.deductions?.carScooterAdvance +
+        employee?.currentPay?.deductions?.accomadationCharges;
 
     let netPayableValue = parseInt(totalAmolumentValue) - parseInt(totalDeductionValue);
 
@@ -703,80 +694,80 @@ const AddNewEmployee = () => {
     const add = async () => {
         let api;
 
-        if (employee.basicInfo.name.length < 3) {
+        if (employee?.basicInfo?.name.length < 3) {
             setalertstatus(true)
             setalertmsg("please enter valid Name ")
         }
-        else if (employee.basicInfo.password.length < 6) {
+        else if (employee?.basicInfo?.password.length < 6) {
             setalertstatus(true)
-            console.log("password-<", employee.basicInfo.password.length)
+            console.log("password-<", employee?.basicInfo?.password.length)
             setalertmsg("Password length must be grater than 6 character")
         }
 
 
-        else if (employee.basicInfo.email.length < 3) {
+        else if (employee?.basicInfo?.email.length < 3) {
             setalertstatus(true)
             setalertmsg("please enter valid email ")
         }
 
-        else if (employee.basicInfo.accountNo < 2) {
+        else if (employee?.basicInfo?.accountNo < 2) {
             setalertstatus(true)
             setalertmsg("Please Enter Valid AccountNo: ")
         }
-        else if (!employee.basicInfo.category) {
+        else if (!employee?.basicInfo?.category) {
             setalertstatus(true)
             setalertmsg("Employee Catagory is Required")
         }
-        else if (employee.basicInfo.cnic < 3) {
+        else if (employee?.basicInfo?.cnic < 3) {
             setalertstatus(true)
             setalertmsg("please enter valid CNIC ")
         }
-        else if (!employee.basicInfo.department) {
+        else if (!employee?.basicInfo?.department) {
             setalertstatus(true)
             setalertmsg("Department is Required")
         }
-        else if (!employee.basicInfo.designation) {
+        else if (!employee?.basicInfo?.designation) {
             setalertstatus(true)
             setalertmsg("Designation is Required")
         }
-        else if (employee.basicInfo.experience < 1) {
+        else if (employee?.basicInfo?.experience < 1) {
             setalertstatus(true)
             setalertmsg("Experience Must be greater than 0")
 
         }
-        else if (employee.basicInfo.increment < 1) {
+        else if (employee?.basicInfo?.increment < 1) {
             setalertstatus(true)
             setalertmsg("Increment is Required")
         }
 
-        else if (employee.basicInfo.initialpay < 1) {
+        else if (employee?.basicInfo?.initialpay < 1) {
             setalertstatus(true)
             setalertmsg("InitialPay is Required")
 
         }
-        else if (employee.basicInfo.name.length < 3) {
+        else if (employee?.basicInfo?.name.length < 3) {
             setalertstatus(true)
             setalertmsg("please enter valid Name ")
         }
-        else if (employee.basicInfo.pageNo < 1) {
+        else if (employee?.basicInfo?.pageNo < 1) {
             setalertstatus(true)
             setalertmsg("PageNo is Required")
         }
 
-        else if (employee.basicInfo.scale < 1) {
+        else if (employee?.basicInfo?.scale < 1) {
             setalertstatus(true)
             setalertmsg("Scale is Required")
         }
 
-        else if (employee.basicInfo.stg < 1) {
+        else if (employee?.basicInfo?.stg < 1) {
             setalertstatus(true)
             setalertmsg("STG is Required")
         }
-        else if (!employee.basicInfo.type) {
+        else if (!employee?.basicInfo?.type) {
             setalertstatus(true)
             setalertmsg("Type is Required")
         }
-        else if (!employee.basicInfo.status) {
+        else if (!employee?.basicInfo?.status) {
             setalertstatus(true)
             setalertmsg("Status is Required")
 
@@ -855,23 +846,23 @@ const AddNewEmployee = () => {
 
 
     useEffect(() => {
-        if (employee.basicInfo.initialpay > 0 && employee.basicInfo.stg > 0 && employee.basicInfo.initialpay > 0) {
+        if (employee?.basicInfo?.initialpay > 0 && employee?.basicInfo?.stg > 0 && employee?.basicInfo?.initialpay > 0) {
             console.log("inside 3")
             setEmployee({
                 ...employee,
                 currentPay: {
                     ...employee.currentPay,
-                    amolument: { ...employee.currentPay.amolument, basicPay: employee.basicInfo.initialpay + (employee.basicInfo.increment * employee.basicInfo.stg) }
+                    amolument: { ...employee.currentPay.amolument, basicPay: employee?.basicInfo?.initialpay + (employee?.basicInfo?.increment * employee?.basicInfo?.stg) }
                 }
             });
         }
-        else if (employee.basicInfo.initialpay > 0 && employee.basicInfo.increment > 0) {
+        else if (employee?.basicInfo?.initialpay > 0 && employee?.basicInfo?.increment > 0) {
             console.log("inside 2")
-            setBasicPay(employee.basicInfo.initialpay + employee.basicInfo.increment)
+            setBasicPay(employee?.basicInfo?.initialpay + employee?.basicInfo?.increment)
         }
-        else if (employee.basicInfo.initialpay > 0) {
+        else if (employee?.basicInfo?.initialpay > 0) {
             console.log("inside 1")
-            setBasicPay(employee.basicInfo.initialpay)
+            setBasicPay(employee?.basicInfo?.initialpay)
         }
 
     }, [])
@@ -918,7 +909,7 @@ const AddNewEmployee = () => {
                     </Typography>
                     <Tooltip title={params.id ? 'Update Data' : 'Add Employee'}>
                         <Button
-                            disabled={employee.currentPay.netPayable < 0}
+                            disabled={employee?.currentPay?.netPayable < 0}
                             onClick={add}
                             size="medium"
                             className="bg-blue-800 text-white hover:bg-blue-800 hover:text-white m-4"
@@ -940,7 +931,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.basicInfo.name}
+                                value={employee?.basicInfo?.name}
                                 onChange={(e) => employeeHandler(e, 'name')}
                                 id="name"
                                 type="text"
@@ -953,7 +944,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.basicInfo.email}
+                                value={employee?.basicInfo?.email}
                                 onChange={(e) => employeeHandler(e, 'email')}
                                 id="email"
                                 type="email"
@@ -966,7 +957,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.basicInfo.password}
+                                value={employee?.basicInfo?.password}
                                 onChange={(e) => employeeHandler(e, 'password')}
                                 id="password"
                                 type="text"
@@ -983,7 +974,7 @@ const AddNewEmployee = () => {
                                 }}
                                 InputProps={{}}
                                 fullWidth
-                                value={employee.basicInfo.cnic}
+                                value={employee?.basicInfo?.cnic}
                                 onChange={(e) => employeeHandler(e, 'cnic')}
                                 id="cnic"
                                 type="number"
@@ -996,7 +987,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.basicInfo.pageNo}
+                                value={employee?.basicInfo?.pageNo}
                                 onChange={(e) => employeeHandler(e, 'pageNo')}
                                 id="PageNo"
                                 required
@@ -1013,7 +1004,7 @@ const AddNewEmployee = () => {
                                 }}
                                 InputProps={{}}
                                 fullWidth
-                                value={employee.basicInfo.accountNo}
+                                value={employee?.basicInfo?.accountNo}
                                 onChange={(e) => employeeHandler(e, 'accountNo')}
                                 id="account"
                                 required
@@ -1027,7 +1018,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.basicInfo.scale}
+                                value={employee?.basicInfo?.scale}
                                 onChange={(e) => employeeHandler(e, 'scale')}
                                 id="scale"
                                 required
@@ -1040,7 +1031,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.basicInfo.experience}
+                                value={employee?.basicInfo?.experience}
                                 onChange={(e) => employeeHandler(e, 'experience')}
                                 id="experience"
                                 required
@@ -1053,7 +1044,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.basicInfo.designation}
+                                value={employee?.basicInfo?.designation}
                                 required
                                 onChange={(e) => employeeHandler(e, 'designation')}
                                 id="Designation"
@@ -1066,7 +1057,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.basicInfo.initialpay}
+                                value={employee?.basicInfo?.initialpay}
                                 required
                                 onChange={(e) => employeeHandler(e, 'initialpay')}
                                 id="initialpay"
@@ -1079,7 +1070,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.basicInfo.increment}
+                                value={employee?.basicInfo?.increment}
                                 required
                                 onChange={(e) => employeeHandler(e, 'increment')}
                                 id="increment"
@@ -1092,7 +1083,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.basicInfo.stg}
+                                value={employee?.basicInfo?.stg}
                                 required
                                 onChange={(e) => employeeHandler(e, 'stg')}
                                 id="stg"
@@ -1109,7 +1100,7 @@ const AddNewEmployee = () => {
                                     labelId="department-id-label"
                                     id="department"
                                     required
-                                    value={employee.basicInfo.department}
+                                    value={employee?.basicInfo?.department}
                                     onChange={(e) => employeeHandler(e, 'department')}
                                     label="Department"
                                 >
@@ -1127,7 +1118,7 @@ const AddNewEmployee = () => {
                                 <InputLabel id="type-id">Type</InputLabel>
                                 <Select
                                     labelId="type-id-label"
-                                    value={employee.basicInfo.type}
+                                    value={employee?.basicInfo?.type}
                                     required
                                     onChange={(e) => employeeHandler(e, 'type')}
                                     id="type"
@@ -1145,7 +1136,7 @@ const AddNewEmployee = () => {
                                     labelId="category-id-label"
                                     id="employeeCategory"
                                     required
-                                    value={employee.basicInfo.category}
+                                    value={employee?.basicInfo?.category}
                                     onChange={(e) => employeeHandler(e, 'category')}
                                     label="employeeCategory"
                                 >
@@ -1161,7 +1152,7 @@ const AddNewEmployee = () => {
                                     labelId="status-id-label"
                                     id="status"
                                     required
-                                    value={employee.basicInfo.status}
+                                    value={employee?.basicInfo?.status}
                                     onChange={(e) => employeeHandler(e, 'status')}
                                     label="status"
                                 >
@@ -1184,7 +1175,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.basicInfo.initialpay + (employee.basicInfo.increment * employee.basicInfo.stg)}
+                                value={employee?.basicInfo?.initialpay + (employee?.basicInfo?.increment * employee?.basicInfo?.stg)}
                                 // onChange={(e) => {
                                 //     console.log('event->', e.target.value);
                                 //     // employeeHandler(e, 'basicPay');
@@ -1200,7 +1191,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.nonPracticingAllowance}
+                                value={employee?.currentPay?.amolument?.nonPracticingAllowance}
                                 onChange={(e) => employeeHandler(e, 'nonPracticingAllowance')}
                                 id="nonPracticingAllowance"
                                 required
@@ -1213,7 +1204,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.adhocReliefAllowance}
+                                value={employee?.currentPay?.amolument?.adhocReliefAllowance}
                                 onChange={(e) => employeeHandler(e, 'adhocReliefAllowance')}
                                 id="adhocReliefAllowance"
                                 required
@@ -1226,7 +1217,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.conveyanceAllowance}
+                                value={employee?.currentPay?.amolument?.conveyanceAllowance}
                                 onChange={(e) => employeeHandler(e, 'conveyanceAllowance')}
                                 id="conveyanceAllowance"
                                 required
@@ -1240,7 +1231,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.uniTeachingAllowance}
+                                value={employee?.currentPay?.amolument?.uniTeachingAllowance}
                                 onChange={(e) => employeeHandler(e, 'uniTeachingAllowance')}
                                 id="uniTeachingAllowance"
                                 required
@@ -1254,7 +1245,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.ssbAllowance}
+                                value={employee?.currentPay?.amolument?.ssbAllowance}
                                 onChange={(e) => employeeHandler(e, 'ssbAllowance')}
                                 id="ssbAllowance"
                                 required
@@ -1270,7 +1261,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.specialIncentiveAllowance}
+                                value={employee?.currentPay?.amolument?.specialIncentiveAllowance}
                                 onChange={(e) => employeeHandler(e, 'specialIncentiveAllowance')}
                                 id="pecialIncentiveAllowance"
                                 required
@@ -1285,7 +1276,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.darenessAllowance}
+                                value={employee?.currentPay?.amolument?.darenessAllowance}
                                 onChange={(e) => employeeHandler(e, 'darenessAllowance')}
                                 id="darenessAllowance"
                                 required
@@ -1299,7 +1290,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.disableAllowance}
+                                value={employee?.currentPay?.amolument?.disableAllowance}
                                 onChange={(e) => employeeHandler(e, 'disableAllowance')}
                                 id="disableAllowance"
                                 required
@@ -1333,7 +1324,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.specialHealthCareAllowance}
+                                value={employee?.currentPay?.amolument?.specialHealthCareAllowance}
                                 onChange={(e) => employeeHandler(e, 'specialHealthCareAllowance')}
                                 id="specialHealthCareAllowance"
                                 required
@@ -1345,7 +1336,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.healthProfnlAllowance}
+                                value={employee?.currentPay?.amolument?.healthProfnlAllowance}
                                 onChange={(e) => employeeHandler(e, 'healthProfnlAllowance')}
                                 id="healthProfnlAllowance"
                                 required
@@ -1357,7 +1348,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.houseRent}
+                                value={employee?.currentPay?.amolument?.houseRent}
                                 onChange={(e) => employeeHandler(e, 'houseRent')}
                                 id="houseRent"
                                 required
@@ -1369,7 +1360,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.conPetAllowance}
+                                value={employee?.currentPay?.amolument?.conPetAllowance}
                                 onChange={(e) => employeeHandler(e, 'conPetAllowance')}
                                 id="conPetAllowance"
                                 required
@@ -1381,7 +1372,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.qualificationAllowance}
+                                value={employee?.currentPay?.amolument?.qualificationAllowance}
                                 onChange={(e) => employeeHandler(e, 'qualificationAllowance')}
                                 id="qualificationAllowance"
                                 required
@@ -1393,7 +1384,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.entertainment}
+                                value={employee?.currentPay?.amolument?.entertainment}
                                 onChange={(e) => employeeHandler(e, 'entertainment')}
                                 id="entertainment"
                                 required
@@ -1405,7 +1396,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.personalAllowance}
+                                value={employee?.currentPay?.amolument?.personalAllowance}
                                 onChange={(e) => employeeHandler(e, 'personalAllowance')}
                                 id="personalAllowance"
                                 required
@@ -1417,7 +1408,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.tTAllowance}
+                                value={employee?.currentPay?.amolument?.tTAllowance}
                                 onChange={(e) => employeeHandler(e, 'tTAllowance')}
                                 id="tTAllowance"
                                 required
@@ -1429,7 +1420,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.medicalAllowance}
+                                value={employee?.currentPay?.amolument?.medicalAllowance}
                                 onChange={(e) => employeeHandler(e, 'medicalAllowance')}
                                 id="medicalAllowance"
                                 required
@@ -1441,7 +1432,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.socialSecuirtyBenefit}
+                                value={employee?.currentPay?.amolument?.socialSecuirtyBenefit}
                                 onChange={(e) => employeeHandler(e, 'socialSecuirtyBenefit')}
                                 id="socialSecuirtyBenefit"
                                 required
@@ -1453,7 +1444,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.seniorPostAllowance}
+                                value={employee?.currentPay?.amolument?.seniorPostAllowance}
                                 onChange={(e) => employeeHandler(e, 'seniorPostAllowance')}
                                 id="seniorPostAllowance"
                                 required
@@ -1465,7 +1456,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.chairmanAllowance}
+                                value={employee?.currentPay?.amolument?.chairmanAllowance}
                                 onChange={(e) => employeeHandler(e, 'chairmanAllowance')}
                                 id="chairmanAllowance"
                                 required
@@ -1477,7 +1468,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.rTWardenAllowance}
+                                value={employee?.currentPay?.amolument?.rTWardenAllowance}
                                 onChange={(e) => employeeHandler(e, 'rTWardenAllowance')}
                                 id="rTWardenAllowance"
                                 required
@@ -1489,7 +1480,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.specialReliefAllowance}
+                                value={employee?.currentPay?.amolument?.specialReliefAllowance}
                                 onChange={(e) => employeeHandler(e, 'specialReliefAllowance')}
                                 id="specialReliefAllowance"
                                 required
@@ -1503,7 +1494,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.amolument.extraAllowance}
+                                value={employee?.currentPay?.amolument?.extraAllowance}
                                 onChange={(e) => employeeHandler(e, 'extraAllowance')}
                                 id="extraAllowance"
                                 required
@@ -1538,7 +1529,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.incomeTax}
+                                value={employee?.currentPay?.deductions?.incomeTax}
                                 onChange={(e) => employeeHandler(e, 'incomeTax')}
                                 id="incomeTax"
                                 required
@@ -1550,7 +1541,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.gPFSubscription}
+                                value={employee?.currentPay?.deductions?.gPFSubscription}
                                 onChange={(e) => employeeHandler(e, 'gPFSubscription')}
                                 id="gPFSubscription"
                                 required
@@ -1562,7 +1553,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.recGPF}
+                                value={employee?.currentPay?.deductions?.recGPF}
                                 onChange={(e) => employeeHandler(e, 'recGPF')}
                                 id="recGPF"
                                 required
@@ -1574,7 +1565,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.houseRentR}
+                                value={employee?.currentPay?.deductions?.houseRentR}
                                 onChange={(e) => employeeHandler(e, 'houseRentR')}
                                 id="houseRentR"
                                 required
@@ -1586,7 +1577,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.waterCharges}
+                                value={employee?.currentPay?.deductions?.waterCharges}
                                 onChange={(e) => employeeHandler(e, 'waterCharges')}
                                 id="waterCharges"
                                 required
@@ -1598,7 +1589,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.shortDays}
+                                value={employee?.currentPay?.deductions?.shortDays}
                                 onChange={(e) => employeeHandler(e, 'shortDays')}
                                 id="shortDays"
                                 required
@@ -1610,7 +1601,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.convRecovery}
+                                value={employee?.currentPay?.deductions?.convRecovery}
                                 onChange={(e) => employeeHandler(e, 'convRecovery')}
                                 id="convRecovery"
                                 required
@@ -1622,7 +1613,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.houseBuildingAdvance}
+                                value={employee?.currentPay?.deductions?.houseBuildingAdvance}
                                 onChange={(e) => employeeHandler(e, 'houseBuildingAdvance')}
                                 id="houseBuildingAdvance"
                                 required
@@ -1634,7 +1625,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.tSAFund}
+                                value={employee?.currentPay?.deductions?.tSAFund}
                                 onChange={(e) => employeeHandler(e, 'tSAFund')}
                                 id="tSAFund"
                                 required
@@ -1646,7 +1637,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.benevolentFund}
+                                value={employee?.currentPay?.deductions?.benevolentFund}
                                 onChange={(e) => employeeHandler(e, 'benevolentFund')}
                                 id="benevolentFund"
                                 required
@@ -1658,7 +1649,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.groupInsurance}
+                                value={employee?.currentPay?.deductions?.groupInsurance}
                                 onChange={(e) => employeeHandler(e, 'groupInsurance')}
                                 id="groupInsurance"
                                 required
@@ -1670,7 +1661,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.eidAdvance}
+                                value={employee?.currentPay?.deductions?.eidAdvance}
                                 onChange={(e) => employeeHandler(e, 'eidAdvance')}
                                 id="eidAdvance"
                                 required
@@ -1682,7 +1673,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.busCharges}
+                                value={employee?.currentPay?.deductions?.busCharges}
                                 onChange={(e) => employeeHandler(e, 'busCharges')}
                                 id="busCharges"
                                 required
@@ -1694,7 +1685,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.extraCausalLeaves}
+                                value={employee?.currentPay?.deductions?.extraCausalLeaves}
                                 onChange={(e) => employeeHandler(e, 'extraCausalLeaves')}
                                 id="extraCausalLeaves"
                                 required
@@ -1706,7 +1697,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.tradeTax}
+                                value={employee?.currentPay?.deductions?.tradeTax}
                                 onChange={(e) => employeeHandler(e, 'tradeTax')}
                                 id="tradeTax"
                                 required
@@ -1718,7 +1709,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.electricityCharges}
+                                value={employee?.currentPay?.deductions?.electricityCharges}
                                 onChange={(e) => employeeHandler(e, 'electricityCharges')}
                                 id="electricityCharges"
                                 required
@@ -1732,7 +1723,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.gIP}
+                                value={employee?.currentPay?.deductions?.gIP}
                                 onChange={(e) => employeeHandler(e, 'gIP')}
                                 id="gIP"
                                 required
@@ -1744,7 +1735,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.carScooterAdvance}
+                                value={employee?.currentPay?.deductions?.carScooterAdvance}
                                 onChange={(e) => employeeHandler(e, 'carScooterAdvance')}
                                 id="carScooterAdvance"
                                 required
@@ -1756,7 +1747,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.accomadationCharges}
+                                value={employee?.currentPay?.deductions?.accomadationCharges}
                                 onChange={(e) => employeeHandler(e, 'accomadationCharges')}
                                 id="accomadationCharges"
                                 required
@@ -1769,7 +1760,7 @@ const AddNewEmployee = () => {
                         {/* <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.totalDeductions}
+                                value={employee?.currentPay?.deductions?.totalDeductions}
                                 onChange={(e) => employeeHandler(e, 'totalDeductions')}
                                 id="totalDeductions"
                                 required
@@ -1783,7 +1774,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.otherCharges}
+                                value={employee?.currentPay?.deductions?.otherCharges}
                                 onChange={(e) => employeeHandler(e, 'otherCharges')}
                                 id="otherCharges"
                                 required
@@ -1815,7 +1806,7 @@ const AddNewEmployee = () => {
                         {/* <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.netPayable}
+                                value={employee?.currentPay?.deductions?.netPayable}
                                 onChange={(e) => employeeHandler(e, 'netPayable')}
                                 id="netPayable"
                                 required
