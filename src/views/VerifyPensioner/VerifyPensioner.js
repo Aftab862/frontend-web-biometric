@@ -19,10 +19,7 @@ function VerifyPensioner() {
     if (isAuthenticated) {
         return (
             <div>
-                Hello {user.name}{' '}
-                <button onClick={() => logout({ returnTo: window.location.origin })}>
-                    Log out
-                </button>
+                verified
             </div>
         );
     }
@@ -57,7 +54,7 @@ function VerifyPensioner() {
                             color="primary"
                             onClick={loginWithRedirect}
                         >
-                          Verify 
+                            Verify
                         </Button>
 
                     </CardActions>
