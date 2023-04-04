@@ -352,13 +352,13 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
                       {tabValue === 1 && <TableCell>{employee.verified === 'false' && <Checkbox {...label} disabled />}</TableCell>} */}
                         <TableCell>
                             <Tooltip title="Edit the Employee">
-                                <IconButton
+                                <Button
                                     onClick={() => {
                                         navigate(`/employee/${employee.id}`);
                                     }}
                                 >
                                     <EditIcon />
-                                </IconButton>
+                                </Button>
                             </Tooltip>
                         </TableCell>
                         <TableCell>
