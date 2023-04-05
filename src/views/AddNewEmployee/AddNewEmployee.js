@@ -126,18 +126,22 @@ const AddNewEmployee = () => {
 
 
     useEffect(() => {
-        console.log("i am add new employe component")
         if (params.id) {
+
             const fetchData = async () => {
                 // try {
-                await fetch(`https://tender-gear-cod.cyclic.app/api/employee/${params.id} `, {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('IdToken')}`
-                    }
-                })
-                    .then(response => response.json())
-                    .then(data => setEmployee(data))
-                    .catch(error => alert.error(error));
+                    console.log("i am add new employe component")
+
+                // let api = `https://tender-gear-cod.cyclic.app/api/employee/${params.id}`
+                // console.log("your api", api)
+                // await fetch(api, {
+                //     headers: {
+                //         Authorization: `Bearer ${localStorage.getItem('IdToken')}`
+                //     }
+                // })
+                //     .then(response => response.json())
+                //     .then(data => setEmployee(data))
+                //     .catch(error => alert.error(error));
 
                 // setEmployee(response.data);
 
