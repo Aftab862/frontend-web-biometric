@@ -849,39 +849,39 @@ const AddNewEmployee = () => {
 
 
 
-    useEffect(() => {
-        if (employee?.basicInfo?.initialpay > 0 && employee?.basicInfo?.stg > 0 && employee?.basicInfo?.initialpay > 0) {
-            console.log("inside 3")
-            setEmployee({
-                ...employee,
-                currentPay: {
-                    ...employee.currentPay,
-                    amolument: { ...employee.currentPay.amolument, basicPay: employee?.basicInfo?.initialpay + (employee?.basicInfo?.increment * employee?.basicInfo?.stg) }
-                }
-            });
-        }
-        else if (employee?.basicInfo?.initialpay > 0 && employee?.basicInfo?.increment > 0) {
-            console.log("inside 2")
-            setBasicPay(employee?.basicInfo?.initialpay + employee?.basicInfo?.increment)
-        }
-        else if (employee?.basicInfo?.initialpay > 0) {
-            console.log("inside 1")
-            setBasicPay(employee?.basicInfo?.initialpay)
-        }
+    // useEffect(() => {
+    //     if (employee?.basicInfo?.initialpay > 0 && employee?.basicInfo?.stg > 0 && employee?.basicInfo?.initialpay > 0) {
+    //         console.log("inside 3")
+    //         setEmployee({
+    //             ...employee,
+    //             currentPay: {
+    //                 ...employee.currentPay,
+    //                 amolument: { ...employee.currentPay.amolument, basicPay: employee?.basicInfo?.initialpay + (employee?.basicInfo?.increment * employee?.basicInfo?.stg) }
+    //             }
+    //         });
+    //     }
+    //     else if (employee?.basicInfo?.initialpay > 0 && employee?.basicInfo?.increment > 0) {
+    //         console.log("inside 2")
+    //         setBasicPay(employee?.basicInfo?.initialpay + employee?.basicInfo?.increment)
+    //     }
+    //     else if (employee?.basicInfo?.initialpay > 0) {
+    //         console.log("inside 1")
+    //         setBasicPay(employee?.basicInfo?.initialpay)
+    //     }
 
-    }, [])
-
-
+    // }, [])
 
 
-    useEffect(() => {
-        setEmployee(employee => ({
-            ...employee, currentPay: {
-                ...employee.currentPay,
-                netPayable: netPayableValue
-            }
-        }));
-    }, [netPayableValue])
+
+
+    // useEffect(() => {
+    //     setEmployee(employee => ({
+    //         ...employee, currentPay: {
+    //             ...employee.currentPay,
+    //             netPayable: netPayableValue
+    //         }
+    //     }));
+    // }, [netPayableValue])
 
 
     return (
