@@ -354,7 +354,8 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
                             <Tooltip title="Edit the Employee">
                                 <Button
                                     onClick={() => {
-                                        navigate(`/employee/${employee.id}`);
+                                        // navigate(`/employee/${employee.id}`);
+                                        navigate("/dashboard")
                                     }}
                                 >
                                     <EditIcon />
