@@ -127,27 +127,34 @@ const AddNewEmployee = () => {
 
     useEffect(() => {
         if (params.id) {
-
+            setLoading(true)
             const fetchData = async () => {
-                // try {
+                try {
                     console.log("i am add new employe component")
 
-                // let api = `https://tender-gear-cod.cyclic.app/api/employee/${params.id}`
-                // console.log("your api", api)
-                // await fetch(api, {
-                //     headers: {
-                //         Authorization: `Bearer ${localStorage.getItem('IdToken')}`
-                //     }
-                // })
-                //     .then(response => response.json())
-                //     .then(data => setEmployee(data))
-                //     .catch(error => alert.error(error));
+                    let api = API.get(`/employee/${params.id}`, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('IdToken')}`
+                        }
+                    });
+                    let response = await api;
+                    // let api = `https://tender-gear-cod.cyclic.app/api/employee/${params.id}`
+                    // console.log("your api", api)
+                    // await fetch(api, {
+                    //     headers: {
+                    //         Authorization: `Bearer ${localStorage.getItem('IdToken')}`
+                    //     }
+                    // })
+                    //     .then(response => response.json())
+                    //     .then(data => setEmployee(data))
+                    //     .catch(error => alert.error(error));
 
-                // setEmployee(response.data);
-
-                // } catch (error) {
-                //     console.log('error', error);
-                // }
+                    setEmployee(response.data);
+                    console.log("Resposne", response.data)
+                    setLoading(false)
+                } catch (error) {
+                    console.log('error', error);
+                }
             };
             fetchData();
         }
