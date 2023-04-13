@@ -814,13 +814,11 @@ const AddNewEmployee = () => {
             }
             try {
                 console.log('else part', netPayableValue);
+                console.log('else part', reqObj);
 
                 const response = await api;
+                if (response) navigate(`/viewemployees`);
                 console.log('response', response);
-                setTimeout(() => {
-                    setLoading(false)
-                    navigate(`/viewemployees`);
-                }, 2000);
             } catch (error) {
                 setalertstatus(true)
                 setalertmsg("Email Already Added ")
@@ -856,28 +854,51 @@ const AddNewEmployee = () => {
 
 
 
-    // useEffect(() => {
-    //     if (employee?.basicInfo?.initialpay > 0 && employee?.basicInfo?.stg > 0 && employee?.basicInfo?.initialpay > 0) {
-    //         console.log("inside 3")
-    //         setEmployee({
-    //             ...employee,
-    //             currentPay: {
-    //                 ...employee.currentPay,
-    //                 amolument: { ...employee.currentPay.amolument, basicPay: employee?.basicInfo?.initialpay + (employee?.basicInfo?.increment * employee?.basicInfo?.stg) }
-    //             }
-    //         });
-    //     }
-    //     else if (employee?.basicInfo?.initialpay > 0 && employee?.basicInfo?.increment > 0) {
-    //         console.log("inside 2")
-    //         setBasicPay(employee?.basicInfo?.initialpay + employee?.basicInfo?.increment)
-    //     }
-    //     else if (employee?.basicInfo?.initialpay > 0) {
-    //         console.log("inside 1")
-    //         setBasicPay(employee?.basicInfo?.initialpay)
-    //     }
+    useEffect(() => {
+        if (employee?.basicInfo?.initialpay > 0 && employee?.basicInfo?.stg > 0 && employee?.basicInfo?.initialpay > 0) {
+            console.log("inside 3")
+            setEmployee({
+                ...employee,
+                currentPay: {
+                    ...employee.currentPay,
+                    amolument: { ...employee.currentPay.amolument, basicPay: employee?.basicInfo?.initialpay + (employee?.basicInfo?.increment * employee?.basicInfo?.stg) }
+                }
+            });
+        }
+        else if (employee?.basicInfo?.initialpay > 0 && employee?.basicInfo?.increment > 0) {
+            console.log("inside 2")
+            setBasicPay(employee?.basicInfo?.initialpay + employee?.basicInfo?.increment)
+        }
+        else if (employee?.basicInfo?.initialpay > 0) {
+            console.log("inside 1")
+            setBasicPay(employee?.basicInfo?.initialpay)
+        }
 
-    // }, [])
+    }, [netPayableValue])
 
+
+
+    useEffect(() => {
+        setEmployee(prevEmployee => {
+            const updatedCurrentPay = {
+                ...prevEmployee.currentPay,
+                netPayable: netPayableValue,
+                amolument: {
+                    ...prevEmployee.currentPay.amolument,
+                    totalAmoluments: totalAmolumentValue,
+                },
+                deductions: {
+                    ...prevEmployee.currentPay.deductions,
+                    totalDeductions: totalDeductionValue,
+                },
+            };
+            const updatedEmployee = {
+                ...prevEmployee,
+                currentPay: updatedCurrentPay,
+            };
+            return updatedEmployee;
+        });
+    }, [netPayableValue, totalAmolumentValue, totalDeductionValue])
 
 
 
@@ -890,6 +911,28 @@ const AddNewEmployee = () => {
     //     }));
     // }, [netPayableValue])
 
+
+    // useEffect(() => {
+    //     setEmployee({
+    //         ...employee,
+    //         currentPay: {
+    //             ...employee.currentPay,
+    //             amolument: { ...employee.currentPay.amolument, totalAmoluments: totalAmolumentValue }
+    //         }
+    //     });
+
+    // }, [netPayableValue])
+
+    // useEffect(() => {
+
+    //     setEmployee({
+    //         ...employee,
+    //         currentPay: {
+    //             ...employee.currentPay,
+    //             deductions: { ...employee.currentPay.deductions, totalDeductions: totalDeductionValue }
+    //         }
+    //     });
+    // }, [netPayableValue])
 
     return (
         <>
@@ -1809,7 +1852,7 @@ const AddNewEmployee = () => {
                         <Tooltip title="Net Payable">
                             <Typography variant="h3" className="my-11 mx-3 " gutterBottom>
 
-                                Net Payable : {netPayableValue}
+                                Net Payable : {netPayableValue > 0 ? netPayableValue : "undefined"}
 
                                 {netPayableValue < 0 && <p style={{ color: 'red' }}>Net payable should not be in negative</p>}
                             </Typography>
