@@ -951,6 +951,7 @@ const AddNewEmployee = () => {
 
             />
             <ReactJsAlert
+            
                 status={alertstatus}   // true or false
                 type="info"   // success, warning, error, info
                 title={alertmsg}   // title you want to display
@@ -1772,8 +1773,6 @@ const AddNewEmployee = () => {
                                 variant="standard"
                             />
                         </Grid>
-
-
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth

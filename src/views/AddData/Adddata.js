@@ -150,6 +150,7 @@ export default function Adddata() {
   const [year, setYear] = useState("");
   const [open, setOpen] = useState(false);
   const [isdisabled, setisdisabled] = useState(true)
+  const [AllowanceList, setAllowanceList] = useState()
   function handleClose() {
     setOpen(false);
   };
@@ -195,7 +196,30 @@ export default function Adddata() {
 
 
 
-  useEffect(() => {
+  useEffect(async () => {
+
+    try {
+      var res = await API.get("employee/new-allowance", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('IdToken')}`
+        }
+      });
+      console.log(res)
+      setAllowanceList(res.data)
+      // if (res) {
+      //   setalertstatus(true)
+      //   setalertmsg("Allowance updated")
+      //   setTimeout(() => {
+      //     handleClose()
+      //     navigate("/dashboard")
+      //   }, 2000);
+      // }
+    } catch (error) {
+      console.log("error", error)
+    }
+
+
+
     if (Allowance.length > 1 && year > 2000 && rangeFrom != undefined && rangeTo != undefined && rangeFrom > 0) {
       console.log("inside if condition", Allowance.length, rangeFrom, rangeTo, year);
       setisdisabled(false)
@@ -241,8 +265,16 @@ export default function Adddata() {
 
 
           <Select value={Allowance} onChange={(e) => setAllowance(e.target.value)}>
-            <MenuItem value="basicPay">Basic Pay</MenuItem>
-            <MenuItem value="houseRent">Home Rent</MenuItem>
+
+            {
+
+            AllowanceList &&  AllowanceList?.map((e) => {
+                console.log(e)
+                return <MenuItem value={e}>{e}</MenuItem>
+              })
+            }
+
+            {/* <MenuItem value="houseRent">Home Rent</MenuItem>
             <MenuItem value="medicalAllowance">Medical Allowance</MenuItem>
             <MenuItem value="qualificationAllowance">Qualification Allowance</MenuItem>
             <MenuItem value="chairmanAllowance">Chairman Allowance</MenuItem>
@@ -250,38 +282,9 @@ export default function Adddata() {
             <MenuItem value="entertainment">Entertainment</MenuItem>
             <MenuItem value="healthProfnlAllowance">Health Profnl Allowance</MenuItem>
             <MenuItem value="personalAllowance">Personal Allowance</MenuItem>
-            <MenuItem value="specialReliefAllowance">Special Relief Allowance</MenuItem>
+            <MenuItem value="specialReliefAllowance">Special Relief Allowance</MenuItem> */}
           </Select>
         </FormControl>
-
-        {/* {Allowance ? <FormControl className={classes.textField} required>
-          <InputLabel >Select Departmnet</InputLabel>
-          <Select value={department} onChange={(e) => setDepartment(e.target.value)}>
-            <MenuItem value="Computer Science">Cs Department</MenuItem>
-            <MenuItem value="Electrical Engineering">EE Department</MenuItem>
-            <MenuItem value="Machenical Engineering">ME Department</MenuItem>
-          </Select>
-        </FormControl> : null} */}
-        {/* {Allowance=="basicPay" ?
-          <TextField
-            required
-            id="input-field-3"
-            label="Scale range from"
-            className={classes.textField}
-            margin="normal"
-            // size="small"
-            onChange={(e) => setrangeFrom(e.target.value)}
-            type="number"
-          /> : null} */}
-
-
-        {/* {Allowance=="basicPay" ? */}
-        {/* {Allowance ? */}
-
-
-        {/* <div className={classes.error}> */}
-
-
         <TextField
           required
           label="Year:"
@@ -293,8 +296,6 @@ export default function Adddata() {
           className={classes.textField}
 
         />
-        {/* {year < 2000 && <p style={{ color: 'red', position: "absolute", right: "-110%", marginLeft: "20px" }}>Enter Valid Year 2023</p>}
-        </div> */}
 
         <div className={classes.error}>
 
@@ -356,46 +357,4 @@ export default function Adddata() {
 
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-{/* <Checkbox
-          id="checkbox-1"
-          label="Checkbox 1"
-          className={classes.textField}
-          margin="normal"
-        />
-        <Typography variant="h2" className={classes.title}>
-          <div className="text-white"></div>
-        </Typography> */}
-{/* <div style={{ width: "20rem" }}> */ }
-
-{/* <FormControl required>
-          <InputLabel >Gender</InputLabel>
-          <Select value={gender} onChange={(e) => setGender(e.target.value)}>
-            <MenuItem value="male">Male</MenuItem>
-            <MenuItem value="female">Female</MenuItem>
-            <MenuItem value="other">Other</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl required>
-          <InputLabel>Age</InputLabel>
-          <Select value={age} onChange={(e) => setAge(e.target.value)}>
-            <MenuItem value="under 18">Under 18</MenuItem>
-            <MenuItem value="18-24">18-24</MenuItem>
-            <MenuItem value="25-34">25-34</MenuItem>
-            <MenuItem value="35-44">35-44</MenuItem>
-            <MenuItem value="45+">45+</MenuItem>
-          </Select>
-        </FormControl>
-      </div> */}
 

@@ -24,18 +24,31 @@ import Paper from '@mui/material/Paper';
 import API from 'API/api';
 import { useSelector } from 'react-redux';
 
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
 import PropTypes from 'prop-types';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import CloseIcon from '@mui/icons-material/Close';
+import { MoonLoader } from 'react-spinners';
+import DatePicker from "react-date-picker";
 
 
 const SearchRecords = () => {
     const [employeeData, setEmployeeData] = useState({});
-    const { employeeId, name } = useSelector((state) => state.user);
-    console.log("employeid", employeeId)
+    const employeeId = localStorage.getItem('rcet-userId')
+    const username = localStorage.getItem('username')
+    // const { employee, name } = useSelector((state) => state.user);
+    // console.log("employeid", employee,name)
+    const [selectedDate, handleDateChange] = useState(new Date(new Date().getFullYear() - 1, new Date().getMonth(), new Date().getDate()))
+
+    const [loading, setLoading] = useState(false)
+    let [color, setColor] = useState("#36d7b7");
+
+
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
         [`&.${tableCellClasses.head}`]: {
             backgroundColor: theme.palette.common.black,
@@ -88,8 +101,9 @@ const SearchRecords = () => {
     const [employeepopup, setEmployeepopup] = React.useState({});
 
     const handleClickOpen = (id) => {
+        console.log("{id", id)
         setOpen(true);
-        setEmployeepopup(employeeData.salaries.find(s => s._id === id));
+        // setEmployeepopup(employeeData.salary.find(s => s._id === id));
     };
     const handleClose = () => {
         setOpen(false);
@@ -108,24 +122,54 @@ const SearchRecords = () => {
     }));
 
     useEffect(() => {
-        const id = localStorage.getItem('rcet-userId')
-        const fetchData = async () => {
+
+        const fetchSalaries = async () => {
+            setLoading(true)
+            const date = new Date(selectedDate)
+            const params = {
+                id: employeeId,
+                month: date.getMonth() + 1,
+                year: date.getFullYear()
+            };
             try {
-                const res = await API.get(`/employee/${id}`, {
+                let res = await API.get("/employee/getSalaries", { params }, {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem('IdToken')}`
+                        Authorization: 'Bearer <token>',
+                        'Content-Type': 'application/json'
                     }
-                });
-                setEmployeeData({ ...res.data });
-                console.log("emploueedata", res.data)
+                })
+
+                setEmployeeData(res.data);
+
+                setLoading(false);
             } catch (error) {
-                console.log('error', error);
+                alert('error', error);
+                setLoading(false)
             }
-        };
-        fetchData();
+        }
+        fetchSalaries()
+
+        // setLoading(true)
+        // const id = localStorage.getItem('rcet-userId')
+        // const fetchData = async () => {
+        //     try {
+        //         const res = await API.get(`/employee/${id}`, {
+        //             headers: {
+        //                 Authorization: `Bearer ${localStorage.getItem('IdToken')}`
+        //             }
+        //         });
+        //         setEmployeeData({ ...res.data });
+        //         // console.log("emploueedata", res.data)
+        //         setLoading(false)
+        //     } catch (error) {
+        //         console.log('error', error);
+        //         setLoading(false)
+        //     }
+        // };
+        // fetchData();
     }, []);
 
-    console.log('employee Data->', employeeData);
+    // console.log('employee Data->', employeeData);
 
     function createData(month, amolument, deduction, netPayable) {
         return { month, amolument, deduction, netPayable };
@@ -174,6 +218,71 @@ const SearchRecords = () => {
             }
         }
     }));
+    function generateXLSX(xlxdata) {
+        const worksheet = XLSX.utils.json_to_sheet(xlxdata);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+        const xlsxBuffer = XLSX.write(workbook, { type: 'buffer' });
+        const fileName = 'myData.xlsx';
+        saveAs(new Blob([xlsxBuffer], { type: 'application/octet-stream' }), fileName);
+    }
+
+
+    const yearMonthFormatter = (locale, value) =>
+        new Intl.DateTimeFormat(locale, {
+            year: "numeric",
+        }).format(value);
+
+    const handleDownload = () => {
+        let array = [];
+        employeeData.map((e) => {
+            const newObj = {
+                date: e?.salary?.date,
+                ...e?.basicInfo,
+                ...e?.salary?.Emoulments,
+                ...e?.salary?.deductions,
+                totalPaid: e?.salary?.totalPaid,
+            };
+            array.push(newObj);
+        });
+        const xlxdata = array
+        // [
+        //     { name: 'John', age: 25 },
+        //     { name: 'Jane', age: 30 },
+        //     { name: 'Bob', age: 35 },
+        // ];
+        generateXLSX(xlxdata);
+    }
+
+
+
+
+
+    const searchRecords = async () => {
+        setLoading(true)
+        const date = new Date(selectedDate)
+        const params = {
+            id: employeeId,
+            month: date.getMonth() + 1,
+            year: date.getFullYear()
+        };
+        try {
+            let res = await API.get("/employee/getSalaries", { params }, {
+                headers: {
+                    Authorization: 'Bearer <token>',
+                    'Content-Type': 'application/json'
+                }
+            })
+            setEmployeeData(res.data)
+
+            setLoading(false)
+        } catch (error) {
+            console.log('error', error);
+            setLoading(false)
+        }
+    }
+
+
 
     // const [month, setMonth] = useState('');
     // const [year, setYear] = useState('');
@@ -191,12 +300,41 @@ const SearchRecords = () => {
                 <Box sx={{ flexGrow: 1 }}>
                     <AppBar position="static">
                         <Toolbar className="h-28 d-flex justify-between">
-                            {/* <IconButton size="large" edge="start" color="inherit" aria-label="open drawer" sx={{ mr: 2 }}>
-                                <MenuIcon />
-                            </IconButton> */}
+
                             <Typography variant="h2" noWrap component="div" sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}>
-                                {name}
+                                {username}
                             </Typography>
+                            <div style={{ color: "black", fontSize: "17px", display: 'flex' }} >
+                                <DatePicker
+                                    value={selectedDate}
+                                    onChange={handleDateChange}
+                                    formatValue={yearMonthFormatter}
+                                    format="yyyy"
+                                />
+                                <div style={{
+                                    background: "seagreen",
+                                    color: "white",
+                                    textAlign: "center",
+                                    margin: "0px 20px"
+                                }}>
+                                    <Button autoFocus color="inherit" onClick={searchRecords} >
+                                        Search
+                                    </Button>
+                                </div>
+
+                                <div style={{
+                                    background: "seagreen",
+                                    textAlign: "center",
+                                    color: "white",
+
+                                }}>
+                                    <Button autoFocus color="inherit" onClick={handleDownload} >
+                                        Download Excel
+                                    </Button>
+                                </div>
+
+                            </div>
+
                         </Toolbar>
                     </AppBar>
                 </Box>
@@ -212,94 +350,103 @@ const SearchRecords = () => {
                                 <StyledTableCell align="right">Download Month data</StyledTableCell>
                             </TableRow>
                         </TableHead>
-                        <TableBody>
-                            {employeeData?.salaries?.map((empd, index) => (
-                                <StyledTableRow key={empd.date}>
-                                    <StyledTableCell component="th" scope="row">
-                                        {empd.date}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="right">
-                                           {empd.Emoulments?.basicPay +
-                                            empd.Emoulments?.chairmanAllowance +
-                                            empd.Emoulments?.conPetAllowance +
-                                            empd.Emoulments?.entertainment +
-                                            empd.Emoulments?.healthProfnlAllowance +
-                                            empd.Emoulments?.houseRent +
-                                            empd.Emoulments?.medicalAllowance +
-                                            empd.Emoulments?.nonPracticingAllowance +
-                                            empd.Emoulments?.personalAllowance +
-                                            empd.Emoulments?.qualificationAllowance +
-                                            empd.Emoulments?.rTWardenAllowance +
-                                            empd.Emoulments?.seniorPostAllowance +
-                                            empd.Emoulments?.socialSecuirtyBenefit +
-                                            empd.Emoulments?.specialHealthCareAllowance +
-                                            empd.Emoulments?.specialReliefAllowance +
-                                            empd.Emoulments?.tTAllowance}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="right">
-                                        {empd.deductions?.accomadationCharges +
-                                            empd.deductions?.benevolentFund +
-                                            empd.deductions?.busCharges +
-                                            empd.deductions?.convRecovery +
-                                            empd.deductions?.conveyanceAllowance +
-                                            empd.deductions?.disableAllowance +
-                                            empd.deductions?.eidAdvance +
-                                            empd.deductions?.gIP +
-                                            empd.deductions?.gPFSubscription +
-                                            empd.deductions?.groupInsurance +
-                                            empd.deductions?.houseRentR +
-                                            empd.deductions?.incomeTax +
-                                            empd.deductions?.integratedAllowance +
-                                            empd.deductions?.recEidAdvance +
-                                            empd.deductions?.recGPF +
-                                            empd.deductions?.sSB +
-                                            empd.deductions?.shortDays +
-                                            empd.deductions?.speciialIncentive +
-                                            empd.deductions?.tSAFund +
-                                            empd.deductions?.uniTTAllowance +
-                                            empd.deductions?.waterCharges}
-                                    </StyledTableCell>
-                                    <StyledTableCell align="right">{empd.totalPaid}</StyledTableCell>
-                                    <StyledTableCell align="right"><Button variant="outlined" onClick={() => handleClickOpen(empd._id)}>View</Button></StyledTableCell>
-                                    <StyledTableCell align="right">
-                                        <Button variant="outlined"
-                                            color="secondary">
-                                            <CsvDownload
+                        {loading ?
+                            <MoonLoader
+                                color={color}
+                                loading={loading}
+                                size={50}
+                                cssOverride={
+                                    {
+                                        // position: "absolute",
+                                        // left: "45%",
+                                        // marginTop: "9%"
+                                        position: "absolute",
+                                        /* left: 40%; */
+                                        marginTop: "10%",
 
-                                                title="Download CSV"
-                                                filename="previous_data.csv"
-                                                // data={employees.find((employee, index) => (employee.id === employeeId)?.salaries[index])}
-                                                data={
-                                                    employeeData?.salaries?.map((sal, ind) => {
-                                                        if (ind === index) {
-                                                            return {
-                                                                ...sal.amolument, ...sal.deductions, netPayable: sal.netPayable
-                                                            }
+                                        width: "-webkit-fill-available",
+                                        /* height: 100dvh; */
+                                        /* display: flex; */
+                                        textAlign: "center",
+                                        alignItems: "center"
+                                    }
+                                }
+
+                            />
+                            : employeeData.length > 0 ?
+
+                                (< TableBody >
+                                    {employeeData?.map((empd, index) => (
+                                        <StyledTableRow key={index}>
+                                            <StyledTableCell component="th" scope="row">
+                                                {empd?.salary?.date.slice(3, 10)}
+                                            </StyledTableCell>
+                                            <StyledTableCell align="right">
+                                                {empd?.salary?.Emoulments?.totalAmoluments}
+                                            </StyledTableCell>
+                                            <StyledTableCell align="right">
+                                                {empd?.salary?.deductions?.totalDeductions}
+                                            </StyledTableCell>
+                                            <StyledTableCell align="right">{empd?.salary?.totalPaid}</StyledTableCell>
+                                            <StyledTableCell align="right"><Button variant="outlined" onClick={() => handleClickOpen(empd._id)}>View</Button></StyledTableCell>
+                                            <StyledTableCell align="right">
+
+                                                <Button variant="outlined"
+                                                    color="secondary">
+                                                    <CsvDownload
+
+                                                        title="Download CSV"
+                                                        filename="previous_data.csv"
+                                                        // data={employees.find((employee, index) => (employee.id === employeeId)?.salaries[index])}
+                                                        data={
+                                                            employeeData?.salaries?.map((sal, ind) => {
+                                                                if (ind === index) {
+                                                                    return {
+                                                                        ...sal.amolument, ...sal.deductions, netPayable: sal.netPayable
+                                                                    }
+                                                                }
+
+                                                                return undefined
+                                                            })
+                                                                .filter((em) => em !== undefined)
                                                         }
+                                                    >
+                                                        Download
 
-                                                        return undefined
-                                                    })
-                                                        .filter((em) => em !== undefined)
-                                                }
-                                            >
-                                                Download
+                                                    </CsvDownload>
+                                                </Button>
+                                            </StyledTableCell>
 
-                                            </CsvDownload>
-                                        </Button>
-                                    </StyledTableCell>
+                                        </StyledTableRow>
+                                    ))}
+                                </TableBody>)
 
-                                </StyledTableRow>
-                            ))}
-                        </TableBody>
+
+                                : <Typography
+                                    style={{
+                                        position: "absolute",
+                                        /* left: 40%; */
+                                        marginTop: "10%",
+                                        color: "crimson",
+                                        width: "-webkit-fill-available",
+                                        /* height: 100dvh; */
+                                        /* display: flex; */
+                                        textAlign: "center"
+                                    }}
+                                    sx={{ ml: 2, flex: 1 }} variant="h2"
+                                >No Record found</Typography>
+                        }
+
                     </Table>
                 </TableContainer>
-
-                <BootstrapDialog
+                {console.log("popup ", employeepopup)}
+                <BootstrapDialog                  
                     onClose={handleClose}
                     aria-labelledby="customized-dialog-title"
                     open={open}
+
                 >
-                    <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
+                    <BootstrapDialogTitle id="customized-dialog-title" style={{width:"699px"}} onClose={handleClose}>
                         {employeepopup?.date}
                     </BootstrapDialogTitle>
                     <DialogContent dividers>
@@ -368,7 +515,7 @@ const SearchRecords = () => {
                 </BootstrapDialog>
                 {/* ))} */}
 
-            </div>
+            </div >
         </>
     );
 };

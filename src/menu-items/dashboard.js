@@ -48,6 +48,15 @@ const dashboard = {
             breadcrumbs: false
         },
         {
+            id: 'AddAllowance-page',
+            title: 'New Allowance',
+            type: 'item',
+            url: '/add-allowance',
+            permission: [roles.admin],
+            icon: Add,
+            breadcrumbs: false
+        },
+        {
             id: 'verifypensioner-page',
             title: 'Verify pensioner',
             type: 'item',

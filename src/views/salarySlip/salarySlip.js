@@ -20,9 +20,12 @@ import Tooltip from '@mui/material/Tooltip';
 import moment from 'moment';
 // import jsPDF from 'jspdf';
 // import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable'
+import { jsPDF } from "jspdf";
 import EmployeeTableData from 'views/ViewEmployees/EmployeeTableData';
 import API from 'API/api';
 import { useSelector } from 'react-redux';
+import { MoonLoader } from 'react-spinners';
 
 const useStyles = makeStyles((theme) => ({
     // root: {
@@ -38,7 +41,10 @@ const useStyles = makeStyles((theme) => ({
 const AddNewEmployee = () => {
     const classes = useStyles();
     const params = useParams();
+    const [loading, setLoading] = useState(false)
     const { employeeId } = useSelector((state) => state.user);
+    let [color, setColor] = useState("#36d7b7");
+
     const [employee, setEmployee] = useState({
         basicInfo: {
             name: '',
@@ -53,7 +59,10 @@ const AddNewEmployee = () => {
             type: '',
             designation: '',
             category: '',
-            status: ''
+            status: '',
+            stg: "",
+            increment: "",
+            initialpay: "",
         },
         salaries: [],
         currentPay: {
@@ -75,7 +84,17 @@ const AddNewEmployee = () => {
                 seniorPostAllowance: 0,
                 chairmanAllowance: 0,
                 rTWardenAllowance: 0,
-                specialReliefAllowance: 0
+                specialReliefAllowance: 0,
+                adhocReliefAllowance: 0,
+                conveyanceAllowance: 0,
+                uniTeachingAllowance: 0,
+                ssbAllowance: 0,
+                specialIncentiveAllowance: 0,
+                darenessAllowance: 0,
+                disableAllowance: 0,
+                extraAllowance: 0,
+                totalAmoluments: 0
+
             },
             deductions: {
                 incomeTax: 0,
@@ -85,22 +104,20 @@ const AddNewEmployee = () => {
                 waterCharges: 0,
                 shortDays: 0,
                 convRecovery: 0,
-                uniTTAllowance: 0,
+                houseBuildingAdvance: 0,
                 tSAFund: 0,
                 benevolentFund: 0,
                 groupInsurance: 0,
                 eidAdvance: 0,
                 busCharges: 0,
-                speciialIncentive: 0,
-
-                conveyanceAllowance: 0,
-                integratedAllowance: 0,
-                disableAllowance: 0,
-                sSB: 0,
+                extraCausalLeaves: 0,
+                tradeTax: 0,
+                electricityCharges: 0,
                 gIP: 0,
-                recEidAdvance: 0,
+                carScooterAdvance: 0,
                 accomadationCharges: 0,
-                verified: 'true'
+                otherCharges: 0,
+                totalDeductions: 0,
             },
             netPayable: 0
         }
@@ -108,6 +125,7 @@ const AddNewEmployee = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        setLoading(true);
         const employeeId = localStorage.getItem('rcet-userId')
         const fetchData = async () => {
             try {
@@ -117,9 +135,10 @@ const AddNewEmployee = () => {
                     }
                 });
                 setEmployee({ ...res.data });
-                console.log("abc data", res.data)
+               setLoading(false)
             } catch (error) {
                 console.log('error', error);
+                setLoading(false)
             }
         };
         fetchData();
@@ -461,7 +480,7 @@ const AddNewEmployee = () => {
         employee.currentPay.amolument.specialReliefAllowance +
         employee.currentPay.amolument.entertainment +
         employee.currentPay.amolument.tTAllowance;
-    console.log('totalAmolmentValue', totalAmolumentValue);
+    // console.log('totalAmolmentValue', totalAmolumentValue);
     // same for total deduction
     let totalDeductionValue =
         employee.currentPay.deductions.gPFSubscription +
@@ -485,7 +504,7 @@ const AddNewEmployee = () => {
         employee.currentPay.deductions.recEidAdvance +
         employee.currentPay.deductions.accomadationCharges;
 
-    let netPayableValue = parseInt(totalAmolumentValue) - parseInt(totalDeductionValue);
+    let netPayableValue = parseInt(employee?.currentPay?.amolument?.totalAmoluments) - parseInt(employee?.currentPay?.amolument?.totalDeductions);
 
     return (
         <div
@@ -496,6 +515,23 @@ const AddNewEmployee = () => {
         //     marginBottom: '2%'
         // }}
         >
+
+
+
+            <MoonLoader
+                color={color}
+                loading={loading}
+                size={50}
+                cssOverride={
+                    {
+                        margin: "auto auto",
+                        borderColor: "red",
+                    }
+                }
+
+            />
+
+
             <AppBar className="mt-4" position="static">
                 <Toolbar className="h-32">
                     <Typography variant="h2" className={classes.title}>
@@ -505,17 +541,16 @@ const AddNewEmployee = () => {
                         <Button
                             onClick={() => {
                                 console.log('employee => ', employee);
-
                                 // const unit = 'pt';
                                 // const size = 'A4'; // Use A1, A2, A3 or A4
                                 // const orientation = 'landscape'; // portrait or landscape
-
+                                const doc = new jsPDF()
                                 // const marginLeft = 40;
                                 // const doc = new jsPDF(orientation, unit, size);
 
-                                // doc.setFontSize(20);
+                                // doc.setFontSize(10);
 
-                                // const title = 'Salary Slip';
+                                const title = 'Salary Slip';
                                 // const headers = [['Name','Email','Account No','Amoluments', 'Deductions', 'NetPayable']];
                                 // const data = [
                                 //     [   employee.basicInfo?.name,
@@ -562,7 +597,7 @@ const AddNewEmployee = () => {
                                 //     ]
                                 // ];
 
-                                const headers = [['Fields', 'Values']];
+                                const headers = [['Names', 'Values']];
                                 const data = [
                                     ["Name", employee.basicInfo?.name],
                                     ["Email", employee.basicInfo?.email],
@@ -583,23 +618,7 @@ const AddNewEmployee = () => {
                                     ["Special Health Allowance", employee?.currentPay?.amolument?.specialHealthCareAllowance],
                                     ["Special Relief Allowance", employee?.currentPay?.amolument?.specialReliefAllowance],
                                     ["TT Allowance", employee?.currentPay?.amolument?.tTAllowance],
-                                    ["Total Emolments",
-                                        employee.currentPay?.amolument?.basicPay +
-                                        employee?.currentPay?.amolument?.chairmanAllowance +
-                                        employee?.currentPay?.amolument?.conPetAllowance +
-                                        employee?.currentPay?.amolument?.entertainment +
-                                        employee?.currentPay?.amolument?.healthProfnlAllowance +
-                                        employee?.currentPay?.amolument?.houseRent +
-                                        employee?.currentPay?.amolument?.medicalAllowance +
-                                        employee?.currentPay?.amolument?.nonPracticingAllowance +
-                                        employee?.currentPay?.amolument?.personalAllowance +
-                                        employee?.currentPay?.amolument?.qualificationAllowance +
-                                        employee?.currentPay?.amolument?.rTWardenAllowance +
-                                        employee?.currentPay?.amolument?.seniorPostAllowance +
-                                        employee?.currentPay?.amolument?.socialSecuirtyBenefit +
-                                        employee?.currentPay?.amolument?.specialHealthCareAllowance +
-                                        employee?.currentPay?.amolument?.specialReliefAllowance +
-                                        employee?.currentPay?.amolument?.tTAllowance],
+                                    ["Total Emolments", employee?.currentPay?.amolument?.totalAmoluments],
                                     ["Accomadation Charges", employee?.currentPay?.deductions?.accomadationCharges],
                                     ["Benevolent Fund", employee?.currentPay?.deductions?.benevolentFund],
                                     ["Bus Charges", employee?.currentPay?.deductions?.busCharges],
@@ -621,50 +640,17 @@ const AddNewEmployee = () => {
                                     ["TSA Fund", employee?.currentPay?.deductions?.tSAFund],
                                     ["Uni TT Allowance", employee?.currentPay?.deductions?.uniTTAllowance],
                                     ["Water Charges", employee?.currentPay?.deductions?.waterCharges],
-                                    ["Total Deductions",
-                                        employee?.currentPay?.deductions?.accomadationCharges +
-                                        employee?.currentPay?.deductions?.benevolentFund +
-                                        employee?.currentPay?.deductions?.busCharges +
-                                        employee?.currentPay?.deductions?.convRecovery +
-                                        employee?.currentPay?.deductions?.conveyanceAllowance +
-                                        employee?.currentPay?.deductions?.disableAllowance +
-                                        employee?.currentPay?.deductions?.eidAdvance +
-                                        employee?.currentPay?.deductions?.gIP +
-                                        employee?.currentPay?.deductions?.gPFSubscription +
-                                        employee?.currentPay?.deductions?.groupInsurance +
-                                        employee?.currentPay?.deductions?.houseRentR +
-                                        employee?.currentPay?.deductions?.incomeTax +
-                                        employee?.currentPay?.deductions?.integratedAllowance +
-                                        employee?.currentPay?.deductions?.recEidAdvance +
-                                        employee?.currentPay?.deductions?.recGPF +
-                                        employee?.currentPay?.deductions?.sSB +
-                                        employee?.currentPay?.deductions?.shortDays +
-                                        employee?.currentPay?.deductions?.speciialIncentive +
-                                        employee?.currentPay?.deductions?.tSAFund +
-                                        employee?.currentPay?.deductions?.uniTTAllowance +
-                                        employee?.currentPay?.deductions?.waterCharges],
-
+                                    ["Total Deductions", employee?.currentPay?.deductions?.totalDeductions],
                                     ["Net Payable", employee?.currentPay?.netPayable]
                                 ];
-
-                                //     employee.map(                                //         (emp) => (
-                                //             emp.currentPay.amolument.chairmanAllowance,
-                                //             emp.currentPay.amolument.conPetAllowance,
-                                //             emp.currentPay.amolument.entertainment
-                                //         )
-                                //     )
-                                // ];
-
-                                //const data = [12, 33, 56];
-
-                                //const data = employee.map((emp) => [emp.totalAmolumentValue, emp.totalDeductionValue, emp.netPayableValue]);
                                 let content = {
-                                    startY: 50,
                                     head: headers,
-                                    body: data
+                                    body: data,
+                                    styles: {
+                                        fontSize: 10 // set font size to 10
+                                    }
                                 };
-
-                                doc.text(title, marginLeft, 40);
+                                doc.text(title, 0, 0);
                                 doc.autoTable(content);
                                 doc.save('Salary-Slip.pdf');
                             }}
@@ -807,6 +793,51 @@ const AddNewEmployee = () => {
                                 disabled
                             />
                         </Grid>
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.basicInfo?.initialpay}
+                                required
+                                onChange={(e) => employeeHandler(e, 'initialpay')}
+                                id="initialpay"
+                                type="number"
+                                label="Initial Basic Pay"
+                                variant="standard"
+                                placeholder="Enter Employee's Initial Basic Pay"
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.basicInfo?.increment}
+                                required
+                                onChange={(e) => employeeHandler(e, 'increment')}
+                                id="increment"
+                                type="number"
+                                label="Increment"
+                                variant="standard"
+                                placeholder="Enter Employee's Increment"
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.basicInfo?.stg}
+                                required
+                                onChange={(e) => employeeHandler(e, 'stg')}
+                                id="stg"
+                                type="number"
+                                label="Stg"
+                                variant="standard"
+                                placeholder="Enter Employee's stg"
+                                disabled
+                            />
+                        </Grid>
+
+
                         <Grid item xs={6} md={4}>
                             <FormControl fullWidth>
                                 <InputLabel id="department-id">Department</InputLabel>
@@ -845,6 +876,9 @@ const AddNewEmployee = () => {
                                 </Select>
                             </FormControl>
                         </Grid>
+
+
+
                         <Grid item xs={12} md={4}>
                             <FormControl fullWidth>
                                 <InputLabel id="category-id">Employee-Category</InputLabel>
@@ -906,7 +940,7 @@ const AddNewEmployee = () => {
                                 disabled
                             />
                         </Grid>
-                        <Grid item xs={6} md={4}>
+                        {/* <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
                                 value={employee.currentPay.amolument.nonPracticingAllowance}
@@ -1110,7 +1144,359 @@ const AddNewEmployee = () => {
                                 variant="standard"
                                 disabled
                             />
+                        </Grid> */}
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.nonPracticingAllowance}
+                                onChange={(e) => employeeHandler(e, 'nonPracticingAllowance')}
+                                id="nonPracticingAllowance"
+                                required
+                                type="number"
+                                label="Non-Practicing Allowance"
+                                variant="standard"
+                                disabled
+                            />
                         </Grid>
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.adhocReliefAllowance}
+                                onChange={(e) => employeeHandler(e, 'adhocReliefAllowance')}
+                                id="adhocReliefAllowance"
+                                required
+                                type="number"
+                                label="Adhoc Relief Allowance"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.conveyanceAllowance}
+                                onChange={(e) => employeeHandler(e, 'conveyanceAllowance')}
+                                id="conveyanceAllowance"
+                                required
+                                type="number"
+                                label="Conveyance Allowance"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.uniTeachingAllowance}
+                                onChange={(e) => employeeHandler(e, 'uniTeachingAllowance')}
+                                id="uniTeachingAllowance"
+                                required
+                                type="number"
+                                label="Univ. Tech. Teaching Allowance "
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.ssbAllowance}
+                                onChange={(e) => employeeHandler(e, 'ssbAllowance')}
+                                id="ssbAllowance"
+                                required
+                                type="number"
+                                label="S.S.B Allowance "
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+
+
+
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.specialIncentiveAllowance}
+                                onChange={(e) => employeeHandler(e, 'specialIncentiveAllowance')}
+                                id="pecialIncentiveAllowance"
+                                required
+                                type="number"
+                                label="Special Incentive Allowance For RCET, Regular Faculty"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+
+
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.darenessAllowance}
+                                onChange={(e) => employeeHandler(e, 'darenessAllowance')}
+                                id="darenessAllowance"
+                                required
+                                type="number"
+                                label="Dareness Allowance"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.disableAllowance}
+                                onChange={(e) => employeeHandler(e, 'disableAllowance')}
+                                id="disableAllowance"
+                                required
+                                type="number"
+                                label="Disable Allowance"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.specialHealthCareAllowance}
+                                onChange={(e) => employeeHandler(e, 'specialHealthCareAllowance')}
+                                id="specialHealthCareAllowance"
+                                required
+                                type="number"
+                                label="Special Health Care Allowance"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.healthProfnlAllowance}
+                                onChange={(e) => employeeHandler(e, 'healthProfnlAllowance')}
+                                id="healthProfnlAllowance"
+                                required
+                                type="number"
+                                label="Health Profnl Allowance"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.houseRent}
+                                onChange={(e) => employeeHandler(e, 'houseRent')}
+                                id="houseRent"
+                                required
+                                type="number"
+                                label="House Rent"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.conPetAllowance}
+                                onChange={(e) => employeeHandler(e, 'conPetAllowance')}
+                                id="conPetAllowance"
+                                required
+                                type="number"
+                                label="Con Pet Allowance"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.qualificationAllowance}
+                                onChange={(e) => employeeHandler(e, 'qualificationAllowance')}
+                                id="qualificationAllowance"
+                                required
+                                type="number"
+                                label="Qualification Allowance"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.entertainment}
+                                onChange={(e) => employeeHandler(e, 'entertainment')}
+                                id="entertainment"
+                                required
+                                type="number"
+                                label="Entertainment"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.personalAllowance}
+                                onChange={(e) => employeeHandler(e, 'personalAllowance')}
+                                id="personalAllowance"
+                                required
+                                type="number"
+                                label="Personal Allowance"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.tTAllowance}
+                                onChange={(e) => employeeHandler(e, 'tTAllowance')}
+                                id="tTAllowance"
+                                required
+                                type="number"
+                                label="TT Allowance"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.medicalAllowance}
+                                onChange={(e) => employeeHandler(e, 'medicalAllowance')}
+                                id="medicalAllowance"
+                                required
+                                type="number"
+                                label="Medical Allowance"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.socialSecuirtyBenefit}
+                                onChange={(e) => employeeHandler(e, 'socialSecuirtyBenefit')}
+                                id="socialSecuirtyBenefit"
+                                required
+                                type="number"
+                                label="Social Secuirty Benefit"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.seniorPostAllowance}
+                                onChange={(e) => employeeHandler(e, 'seniorPostAllowance')}
+                                id="seniorPostAllowance"
+                                required
+                                type="number"
+                                label="Senior Post Allowance"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.chairmanAllowance}
+                                onChange={(e) => employeeHandler(e, 'chairmanAllowance')}
+                                id="chairmanAllowance"
+                                required
+                                type="number"
+                                label="Chairman Allowance"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.rTWardenAllowance}
+                                onChange={(e) => employeeHandler(e, 'rTWardenAllowance')}
+                                id="rTWardenAllowance"
+                                required
+                                type="number"
+                                label="RT-Warden Allowance"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.specialReliefAllowance}
+                                onChange={(e) => employeeHandler(e, 'specialReliefAllowance')}
+                                id="specialReliefAllowance"
+                                required
+                                type="number"
+                                label="Special Relief Allowance"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={employee?.currentPay?.amolument?.extraAllowance}
+                                onChange={(e) => employeeHandler(e, 'extraAllowance')}
+                                id="extraAllowance"
+                                required
+                                type="number"
+                                label="Extra Allowance"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+
+
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={parseInt(employee?.currentPay?.amolument?.totalAmoluments)}
+                                label="Total Amoluments"
+                                variant="standard"
+                                disabled
+                            />
+                        </Grid>
+
                     </Grid>
                 </CardContent>
             </Card>
@@ -1216,12 +1602,12 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.uniTTAllowance}
-                                onChange={(e) => employeeHandler(e, 'uniTTAllowance')}
-                                id="uniTTAllowance"
+                                value={employee?.currentPay?.deductions?.houseBuildingAdvance}
+                                onChange={(e) => employeeHandler(e, 'houseBuildingAdvance')}
+                                id="houseBuildingAdvance"
                                 required
                                 type="number"
-                                label="Uni-TT-Allowance"
+                                label="House Building Advance"
                                 variant="standard"
                                 disabled
                             />
@@ -1229,7 +1615,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.tSAFund}
+                                value={employee?.currentPay?.deductions?.tSAFund}
                                 onChange={(e) => employeeHandler(e, 'tSAFund')}
                                 id="tSAFund"
                                 required
@@ -1242,7 +1628,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.benevolentFund}
+                                value={employee?.currentPay?.deductions?.benevolentFund}
                                 onChange={(e) => employeeHandler(e, 'benevolentFund')}
                                 id="benevolentFund"
                                 required
@@ -1255,7 +1641,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.groupInsurance}
+                                value={employee?.currentPay?.deductions?.groupInsurance}
                                 onChange={(e) => employeeHandler(e, 'groupInsurance')}
                                 id="groupInsurance"
                                 required
@@ -1268,7 +1654,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.eidAdvance}
+                                value={employee?.currentPay?.deductions?.eidAdvance}
                                 onChange={(e) => employeeHandler(e, 'eidAdvance')}
                                 id="eidAdvance"
                                 required
@@ -1281,7 +1667,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.busCharges}
+                                value={employee?.currentPay?.deductions?.busCharges}
                                 onChange={(e) => employeeHandler(e, 'busCharges')}
                                 id="busCharges"
                                 required
@@ -1294,12 +1680,12 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.speciialIncentive}
-                                onChange={(e) => employeeHandler(e, 'speciialIncentive')}
-                                id="speciialIncentive"
+                                value={employee?.currentPay?.deductions?.extraCausalLeaves}
+                                onChange={(e) => employeeHandler(e, 'extraCausalLeaves')}
+                                id="extraCausalLeaves"
                                 required
                                 type="number"
-                                label="Special Incentive"
+                                label="Extra Causal Leaves"
                                 variant="standard"
                                 disabled
                             />
@@ -1307,59 +1693,36 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.conveyanceAllowance}
-                                onChange={(e) => employeeHandler(e, 'conveyanceAllowance')}
-                                id="conveyanceAllowance"
+                                value={employee?.currentPay?.deductions?.tradeTax}
+                                onChange={(e) => employeeHandler(e, 'tradeTax')}
+                                id="tradeTax"
                                 required
                                 type="number"
-                                label="Conveyance Allowance"
+                                label="Trade Tax"
                                 variant="standard"
                                 disabled
+
                             />
                         </Grid>
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.integratedAllowance}
-                                onChange={(e) => employeeHandler(e, 'integratedAllowance')}
-                                id="integratedAllowance"
+                                value={employee?.currentPay?.deductions?.electricityCharges}
+                                onChange={(e) => employeeHandler(e, 'electricityCharges')}
+                                id="electricityCharges"
                                 required
                                 type="number"
-                                label="Integrated Allowance"
+                                label="Electricity Charges"
                                 variant="standard"
                                 disabled
                             />
                         </Grid>
+
+
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.disableAllowance}
-                                onChange={(e) => employeeHandler(e, 'disableAllowance')}
-                                id="disableAllowance"
-                                required
-                                type="number"
-                                label="Disable Allowance"
-                                variant="standard"
-                                disabled
-                            />
-                        </Grid>
-                        <Grid item xs={6} md={4}>
-                            <TextField
-                                fullWidth
-                                value={employee.currentPay.deductions.sSB}
-                                onChange={(e) => employeeHandler(e, 'sSB')}
-                                id="sSB"
-                                required
-                                type="number"
-                                label="SSB"
-                                variant="standard"
-                                disabled
-                            />
-                        </Grid>
-                        <Grid item xs={6} md={4}>
-                            <TextField
-                                fullWidth
-                                value={employee.currentPay.deductions.gIP}
+                                value={employee?.currentPay?.deductions?.gIP}
                                 onChange={(e) => employeeHandler(e, 'gIP')}
                                 id="gIP"
                                 required
@@ -1372,12 +1735,12 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.recEidAdvance}
-                                onChange={(e) => employeeHandler(e, 'recEidAdvance')}
-                                id="recEidAdvance"
+                                value={employee?.currentPay?.deductions?.carScooterAdvance}
+                                onChange={(e) => employeeHandler(e, 'carScooterAdvance')}
+                                id="carScooterAdvance"
                                 required
                                 type="number"
-                                label="Rec Eid Advance"
+                                label="Car Scooter Advance"
                                 variant="standard"
                                 disabled
                             />
@@ -1385,7 +1748,7 @@ const AddNewEmployee = () => {
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.accomadationCharges}
+                                value={employee?.currentPay?.deductions?.accomadationCharges}
                                 onChange={(e) => employeeHandler(e, 'accomadationCharges')}
                                 id="accomadationCharges"
                                 required
@@ -1399,7 +1762,7 @@ const AddNewEmployee = () => {
                         {/* <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={employee.currentPay.deductions.totalDeductions}
+                                value={employee?.currentPay?.deductions?.totalDeductions}
                                 onChange={(e) => employeeHandler(e, 'totalDeductions')}
                                 id="totalDeductions"
                                 required
@@ -1409,19 +1772,36 @@ const AddNewEmployee = () => {
                                 disabled
                             />
                         </Grid> */}
+
                         <Grid item xs={6} md={4}>
                             <TextField
                                 fullWidth
-                                value={parseInt(totalDeductionValue)}
-                                label="Total Deductions"
+                                value={employee?.currentPay?.deductions?.otherCharges}
+                                onChange={(e) => employeeHandler(e, 'otherCharges')}
+                                id="otherCharges"
+                                required
+                                type="number"
+                                label="Other Charges"
                                 variant="standard"
                                 disabled
                             />
                         </Grid>
+
+
+                        <Grid item xs={6} md={4}>
+                            <TextField
+                                fullWidth
+                                value={parseInt(employee?.currentPay?.deductions?.totalDeductions)}
+                                label="Total Deductions"
+                                variant="standard"
+                                disabled
+
+                            />
+                        </Grid>
                         <Tooltip title="Net Payable">
                             <Typography variant="h3" className="my-11 mx-3 " gutterBottom>
-                                Net Payable : {netPayableValue}
-                                {netPayableValue < 0 && <p style={{ color: 'red' }}>Net payable should not be in negative</p>}
+                                Net Payable : {employee?.currentPay?.netPayable}
+                                {employee?.currentPay?.netPayable < 0 && <p style={{ color: 'red' }}>Net payable should not be in negative</p>}
                             </Typography>
                         </Tooltip>
                         {/* <Grid item xs={6} md={4}>
