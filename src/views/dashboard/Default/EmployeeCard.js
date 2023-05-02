@@ -56,7 +56,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 // ===========================|| DASHBOARD DEFAULT - EARNING CARD ||=========================== //
 
-const EmployeeCard = ({ isLoading , count}) => {
+const EmployeeCard = ({ isLoading, count }) => {
     const theme = useTheme();
 
     const [anchorEl, setAnchorEl] = useState(null);
@@ -71,9 +71,9 @@ const EmployeeCard = ({ isLoading , count}) => {
 
     return (
         <>
-            {/* {isLoading ? (
+            {isLoading ? (
                 <SkeletonEarningCard />
-            ) : ( */}
+            ) : (
                 <CardWrapper border={false} content={false}>
                     <Box sx={{ p: 2.25 }}>
                         <Grid container direction="column">
@@ -92,61 +92,15 @@ const EmployeeCard = ({ isLoading , count}) => {
                                             <img src={EarningIcon} alt="Notification" />
                                         </Avatar>
                                     </Grid>
-                                    <Grid item>
-                                        <Avatar
-                                            variant="rounded"
-                                            sx={{
-                                                ...theme.typography.commonAvatar,
-                                                ...theme.typography.mediumAvatar,
-                                                backgroundColor: theme.palette.secondary.dark,
-                                                color: theme.palette.secondary[200],
-                                                zIndex: 1
-                                            }}
-                                            aria-controls="menu-earning-card"
-                                            aria-haspopup="true"
-                                            onClick={handleClick}
-                                        >
-                                            <MoreHorizIcon fontSize="inherit" />
-                                        </Avatar>
-                                        <Menu
-                                            id="menu-earning-card"
-                                            anchorEl={anchorEl}
-                                            keepMounted
-                                            open={Boolean(anchorEl)}
-                                            onClose={handleClose}
-                                            variant="selectedMenu"
-                                            anchorOrigin={{
-                                                vertical: 'bottom',
-                                                horizontal: 'right'
-                                            }}
-                                            transformOrigin={{
-                                                vertical: 'top',
-                                                horizontal: 'right'
-                                            }}
-                                        >
-                                            <MenuItem onClick={handleClose}>
-                                                <GetAppTwoToneIcon sx={{ mr: 1.75 }} /> Import Card
-                                            </MenuItem>
-                                            <MenuItem onClick={handleClose}>
-                                                <FileCopyTwoToneIcon sx={{ mr: 1.75 }} /> Copy Data
-                                            </MenuItem>
-                                            <MenuItem onClick={handleClose}>
-                                                <PictureAsPdfTwoToneIcon sx={{ mr: 1.75 }} /> Export
-                                            </MenuItem>
-                                            <MenuItem onClick={handleClose}>
-                                                <ArchiveTwoToneIcon sx={{ mr: 1.75 }} /> Archive File
-                                            </MenuItem>
-                                        </Menu>
-                                    </Grid>
+                                    
                                 </Grid>
                             </Grid>
                             <Grid item>
                                 <Grid container alignItems="center">
                                     <Grid item>
                                         <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>
-                                       {/* {count??"Loading..."} */}
-                                      100
-            
+                                            {count ?? "Loading..."}
+
                                         </Typography>
                                     </Grid>
                                     <Grid item>
@@ -177,7 +131,7 @@ const EmployeeCard = ({ isLoading , count}) => {
                         </Grid>
                     </Box>
                 </CardWrapper>
-            {/* )} */}
+            )}
         </>
     );
 };

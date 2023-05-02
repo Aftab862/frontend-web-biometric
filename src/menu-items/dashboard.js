@@ -86,9 +86,9 @@ const dashboard = {
         },
         {
             id: 'gpfund-page',
-            title: 'Gp Fund',
+            title: 'Salaries Record',
             type: 'item',
-            url: '/gpfund',
+            url: '/records',
             permission: [roles.admin],
             icon: ArticleIcon,
             breadcrumbs: false

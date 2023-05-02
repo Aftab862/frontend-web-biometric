@@ -42,13 +42,14 @@ const MainCard = forwardRef(
                     ':hover': {
                         boxShadow: boxShadow ? shadow || '0 2px 14px 0 rgb(32 40 45 / 8%)' : 'inherit'
                     },
+                    width:"100%",
                     ...sx
                 }}
             >
                 {/* card header and action */}
                 {!darkTitle && title && <CardHeader sx={headerSX} title={title} action={secondary} />}
                 {darkTitle && title && (
-                    <CardHeader sx={headerSX} title={<Typography variant="h3">{title}</Typography>} action={secondary} />
+                   null // <CardHeader sx={headerSX} title={<Typography variant="h3">{title}</Typography>} action={secondary} />
                 )}
 
                 {/* content & header divider */}

@@ -14,24 +14,34 @@ import chartData from './chart-data/previous-transactions-chart';
 
 // ===========================|| DASHBOARD DEFAULT - BAJAJ AREA CHART CARD ||=========================== //
 
-const BajajAreaChartCard = () => {
+const BajajAreaChartCard = ({ count }) => {
     const theme = useTheme();
     const customization = useSelector((state) => state.customization);
     const { navType } = customization;
-
     const orangeDark = theme.palette.secondary[800];
 
-    useEffect(() => {
-        const newSupportChart = {
-            ...chartData.options,
-            colors: [orangeDark],
-            tooltip: {
-                theme: 'light'
-            }
-        };
-        ApexCharts.exec(`support-chart`, 'updateOptions', newSupportChart);
-    }, [navType, orangeDark]);
 
+
+    const dateStr = count?.Date ?? "1-1-1999";
+    const [day, monthStr, year] = dateStr.split("-");
+    const month = Number(monthStr) - 1; // subtract 1 from month because Date months are 0-indexed
+
+    const dateObj = new Date(year, month, day);
+    const formattedDateStr = dateObj.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+    // console.log(formattedDateStr); // Output: "April 2023"
+
+    // useEffect(() => {
+    //     const newSupportChart = {
+    //         ...chartData.options,
+    //         colors: [orangeDark],
+    //         tooltip: {
+    //             theme: 'light'
+    //         }
+    //     };
+    //     ApexCharts.exec(`support-chart`, 'updateOptions', newSupportChart);
+    // }, [navType, orangeDark]);
+    console.log("count", count)
     return (
         <Card sx={{ bgcolor: 'secondary.light' }}>
             <Grid container sx={{ p: 2, pb: 0, color: '#fff' }}>
@@ -39,18 +49,18 @@ const BajajAreaChartCard = () => {
                     <Grid container alignItems="center" justifyContent="space-between">
                         <Grid item>
                             <Typography variant="subtitle1" sx={{ color: theme.palette.secondary.dark }}>
-                                Previous
+                                {formattedDateStr??"..."}
                             </Typography>
                         </Grid>
                         <Grid item>
                             <Typography variant="h4" sx={{ color: theme.palette.grey[800] }}>
-                                Rs 150000.00
+                                {count?.TotalIncome}
                             </Typography>
                         </Grid>
                     </Grid>
                 </Grid>
             </Grid>
-            <Chart {...chartData} />
+            {/* <Chart {...chartData} /> */}
         </Card>
     );
 };

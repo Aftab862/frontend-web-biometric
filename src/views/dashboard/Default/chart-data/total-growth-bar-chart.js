@@ -1,5 +1,6 @@
 // ===========================|| DASHBOARD - TOTAL GROWTH BAR CHART ||=========================== //
 
+
 const chartData = {
     height: 480,
     type: 'bar',
@@ -68,7 +69,7 @@ const chartData = {
     series: [
         {
             name: 'Investment',
-            data: [35, 25, 26, 35, 40, 70, 45, 25, 25, 55, 55, 75]
+            data: [35000, 25000, 26000, 35000, 40000, 70000, 45000, 25000, 25000, 55000, 55000, 75000]
         },
         // {
         //     name: 'Loss',

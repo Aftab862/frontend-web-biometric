@@ -156,8 +156,10 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
         console.log("called", id)
 
         let data = employees.find((employee) => employee.id === id)
+        console.log(
+            "data", data
+        )
         const doc = new jsPDF()
-        let a = "aftab"
         doc.setFontSize(13);
         doc.text(20, 13, 'RACHNA COLLEGE OF ENGINEERING & TECHNOLOGY, GUJRANWALA')
         doc.setFontSize(10);
@@ -185,62 +187,80 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
             margin: { top: 170 },
             // styles:{font:10},
             body: [
-                ['Basic Pay', data?.currentPay?.amolument?.basicPay],
-                ['Medical Allowance', data?.currentPay?.amolument?.medicalAllowance],
-                ['Adhoc Relief Allowance', 0],
-                ['House Rent Allowance ', data?.currentPay?.amolument?.houseRent],
-                ['Conveyance Allowance', data?.currentPay?.amolument?.basicPay],
-                ['Qualification Allowance', data?.currentPay?.amolument?.qualificationAllowance],
-                ['Entertainment Allowance ', data?.currentPay?.amolument?.entertainment],
-                ['Adhoc Relief Allowance', data?.currentPay?.amolument?.basicPay],
-                ['Univ. Tech. Teaching Allowance', data?.currentPay?.amolument?.basicPay],
-                ['Special Incentive Allowance For RCET, Regular Faculty ', data?.currentPay?.amolument?.specialReliefAllowance],
-                ['Adhoc Relief Allowance', data?.currentPay?.amolument?.basicPay],
-                ['Dareness Allowance', data?.currentPay?.amolument?.basicPay],
-                ['  S.S.B   ', data?.currentPay?.amolument?.basicPay],
-                ['  Total Emoluments  ', 9831],
-
-            ],
+                data?.currentPay?.amolument?.basicPay > 0 && ['Basic Pay', data?.currentPay?.amolument?.basicPay],
+                data?.currentPay?.amolument?.adhocReliefAllowance > 0 && ['Adhoc Relief Allowance', data?.currentPay?.amolument?.adhocReliefAllowance],
+                data?.currentPay?.amolument?.chairmanAllowance > 0 && ['chairmanAllowance', data?.currentPay?.amolument?.chairmanAllowance],
+                data?.currentPay?.amolument?.conPetAllowance > 0 && ['ConPetAllowance', data?.currentPay?.amolument?.conPetAllowance],
+                data?.currentPay?.amolument?.conveyanceAllowance > 0 && ['Conveyance Allowance', data?.currentPay?.amolument?.conveyanceAllowance],
+                data?.currentPay?.amolument?.darenessAllowance > 0 && ['Dareness Allowance', data?.currentPay?.amolument?.darenessAllowance],
+                data?.currentPay?.amolument?.disableAllowance > 0 && ['DisableAllowance', data?.currentPay?.amolument?.disableAllowance],
+                data?.currentPay?.amolument?.entertainment > 0 && ['Entertainment Allowance ', data?.currentPay?.amolument?.entertainment],
+                data?.currentPay?.amolument?.extraAllowance > 0 && ['ExtraAllowance', data?.currentPay?.amolument?.extraAllowance],
+                data?.currentPay?.amolument?.healthProfnlAllowance > 0 && ['HealthProfnlAllowance', data?.currentPay?.amolument?.healthProfnlAllowance],
+                data?.currentPay?.amolument?.houseRent > 0 && ['House Rent Allowance ', data?.currentPay?.amolument?.houseRent],
+                data?.currentPay?.amolument?.medicalAllowance > 0 && ['Medical Allowance', data?.currentPay?.amolument?.medicalAllowance],
+                data?.currentPay?.amolument?.nonPracticingAllowance > 0 && ['Non-PracticingAllowance', data?.currentPay?.amolument?.nonPracticingAllowance],
+                data?.currentPay?.amolument?.personalAllowance > 0 && ['PersonalAllowance', data?.currentPay?.amolument?.personalAllowance],
+                data?.currentPay?.amolument?.qualificationAllowance > 0 && ['Qualification Allowance', data?.currentPay?.amolument?.qualificationAllowance],
+                data?.currentPay?.amolument?.rTWardenAllowance > 0 && ['rTWardenAllowance', data?.currentPay?.amolument?.rTWardenAllowance],
+                data?.currentPay?.amolument?.seniorPostAllowance > 0 && ['seniorPostAllowance', data?.currentPay?.amolument?.seniorPostAllowance],
+                data?.currentPay?.amolument?.socialSecuirtyBenefit > 0 && ['socialSecuirtyBenefit', data?.currentPay?.amolument?.socialSecuirtyBenefit],
+                data?.currentPay?.amolument?.specialHealthCareAllowance > 0 && ['SpecialHealthCareAllowance', data?.currentPay?.amolument?.specialHealthCareAllowance],
+                data?.currentPay?.amolument?.specialIncentiveAllowance > 0 && ['specialIncentiveAllowance', data?.currentPay?.amolument?.specialIncentiveAllowance],
+                data?.currentPay?.amolument?.specialReliefAllowance > 0 && ['specialReliefAllowance', data?.currentPay?.amolument?.specialReliefAllowance],
+                data?.currentPay?.amolument?.ssbAllowance > 0 && ['  S.S.B   ', data?.currentPay?.amolument?.ssbAllowance],
+                data?.currentPay?.amolument?.tTAllowance > 0 && ['Teaching Allowance', data?.currentPay?.amolument?.tTAllowance],
+                data?.currentPay?.amolument?.totalAmoluments > 0 && ['  Total Emoluments  ', data?.currentPay?.amolument?.totalAmoluments],
+            ].filter(row => row !== false),
         })
 
-
+        const table2StartPosY = doc.autoTableEndPosY() + 5;
         autoTable(doc, {
             styles: { fontSize: 6 },
+            startY: table2StartPosY,
             margin: { top: 170 },
             // styles:{font:10},
             body: [
-                ['Income Tax', data?.currentPay?.deductions?.incomeTax],
-                ['G.P.F. Subscription', data?.currentPay?.deductions?.gPFSubscription],
-                ['Recovery of G.P.F Advance', data?.currentPay?.deductions?.recGPF],
-                ['House Building Advance ', data?.currentPay?.deductions?.houseRentR],
-                ['Car / Scooter Advance', data?.currentPay?.deductions?.conveyanceAllowance],
-                ['House Rent / Accomodation Charges ', data?.currentPay?.deductions?.houseRentR],
-                ['Electricity Charges ', data?.currentPay?.deductions?.waterCharges],
-                ['Water Charges', data?.currentPay?.deductions?.waterCharges],
-                ['Trade Tax', data?.currentPay?.deductions?.uniTTAllowance],
-                ['Benevolent Fund ', data?.currentPay?.deductions?.gPFSubscription],
-                ['Group Insurance Premium / Trade Tax', data?.currentPay?.deductions?.groupInsurance],
-                ['Eid Advance', data?.currentPay?.deductions?.eidAdvance],
-                [' School Bus Charges   ', data?.currentPay?.deductions?.busCharges],
-                ['  benevolentFund  ', data?.currentPay?.deductions.benevolentFund],
-                ['  Total Deductions  ', 9831]
+                ['incomeTax', data?.currentPay?.deductions?.incomeTax],
+                ['gPFSubscription', data?.currentPay?.deductions?.gPFSubscription],
+                ['recGPF', data?.currentPay?.deductions?.recGPF],
+                ['houseRent ', data?.currentPay?.deductions?.houseRent],
+                ['waterCharges', data?.currentPay?.deductions?.waterCharges],
+                ['shortDays', data?.currentPay?.deductions?.shortDays],
+                ['convRecovery', data?.currentPay?.deductions?.convRecovery],
+                ['houseBuildingAdvance ', data?.currentPay?.deductions?.houseBuildingAdvance],
+                ['tSAFund', data?.currentPay?.deductions?.tSAFund],
+                ['benevolentFund', data?.currentPay?.deductions?.gPFSubscription],
+                ['groupInsurance', data?.currentPay?.deductions?.groupInsurance],
+                ['eidAdvance', data?.currentPay?.deductions?.eidAdvance],
+                ['busCharges', data?.currentPay?.deductions?.busCharges],
+                ['extraCausalLeaves', data?.currentPay?.deductions?.extraCausalLeaves],
+                ['tradeTax', data?.currentPay?.deductions?.tradeTax],
+                ['electricityCharges ', data?.currentPay?.deductions?.electricityCharges],
+                ['gIP', data?.currentPay?.deductions?.gIP],
+                ['carScooterAdvance', data?.currentPay?.deductions?.carScooterAdvance],
+                ['accomadationCharges', data?.currentPay?.deductions?.accomadationCharges],
+                ['otherCharges', data?.currentPay?.deductions?.otherCharges],
+                ['totalDeductions', data?.currentPay?.deductions?.totalDeductions]
 
-            ],
+            ].filter(row => row !== false),
         })
 
-        doc.setFontSize(8);
-        doc.text(15, 65, 'Emoluments')
+        // doc.setFontSize(8);
+        // doc.text(15, 65, 'Emoluments')
+
+        // doc.setFontSize(8);
+        // doc.text(15, 155, 'Deductions')
+
+        const StartPosY = doc.autoTableEndPosY() + 10;
 
         doc.setFontSize(8);
-        doc.text(15, 155, 'Deductions')
+        doc.text(15, StartPosY, ` Received for the month of ${date.format("MMMM YYYY")} `)
+        doc.setFontSize(8);
+        doc.text(100, StartPosY, `${data?.currentPay?.netPayable}`);
 
         doc.setFontSize(8);
-        doc.text(15, 255, ` Received for the month of ${date.format("MMMM YYYY")} `)
-        doc.setFontSize(8);
-        doc.text(100, 255, `${data?.currentPay?.netPayable}`);
-
-        doc.setFontSize(8);
-        doc.text(130, 270, "Signature  : _________________")
+        doc.text(150, StartPosY, "Signature  : _________________")
         doc.save('table.pdf')
     }
     const yearMonthFormatter = (locale, value) =>
@@ -270,6 +290,7 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
         };
         array.push(newObj)
         const xlxdata = array
+        console.log("xlxs data", array)
         generateXLSX(xlxdata);
 
     }
@@ -355,7 +376,7 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
                                 <Button
                                     onClick={() => {
                                         navigate(`/employee/${employee.id}`);
-                                       }}
+                                    }}
                                 >
                                     <EditIcon />
                                 </Button>
@@ -513,25 +534,27 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
                                                 {row?.salary?.date}
                                             </StyledTableCell>
                                             <StyledTableCell align="center" font="larger">
-                                                {parseInt(row?.salary?.Emoulments?.basicPay) +
-                                                    parseInt(row?.salary?.Emoulments?.chairmanAllowance) +
-                                                    parseInt(row?.salary?.Emoulments?.conPetAllowance) +
-                                                    parseInt(row?.salary?.Emoulments?.entertainment) +
-                                                    parseInt(row?.salary?.Emoulments?.healthProfnlAllowance) +
-                                                    parseInt(row?.salary?.Emoulments?.houseRent) +
-                                                    parseInt(row?.salary?.Emoulments?.medicalAllowance) +
-                                                    parseInt(row?.salary?.Emoulments?.nonPracticingAllowance) +
-                                                    parseInt(row?.salary?.Emoulments?.personalAllowance) +
-                                                    parseInt(row?.salary?.Emoulments?.qualificationAllowance) +
-                                                    parseInt(row?.salary?.Emoulments?.rTWardenAllowance) +
-                                                    parseInt(row?.salary?.Emoulments?.seniorPostAllowance) +
-                                                    parseInt(row?.salary?.Emoulments?.socialSecuirtyBenefit) +
-                                                    parseInt(row?.salary?.Emoulments?.specialHealthCareAllowance) +
-                                                    parseInt(row?.salary?.Emoulments?.specialReliefAllowance) +
-                                                    parseInt(row?.salary?.Emoulments?.tTAllowance)}
+                                                {row?.salary?.Emoulments?.totalAmoluments}
+                                                {/* // parseInt(row?.salary?.Emoulments?.basicPay) +
+                                            // parseInt(row?.salary?.Emoulments?.chairmanAllowance) +
+                                            // parseInt(row?.salary?.Emoulments?.conPetAllowance) +
+                                            // parseInt(row?.salary?.Emoulments?.entertainment) +
+                                            // parseInt(row?.salary?.Emoulments?.healthProfnlAllowance) +
+                                            // parseInt(row?.salary?.Emoulments?.houseRent) +
+                                            // parseInt(row?.salary?.Emoulments?.medicalAllowance) +
+                                            // parseInt(row?.salary?.Emoulments?.nonPracticingAllowance) +
+                                            // parseInt(row?.salary?.Emoulments?.personalAllowance) +
+                                            // parseInt(row?.salary?.Emoulments?.qualificationAllowance) +
+                                            // parseInt(row?.salary?.Emoulments?.rTWardenAllowance) +
+                                            // parseInt(row?.salary?.Emoulments?.seniorPostAllowance) +
+                                            // parseInt(row?.salary?.Emoulments?.socialSecuirtyBenefit) +
+                                            // parseInt(row?.salary?.Emoulments?.specialHealthCareAllowance) +
+                                            // parseInt(row?.salary?.Emoulments?.specialReliefAllowance) +
+                                            // parseInt(row?.salary?.Emoulments?.tTAllowance)} */}
                                             </StyledTableCell>
                                             <StyledTableCell align="center">
-                                                {parseInt(row?.salary?.deductions?.accomadationCharges) +
+                                                {row?.salary?.deductions?.totalDeductions}
+                                                {/* parseInt(row?.salary?.deductions?.accomadationCharges) +
                                                     parseInt(row?.salary?.deductions?.benevolentFund) +
                                                     parseInt(row?.salary?.deductions?.busCharges) +
                                                     parseInt(row?.salary?.deductions?.convRecovery) +
@@ -551,10 +574,10 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
                                                     parseInt(row?.salary?.deductions?.speciialIncentive) +
                                                     parseInt(row?.salary?.deductions?.tSAFund) +
                                                     parseInt(row?.salary?.deductions?.uniTTAllowance) +
-                                                    parseInt(row?.salary?.deductions?.waterCharges)}
+                                                    parseInt(row?.salary?.deductions?.waterCharges)} */}
                                             </StyledTableCell>
                                             <StyledTableCell align="center">{row?.salary?.totalPaid}</StyledTableCell>
-                                            <StyledTableCell align="right">
+                                            <StyledTableCell align="center">
                                                 <Button variant="outlined"
                                                     color="secondary"
                                                     onClick={() => individualHandler(row)}

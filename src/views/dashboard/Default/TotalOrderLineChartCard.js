@@ -115,9 +115,8 @@ const TotalOrderLineChartCard = ({ isLoading,count }) => {
                                             <Grid item>
                                                 
                                                     <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>
-                                                    {/* {count??"Loading..."} */}
+                                                    {count??"Loading..."}
                                                    
-                                                   120000
                                                     </Typography>
                                                 
                                             </Grid>
@@ -141,7 +140,7 @@ const TotalOrderLineChartCard = ({ isLoading,count }) => {
                                                         color: theme.palette.primary[200]
                                                     }}
                                                 >
-                                                    Total Income calculated
+                                                    Total calculated Income
                                                 </Typography>
                                             </Grid>
                                         </Grid>

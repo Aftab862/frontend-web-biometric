@@ -11,7 +11,7 @@ const chartData = {
             }
         },
         dataLabels: {
-            enabled: false
+            enabled: true
         },
         stroke: {
             curve: 'smooth',
@@ -19,16 +19,16 @@ const chartData = {
         },
         tooltip: {
             fixed: {
-                enabled: false
+                enabled: true
             },
             x: {
-                show: false
+                show: true
             },
             y: {
                 title: 'Ticket '
             },
             marker: {
-                show: false
+                show: true
             }
         }
     },

@@ -17,7 +17,7 @@ const SalarySlip = Loadable(lazy(() => import('views/salarySlip/salarySlip')));
 const GpFund = Loadable(lazy(() => import('views/gpFund/gpFund')));
 const LeaveRecord = Loadable(lazy(() => import('views/leaveRecord/leaveRecord')));
 const Adddata = Loadable(lazy(() => import('views/AddData/Adddata')));
-const AddAllowance= Loadable(lazy(() => import('views/AddAllowance/AddAllowance')));
+const AddAllowance = Loadable(lazy(() => import('views/AddAllowance/AddAllowance')));
 // ==============================|| MAIN ROUTING ||============================== //
 // console.log("roles", roles)
 
@@ -78,7 +78,7 @@ const MainRoutes = {
             element: <SalarySlip />
         },
         {
-            path: '/gpfund',
+            path: '/records',
             // permission: [roles.admin],
 
             element: <GpFund />

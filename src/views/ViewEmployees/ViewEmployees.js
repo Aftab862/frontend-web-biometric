@@ -339,48 +339,58 @@ function ViewEmployees() {
                 employee?.basicInfo?.accountNo,
                 employee?.basicInfo?.category,
                 // employee?.basicInfo?.status,
-                employee.currentPay?.amolument?.basicPay +
-                employee?.currentPay?.amolument?.chairmanAllowance +
-                employee?.currentPay?.amolument?.conPetAllowance +
-                employee?.currentPay?.amolument?.entertainment +
-                employee?.currentPay?.amolument?.healthProfnlAllowance +
-                employee?.currentPay?.amolument?.houseRent +
-                employee?.currentPay?.amolument?.medicalAllowance +
-                employee?.currentPay?.amolument?.nonPracticingAllowance +
-                employee?.currentPay?.amolument?.personalAllowance +
-                employee?.currentPay?.amolument?.qualificationAllowance +
-                employee?.currentPay?.amolument?.rTWardenAllowance +
-                employee?.currentPay?.amolument?.seniorPostAllowance +
-                employee?.currentPay?.amolument?.socialSecuirtyBenefit +
-                employee?.currentPay?.amolument?.specialHealthCareAllowance +
-                employee?.currentPay?.amolument?.specialReliefAllowance +
-                employee?.currentPay?.amolument?.tTAllowance,
-                employee?.currentPay?.deductions?.accomadationCharges +
-                employee?.currentPay?.deductions?.benevolentFund +
-                employee?.currentPay?.deductions?.busCharges +
-                employee?.currentPay?.deductions?.convRecovery +
-                employee?.currentPay?.deductions?.conveyanceAllowance +
-                employee?.currentPay?.deductions?.disableAllowance +
-                employee?.currentPay?.deductions?.eidAdvance +
-                employee?.currentPay?.deductions?.gIP +
-                employee?.currentPay?.deductions?.gPFSubscription +
-                employee?.currentPay?.deductions?.groupInsurance +
-                employee?.currentPay?.deductions?.houseRentR +
-                employee?.currentPay?.deductions?.incomeTax +
-                employee?.currentPay?.deductions?.integratedAllowance +
-                employee?.currentPay?.deductions?.recEidAdvance +
-                employee?.currentPay?.deductions?.recGPF +
-                employee?.currentPay?.deductions?.sSB +
-                employee?.currentPay?.deductions?.shortDays +
-                employee?.currentPay?.deductions?.speciialIncentive +
-                employee?.currentPay?.deductions?.tSAFund +
-                employee?.currentPay?.deductions?.uniTTAllowance +
-                employee?.currentPay?.deductions?.waterCharges,
+                employee.currentPay?.amolument?.totalAmoluments,
+
+                // employee.currentPay?.amolument?.basicPay +
+                // employee?.currentPay?.amolument?.chairmanAllowance +
+                // employee?.currentPay?.amolument?.conPetAllowance +
+                // employee?.currentPay?.amolument?.conveyanceAllowance +
+                // employee?.currentPay?.amolument?.healthProfnlAllowance +
+                // employee?.currentPay?.amolument?.disableAllowance +
+                // employee?.currentPay?.amolument?.extraAllowance +
+                // employee?.currentPay?.amolument?.darenessAllowance +
+                // employee?.currentPay?.amolument?.specialIncentiveAllowance +
+                // employee?.currentPay?.amolument?.ssbAllowance +
+                // employee?.currentPay?.amolument?.uniTeachingAllowance +
+                // employee?.currentPay?.amolument?.adhocReliefAllowance +
+                // employee?.currentPay?.amolument?.houseRent +
+                // employee?.currentPay?.amolument?.medicalAllowance +
+                // employee?.currentPay?.amolument?.nonPracticingAllowance +
+                // employee?.currentPay?.amolument?.personalAllowance +
+                // employee?.currentPay?.amolument?.qualificationAllowance +
+                // employee?.currentPay?.amolument?.rTWardenAllowance +
+                // employee?.currentPay?.amolument?.seniorPostAllowance +
+                // employee?.currentPay?.amolument?.socialSecuirtyBenefit +
+                // employee?.currentPay?.amolument?.specialHealthCareAllowance +
+                // employee?.currentPay?.amolument?.specialReliefAllowance +
+                // employee?.currentPay?.amolument?.entertainment +
+                // employee?.currentPay?.amolument?.tTAllowance,
+
+                // employee?.currentPay?.deductions?.incomeTax +
+                // employee?.currentPay?.deductions?.gPFSubscription +
+                // employee?.currentPay?.deductions?.recGPF +
+                // employee?.currentPay?.deductions?.houseRent +
+                // employee?.currentPay?.deductions?.waterCharges +
+                // employee?.currentPay?.deductions?.shortDays +
+                // employee?.currentPay?.deductions?.convRecovery +
+                // employee?.currentPay?.deductions?.houseBuildingAdvance +
+                // employee?.currentPay?.deductions?.tSAFund +
+                // employee?.currentPay?.deductions?.benevolentFund +
+                // employee?.currentPay?.deductions?.groupInsurance +
+                // employee?.currentPay?.deductions?.eidAdvance +
+                // employee?.currentPay?.deductions?.busCharges +
+                // employee?.currentPay?.deductions?.extraCausalLeaves +
+                // employee?.currentPay?.deductions?.tradeTax +
+                // employee?.currentPay?.deductions?.electricityCharges +
+                // employee?.currentPay?.deductions?.otherCharges +
+                // employee?.currentPay?.deductions?.gIP +
+                // employee?.currentPay?.deductions?.carScooterAdvance +
+                // employee?.currentPay?.deductions?.accomadationCharges,
+
+                employee?.currentPay?.deductions?.totalDeductions,
                 employee?.currentPay?.netPayable,
                 totalPayable = totalPayable + employee?.currentPay?.netPayable,
             ],
-
-
             );
     }
 
@@ -394,7 +404,8 @@ function ViewEmployees() {
             obj.Emoulments = e.currentPay.amolument;
             obj.deductions = e.currentPay.deductions;
             obj.totalPaid = e.currentPay.netPayable;
-            obj.year = moment().format('YYYY');
+            obj.basicInfo = e.basicInfo,
+                obj.year = moment().format('YYYY');
             obj.date = moment().format('DD-MM-YYYY');
             arrayOfObjects[index] = {
                 id: e.id,
@@ -408,7 +419,7 @@ function ViewEmployees() {
         PaySlip.Date = moment().format('DD-MM-YYYY');
         PaySlip.Data = arrayOfObjects;
         PaySlip.TotalIncome = totalPayable;
-
+        console.log("payslip", PaySlip)
         try {
             let a = await API.post('/employee/comit', PaySlip, {
                 headers: {
@@ -496,26 +507,25 @@ function ViewEmployees() {
                             doc.setFontSize(20);
 
                             const title = 'RACHNA COLLEGE OF ENGINEERING & TECHNOLOGY, GUJRANWALA';
-                            // const headers = [
-                            //     [
-                            //         'Name',
-                            //         // 'Email',
-                            //         'CNIC',
-                            //         'Account No',
-                            //         'Category',
-                            //         // 'Status',
-                            //         'Total Amolument',
-                            //         'Total Deduction',
-                            //         'NetPayable'
-                            //     ]
-                            // ];
+                            const headers = [
+                                [
+                                    'Name',
+                                    // 'Email',
+                                    'CNIC',
+                                    'Account No',
+                                    'Category',
+                                    // 'Status',
+                                    'Total Amolument',
+                                    'Total Deduction',
+                                    'NetPayable'
+                                ]
+                            ];
 
                             const data = pdfGenerator()
-
-                            const headers = [
-                                ['Name', totalPayable],
-                                ['Email', totalPayable]
-                            ]
+                            // const headers = [
+                            //     ['Name', totalPayable],
+                            //     ['Email', totalPayable]
+                            // ]
 
                             let content = {
                                 startY: 40,

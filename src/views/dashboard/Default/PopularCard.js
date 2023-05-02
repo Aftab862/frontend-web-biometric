@@ -19,7 +19,7 @@ import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDown
 
 // ==============================|| DASHBOARD DEFAULT - POPULAR CARD ||============================== //
 
-const PopularCard = ({ isLoading }) => {
+const PopularCard = ({ isLoading, count }) => {
     const theme = useTheme();
 
     const [anchorEl, setAnchorEl] = useState(null);
@@ -80,7 +80,7 @@ const PopularCard = ({ isLoading }) => {
                                 </Grid>
                             </Grid>
                             <Grid item xs={12} sx={{ pt: '16px !important' }}>
-                                <BajajAreaChartCard />
+                                <BajajAreaChartCard count={count} />
                             </Grid>
                             {/* <Grid item xs={12}>
                                 <Grid container direction="column">
@@ -277,8 +277,8 @@ const PopularCard = ({ isLoading }) => {
     );
 };
 
-PopularCard.propTypes = {
-    isLoading: PropTypes.bool
-};
+// PopularCard.propTypes = {
+//     isLoading: PropTypes.bool
+// };
 
 export default PopularCard;
