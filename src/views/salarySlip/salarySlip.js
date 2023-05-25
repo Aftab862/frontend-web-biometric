@@ -135,7 +135,9 @@ const AddNewEmployee = () => {
                     }
                 });
                 setEmployee({ ...res.data });
-               setLoading(false)
+                localStorage.setItem("status", res.data?.currentPay?.verified)
+                console.log("verified status",res.data?.currentPay?.verified)
+                setLoading(false)
             } catch (error) {
                 console.log('error', error);
                 setLoading(false)

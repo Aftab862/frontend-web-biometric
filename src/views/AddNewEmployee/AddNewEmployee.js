@@ -67,7 +67,7 @@ const AddNewEmployee = () => {
         salaries: [],
         currentPay: {
             date: moment().format('DD-MM-YYYY'),
-            verified: false,
+            verified: "True",
             amolument: {
                 basicPay: 0,
                 nonPracticingAllowance: 0,
@@ -951,7 +951,7 @@ const AddNewEmployee = () => {
 
             />
             <ReactJsAlert
-            
+
                 status={alertstatus}   // true or false
                 type="info"   // success, warning, error, info
                 title={alertmsg}   // title you want to display

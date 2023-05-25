@@ -15,7 +15,7 @@ const VerifyPensioner = Loadable(lazy(() => import('views/VerifyPensioner/Verify
 const SearchRecords = Loadable(lazy(() => import('views/SearchRecords/SearchRecords')));
 const SalarySlip = Loadable(lazy(() => import('views/salarySlip/salarySlip')));
 const GpFund = Loadable(lazy(() => import('views/gpFund/gpFund')));
-const LeaveRecord = Loadable(lazy(() => import('views/leaveRecord/leaveRecord')));
+const VideoMeet = Loadable(lazy(() => import('views/VideoMeeting/VideoMeeting')));
 const Adddata = Loadable(lazy(() => import('views/AddData/Adddata')));
 const AddAllowance = Loadable(lazy(() => import('views/AddAllowance/AddAllowance')));
 // ==============================|| MAIN ROUTING ||============================== //
@@ -54,50 +54,52 @@ const MainRoutes = {
             // permission: [roles.admin],
             element: <ViewEmployees />
         },
-        {
-            path: '/add-allowance',
-            // permission: [roles.admin],
-            element: <AddAllowance />
-        },
-        {
-            path: '/verify',
-            // permission: [roles.admin],
+        // {
+        //     path: '/add-allowance',
+        //     // permission: [roles.admin],
+        //     element: <AddAllowance />
+        // },
 
-            element: <VerifyPensioner />
-        },
-        {
-            path: '/search-records',
-            // permission: [roles.employee],
-
-            element: <SearchRecords />
-        },
         {
             path: '/salary-slip',
             // permission: [roles.employee],
 
             element: <SalarySlip />
         },
+
+    
+        {
+            path: '/search-records',
+            // permission: [roles.employee],
+
+            element: <SearchRecords />
+        },
+
         {
             path: '/records',
             // permission: [roles.admin],
 
             element: <GpFund />
         },
-        // {
-        //     path: '/leave-record',
-        //     // permission: [roles.admin],
-
-        //     element: <LeaveRecord />
-        // },
         {
-            path: '/import-data',
+            path: '/verifypensionar',
+            // permission: [roles.admin],
+
+            element: <VideoMeet />
+        },
+        {
+            path: '/increments',
             element: <Adddata />
 
         },
         {
             path: '/edit-profile',
-            element: <EditProfile />
+            element: <DashboardDefault />
 
+        },
+        {
+            path: '/biometric',
+            element: <VerifyPensioner />
         }
 
     ]

@@ -40,7 +40,7 @@ import EmployeeTable from './EmployeeTableData';
 import CsvDownload from 'react-json-to-csv';
 // import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
-import { Input, TextField, Tooltip } from '@mui/material';
+import { DialogContentText, Input, TextField, Tooltip } from '@mui/material';
 import MoonLoader from 'react-spinners/MoonLoader';
 // import PDF, { Text, AddPage, Line, Image, Html } from 'jspdf-react';
 import { jsPDF } from "jspdf";
@@ -161,6 +161,7 @@ function ViewEmployees() {
     const [employeeData, setemployeeData] = useState([]);
     const [tabValue, setTabValue] = useState(0);
     const [Comit, setCommit] = useState();
+    const [openComit, setOpenComit] = React.useState(false);
 
     const handleChange = (newValue) => {
         setTabValue(newValue);
@@ -215,24 +216,6 @@ function ViewEmployees() {
         saveAs(new Blob([xlsxBuffer], { type: 'application/octet-stream' }), fileName);
     }
     const handleDownload = () => {
-        // {employeeData
-        //     .map((ed) => {
-        //         if (tabValue === 0 && ed?.basicInfo?.category === 'Current Employee') {
-        //             return {
-        //                 ...ed.basicInfo,
-        //                 ...{ ...ed.currentPay.amolument, ...ed.currentPay.deductions, netPayable: ed.currentPay.netPayable }
-        //             };
-        //         } else if (tabValue === 1 && ed?.basicInfo?.category === 'Pensioner') {
-        //             return {
-        //                 ...ed.basicInfo,
-        //                 ...{ ...ed.currentPay.amolument, ...ed.currentPay.deductions, netPayable: ed.currentPay.netPayable }
-        //             };
-        //         }
-        //     })
-        //     .filter((em) => em !== undefined)}
-
-
-
         let array = [];
         employeeData.map((e) => {
             if (tabValue === 0 && e?.basicInfo?.category === 'Current Employee') {
@@ -324,78 +307,71 @@ function ViewEmployees() {
     // }
     var totalPayable = 0;
     const pdfGenerator = () => {
-        return employeeData
-            // .filter((em) => {
-            //     if (tabValue === 0 && em.basicInfo.category === 'Current Employee') {
-            //         return em;
-            //     } else if (tabValue === 1 && em.basicInfo.category === 'Pensioner') {
-            //         return em;
-            //     }
-            // })
-            .map((employee) => [
-                employee?.basicInfo?.name,
-                // employee?.basicInfo?.email,
-                employee?.basicInfo?.cnic,
-                employee?.basicInfo?.accountNo,
-                employee?.basicInfo?.category,
-                // employee?.basicInfo?.status,
-                employee.currentPay?.amolument?.totalAmoluments,
+        return employeeData.map((employee) => [
+            employee?.basicInfo?.name,
+            // employee?.basicInfo?.email,
+            employee?.basicInfo?.cnic,
+            employee?.basicInfo?.accountNo,
+            employee?.basicInfo?.category,
+            // employee?.basicInfo?.status,
+            employee.currentPay?.amolument?.totalAmoluments,
 
-                // employee.currentPay?.amolument?.basicPay +
-                // employee?.currentPay?.amolument?.chairmanAllowance +
-                // employee?.currentPay?.amolument?.conPetAllowance +
-                // employee?.currentPay?.amolument?.conveyanceAllowance +
-                // employee?.currentPay?.amolument?.healthProfnlAllowance +
-                // employee?.currentPay?.amolument?.disableAllowance +
-                // employee?.currentPay?.amolument?.extraAllowance +
-                // employee?.currentPay?.amolument?.darenessAllowance +
-                // employee?.currentPay?.amolument?.specialIncentiveAllowance +
-                // employee?.currentPay?.amolument?.ssbAllowance +
-                // employee?.currentPay?.amolument?.uniTeachingAllowance +
-                // employee?.currentPay?.amolument?.adhocReliefAllowance +
-                // employee?.currentPay?.amolument?.houseRent +
-                // employee?.currentPay?.amolument?.medicalAllowance +
-                // employee?.currentPay?.amolument?.nonPracticingAllowance +
-                // employee?.currentPay?.amolument?.personalAllowance +
-                // employee?.currentPay?.amolument?.qualificationAllowance +
-                // employee?.currentPay?.amolument?.rTWardenAllowance +
-                // employee?.currentPay?.amolument?.seniorPostAllowance +
-                // employee?.currentPay?.amolument?.socialSecuirtyBenefit +
-                // employee?.currentPay?.amolument?.specialHealthCareAllowance +
-                // employee?.currentPay?.amolument?.specialReliefAllowance +
-                // employee?.currentPay?.amolument?.entertainment +
-                // employee?.currentPay?.amolument?.tTAllowance,
+            // employee.currentPay?.amolument?.basicPay +
+            // employee?.currentPay?.amolument?.chairmanAllowance +
+            // employee?.currentPay?.amolument?.conPetAllowance +
+            // employee?.currentPay?.amolument?.conveyanceAllowance +
+            // employee?.currentPay?.amolument?.healthProfnlAllowance +
+            // employee?.currentPay?.amolument?.disableAllowance +
+            // employee?.currentPay?.amolument?.extraAllowance +
+            // employee?.currentPay?.amolument?.darenessAllowance +
+            // employee?.currentPay?.amolument?.specialIncentiveAllowance +
+            // employee?.currentPay?.amolument?.ssbAllowance +
+            // employee?.currentPay?.amolument?.uniTeachingAllowance +
+            // employee?.currentPay?.amolument?.adhocReliefAllowance +
+            // employee?.currentPay?.amolument?.houseRent +
+            // employee?.currentPay?.amolument?.medicalAllowance +
+            // employee?.currentPay?.amolument?.nonPracticingAllowance +
+            // employee?.currentPay?.amolument?.personalAllowance +
+            // employee?.currentPay?.amolument?.qualificationAllowance +
+            // employee?.currentPay?.amolument?.rTWardenAllowance +
+            // employee?.currentPay?.amolument?.seniorPostAllowance +
+            // employee?.currentPay?.amolument?.socialSecuirtyBenefit +
+            // employee?.currentPay?.amolument?.specialHealthCareAllowance +
+            // employee?.currentPay?.amolument?.specialReliefAllowance +
+            // employee?.currentPay?.amolument?.entertainment +
+            // employee?.currentPay?.amolument?.tTAllowance,
 
-                // employee?.currentPay?.deductions?.incomeTax +
-                // employee?.currentPay?.deductions?.gPFSubscription +
-                // employee?.currentPay?.deductions?.recGPF +
-                // employee?.currentPay?.deductions?.houseRent +
-                // employee?.currentPay?.deductions?.waterCharges +
-                // employee?.currentPay?.deductions?.shortDays +
-                // employee?.currentPay?.deductions?.convRecovery +
-                // employee?.currentPay?.deductions?.houseBuildingAdvance +
-                // employee?.currentPay?.deductions?.tSAFund +
-                // employee?.currentPay?.deductions?.benevolentFund +
-                // employee?.currentPay?.deductions?.groupInsurance +
-                // employee?.currentPay?.deductions?.eidAdvance +
-                // employee?.currentPay?.deductions?.busCharges +
-                // employee?.currentPay?.deductions?.extraCausalLeaves +
-                // employee?.currentPay?.deductions?.tradeTax +
-                // employee?.currentPay?.deductions?.electricityCharges +
-                // employee?.currentPay?.deductions?.otherCharges +
-                // employee?.currentPay?.deductions?.gIP +
-                // employee?.currentPay?.deductions?.carScooterAdvance +
-                // employee?.currentPay?.deductions?.accomadationCharges,
+            // employee?.currentPay?.deductions?.incomeTax +
+            // employee?.currentPay?.deductions?.gPFSubscription +
+            // employee?.currentPay?.deductions?.recGPF +
+            // employee?.currentPay?.deductions?.houseRent +
+            // employee?.currentPay?.deductions?.waterCharges +
+            // employee?.currentPay?.deductions?.shortDays +
+            // employee?.currentPay?.deductions?.convRecovery +
+            // employee?.currentPay?.deductions?.houseBuildingAdvance +
+            // employee?.currentPay?.deductions?.tSAFund +
+            // employee?.currentPay?.deductions?.benevolentFund +
+            // employee?.currentPay?.deductions?.groupInsurance +
+            // employee?.currentPay?.deductions?.eidAdvance +
+            // employee?.currentPay?.deductions?.busCharges +
+            // employee?.currentPay?.deductions?.extraCausalLeaves +
+            // employee?.currentPay?.deductions?.tradeTax +
+            // employee?.currentPay?.deductions?.electricityCharges +
+            // employee?.currentPay?.deductions?.otherCharges +
+            // employee?.currentPay?.deductions?.gIP +
+            // employee?.currentPay?.deductions?.carScooterAdvance +
+            // employee?.currentPay?.deductions?.accomadationCharges,
 
-                employee?.currentPay?.deductions?.totalDeductions,
-                employee?.currentPay?.netPayable,
-                totalPayable = totalPayable + employee?.currentPay?.netPayable,
-            ],
-            );
+            employee?.currentPay?.deductions?.totalDeductions,
+            employee?.currentPay?.netPayable,
+            totalPayable = totalPayable + employee?.currentPay?.netPayable,
+        ],
+        );
     }
 
 
     const ComitSalarRecord = async () => {
+        setOpenComit(false)
         let arrayOfObjects = new Array();
         // console.log("employee", employeeData)
 
@@ -439,202 +415,246 @@ function ViewEmployees() {
     }
 
 
-    return (
-        <div className="h-full w-full">
-            <AppBar className="mt-4" position="static">
-                <Toolbar className="h-32 d-flex justify-between">
-                    <Typography variant="h2">
-                        <div className="text-white">Employees</div>
-                    </Typography>
-                    <Tooltip title="Search by CNIC" >
-                        <Search>
-                            <SearchIconWrapper>
-                                <SearchIcon />
-                            </SearchIconWrapper>
-                            <TextField
-                                label="Search by CNIC"
-                                onChange={(event) => {
-                                    setSearchText(event.target.value);
-                                }}
-                                // style={{ color: 'white' }}
-                                InputLabelProps={{
 
-                                    style: {
-                                        color: 'grey'
-                                    }
-                                }}
-                                inputProps={{ 'aria-label': 'search' }}
-                            />
-                        </Search>
-                    </Tooltip>
-                    {/* <Button variant="contained" className="float-right">
+    const handleClickOpenCommitDial = () => {
+        setOpenComit(true);
+
+    };
+
+    const handleCloseComit = () => {
+        setOpenComit(false);
+    };
+
+
+
+    return (
+        <>
+
+
+
+            {(
+
+                <Dialog
+                    open={openComit}
+                    onClose={handleCloseComit}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description" className="fs-6">
+                            Are you sure you want to Commit the record?.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseComit}>Disagree</Button>
+                        <Button onClick={ComitSalarRecord} autoFocus>
+                            Agree
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            )}
+
+
+
+
+
+            <div className="h-full w-full">
+                <AppBar className="mt-4" position="static">
+                    <Toolbar className="h-32 d-flex justify-between">
+                        <Typography variant="h2">
+                            <div className="text-white">Employees</div>
+                        </Typography>
+                        <Tooltip title="Search by CNIC" >
+                            <Search>
+                                <SearchIconWrapper>
+                                    <SearchIcon />
+                                </SearchIconWrapper>
+                                <TextField
+                                    label="Search by CNIC"
+                                    onChange={(event) => {
+                                        setSearchText(event.target.value);
+                                    }}
+                                    // style={{ color: 'white' }}
+                                    InputLabelProps={{
+
+                                        style: {
+                                            color: 'grey'
+                                        }
+                                    }}
+                                    inputProps={{ 'aria-label': 'search' }}
+                                />
+                            </Search>
+                        </Tooltip>
+                        {/* <Button variant="contained" className="float-right">
                         <CsvDownload data={employeeData} />
                     </ Button> */}
-                </Toolbar>
-            </AppBar>
+                    </Toolbar>
+                </AppBar>
 
-            {/* <TabList onChange={handleChange}>
+                {/* <TabList onChange={handleChange}>
                 <Tab label="Working" value={0} />
                 <Tab label="Pansioner" value={1} />
             </TabList> */}
-            <div className="d-flex justify-content-between mt-2 ">
-                <Tabs value={tabValue} onChange={(e, newVal) => handleChange(newVal)}>
-                    <Tab label="Working" />
-                    <Tab label="Pensioner" />
-                </Tabs>
-                <ButtonGroup variant="text">
-                    <Button onClick={ComitSalarRecord} variant="outlined"
-                        color="success">
-                        Save&Commit
-                    </Button>
-                    <Button variant="outlined" color="primary"
-                        onClick={handleDownload}
-                    >
-                        Download Excel
+                <div className="d-flex justify-content-between mt-2 ">
+                    <Tabs value={tabValue} onChange={(e, newVal) => handleChange(newVal)}>
+                        <Tab label="Working" />
+                        <Tab label="Pensioner" />
+                    </Tabs>
+                    <ButtonGroup variant="text">
+                        <Button onClick={handleClickOpenCommitDial} variant="outlined"
+                            color="success">
+                            Save&Commit
+                        </Button>
+                        <Button variant="outlined" color="primary"
+                            onClick={handleDownload}
+                        >
+                            Download Excel
 
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={() => {
-                            const unit = 'pt';
-                            const size = 'A4'; // Use A1, A2, A3 or A4
-                            const orientation = 'landscape'; // portrait or landscape
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            color="secondary"
+                            onClick={() => {
+                                const unit = 'pt';
+                                const size = 'A4'; // Use A1, A2, A3 or A4
+                                const orientation = 'landscape'; // portrait or landscape
 
-                            // const marginLeft = 40;
-                            const doc = new jsPDF();
+                                // const marginLeft = 40;
+                                const doc = new jsPDF();
 
-                            doc.setFontSize(20);
+                                doc.setFontSize(20);
 
-                            const title = 'RACHNA COLLEGE OF ENGINEERING & TECHNOLOGY, GUJRANWALA';
-                            const headers = [
-                                [
-                                    'Name',
-                                    // 'Email',
-                                    'CNIC',
-                                    'Account No',
-                                    'Category',
-                                    // 'Status',
-                                    'Total Amolument',
-                                    'Total Deduction',
-                                    'NetPayable'
-                                ]
-                            ];
+                                const title = 'RACHNA COLLEGE OF ENGINEERING & TECHNOLOGY, GUJRANWALA';
+                                const headers = [
+                                    [
+                                        'Name',
+                                        // 'Email',
+                                        'CNIC',
+                                        'Account No',
+                                        'Category',
+                                        // 'Status',
+                                        'Total Amolument',
+                                        'Total Deduction',
+                                        'NetPayable'
+                                    ]
+                                ];
 
-                            const data = pdfGenerator()
-                            // const headers = [
-                            //     ['Name', totalPayable],
-                            //     ['Email', totalPayable]
-                            // ]
+                                const data = pdfGenerator()
+                                // const headers = [
+                                //     ['Name', totalPayable],
+                                //     ['Email', totalPayable]
+                                // ]
 
-                            let content = {
-                                startY: 40,
-                                head: headers,
-                                columnStyles: { theme: 'plain' },
-                                body: data,
+                                let content = {
+                                    startY: 40,
+                                    head: headers,
+                                    columnStyles: { theme: 'plain' },
+                                    body: data,
 
-                            };
-
-
-                            doc.setFontSize(16);
-                            doc.text(10, 18, 'RACHNA COLLEGE OF ENGINEERING & TECHNOLOGY, GUJRANWALA')
-                            doc.setFontSize(12);
-                            doc.text(30, 25, '(A Constituent College of University of Engineering & Technology, Lahore.)')
-                            // doc.text(title, 10, 25);
-                            doc.setFontSize(12);
-                            doc.text(14, 38, `Date : ${moment().format('DD-MM-YYYY')}`)
-
-                            doc.setFontSize(12);
-                            doc.text(14, 200, `NET Payable AMOUNT  : ${totalPayable}`)
-
-                            doc.setFontSize(12);
-                            doc.text(130, 200, "Signature  : _________________")
+                                };
 
 
+                                doc.setFontSize(16);
+                                doc.text(10, 18, 'RACHNA COLLEGE OF ENGINEERING & TECHNOLOGY, GUJRANWALA')
+                                doc.setFontSize(12);
+                                doc.text(30, 25, '(A Constituent College of University of Engineering & Technology, Lahore.)')
+                                // doc.text(title, 10, 25);
+                                doc.setFontSize(12);
+                                doc.text(14, 38, `Date : ${moment().format('DD-MM-YYYY')}`)
+
+                                doc.setFontSize(12);
+                                doc.text(14, 200, `NET Payable AMOUNT  : ${totalPayable}`)
+
+                                doc.setFontSize(12);
+                                doc.text(130, 200, "Signature  : _________________")
 
 
-                            doc.autoTable(content);
-                            doc.save('employees.pdf');
-
-                        }}
-                    >
-                        Download PDF
-                    </Button>
-                </ButtonGroup>
-            </div>
-
-            {/* <Paper> */}
 
 
-            {loading ?
-                <MoonLoader
-                    color={color}
-                    loading={loading}
-                    size={60}
-                    cssOverride={
-                        {
-                            margin: "3rem auto",
-                            borderColor: "red",
+                                doc.autoTable(content);
+                                doc.save('employees.pdf');
+
+                            }}
+                        >
+                            Download PDF
+                        </Button>
+                    </ButtonGroup>
+                </div>
+
+                {/* <Paper> */}
+
+
+                {loading ?
+                    <MoonLoader
+                        color={color}
+                        loading={loading}
+                        size={60}
+                        cssOverride={
+                            {
+                                margin: "3rem auto",
+                                borderColor: "red",
+                            }
                         }
-                    }
 
-                />
+                    />
 
-                :
+                    :
 
-                <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 450 }} className="mt-2" id="emp-table">
-                        <TableHead className="bg-gray-900">
-                            <TableRow>
-                                <TableCell className="text-gray-200">Open</TableCell>
-                                <TableCell className="text-gray-200">Name</TableCell>
-                                <TableCell className="text-gray-200">Email</TableCell>
-                                <TableCell className="text-gray-200">CNIC</TableCell>
-                                <TableCell className="text-gray-200">Account No</TableCell>
-                                <TableCell className="text-gray-200">Employee Category</TableCell>
-                                <TableCell className="text-gray-200">Status</TableCell>
-                                <TableCell className="text-gray-200">Previous Salaries</TableCell>
-                                {tabValue === 1 && <TableCell className="text-gray-200">Verified</TableCell>}
-                                <TableCell className="text-gray-200">Edit</TableCell>
-                                <TableCell className="text-gray-200">Monthly Report</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 450 }} className="mt-2" id="emp-table">
+                            <TableHead className="bg-gray-900">
+                                <TableRow>
+                                    <TableCell className="text-gray-200">Open</TableCell>
+                                    <TableCell className="text-gray-200">Name</TableCell>
+                                    <TableCell className="text-gray-200">Email</TableCell>
+                                    <TableCell className="text-gray-200">CNIC</TableCell>
+                                    <TableCell className="text-gray-200">Account No</TableCell>
+                                    <TableCell className="text-gray-200">Employee Category</TableCell>
+                                    <TableCell className="text-gray-200">Status</TableCell>
+                                    <TableCell className="text-gray-200">Previous Salaries</TableCell>
+                                    {tabValue === 1 && <TableCell className="text-gray-200">Meeting Invite</TableCell>}
+                                    {tabValue === 1 && <TableCell className="text-gray-200">Verified</TableCell>}
 
-                            {/* <TabPanel value={tabValue} index={0}> */}
+                                    <TableCell className="text-gray-200">Edit</TableCell>
+                                    <TableCell className="text-gray-200">Monthly Report</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
 
-                            <EmployeeTable
-                                employees={employeeData
-                                    .filter((em) => {
-                                        if (tabValue === 0 && em.basicInfo.category === 'Current Employee') {
-                                            return em;
-                                        } else if (tabValue === 1 && em.basicInfo.category === 'Pensioner') {
-                                            return em;
+                                {/* <TabPanel value={tabValue} index={0}> */}
+                                {
+                                    employeeData &&
+                                    <EmployeeTable
+                                        employees={employeeData.filter((em) => {
+                                            if (tabValue === 0 && em.basicInfo.category === 'Current Employee') {
+                                                return em;
+                                            } else if (tabValue === 1 && em.basicInfo.category === 'Pensioner') {
+                                                return em;
+                                            }
+                                        })
+                                            .filter((employee) => {
+                                                if (searchText === '') {
+                                                    return employee;
+                                                }
+                                                else if (employee.basicInfo.cnic.toLowerCase().includes(searchText.toLowerCase())) {
+                                                    return employee;
+                                                }
+                                                else if (employee.basicInfo.department.toLowerCase().includes(searchText.toLowerCase())) {
+                                                    return employee;
+                                                }
+                                                // searchText === '' ? employee : employee.basicInfo.cnic.toLowerCase().includes(searchText.toLowerCase())
+                                            }
+                                            )
                                         }
-                                    })
-                                    .filter((employee) => {
-                                        if (searchText === '') {
-                                            return employee;
-                                        }
-                                        else if (employee.basicInfo.cnic.toLowerCase().includes(searchText.toLowerCase())) {
-                                            return employee;
-                                        }
-                                        else if (employee.basicInfo.department.toLowerCase().includes(searchText.toLowerCase())) {
-                                            return employee;
-                                        }
-                                        // searchText === '' ? employee : employee.basicInfo.cnic.toLowerCase().includes(searchText.toLowerCase())
-                                    }
-                                    )
+                                        handleClickOpen={handleClickOpen}
+                                        setEmployees={setemployeeData}
+                                        tabValue={tabValue}
+                                    />
                                 }
-                                handleClickOpen={handleClickOpen}
-                                setEmployees={setemployeeData}
-                                tabValue={tabValue}
-                            />
 
 
-
-                            {/* </TabPanel> */}
-                            {/* {employeeData
+                                {/* </TabPanel> */}
+                                {/* {employeeData
                             .filter((employee) =>
                                 searchText === '' ? employee.name : employee.name.toLowerCase().includes(searchText.toLowerCase())
                             )
@@ -650,10 +670,10 @@ function ViewEmployees() {
                                     <TableCell>{employee.category}</TableCell>
                                 </TableRow>
                             ))} */}
-                        </TableBody>
-                    </Table>
+                            </TableBody>
+                        </Table>
 
-                    {/* <ReactHTMLTableToExcel
+                        {/* <ReactHTMLTableToExcel
                 className="btn btn-info"
                 table="emp-table"
                 filename="Emp Excel File"
@@ -661,25 +681,25 @@ function ViewEmployees() {
                 buttonText="Export of Excel"
 
                 /> */}
-                    {/* </Paper> */}
-                </TableContainer>
-            }
+                        {/* </Paper> */}
+                    </TableContainer>
+                }
 
-            <div>
-                <BootstrapDialog onClose={handleClose} aria-labelledby="customized-dialog-title" maxWidth="sm" fullWidth open={open}>
-                    <BootstrapDialogTitle className="font-bold text-2xl" onClose={handleClose}>
-                        {data?.basicInfo?.name}
-                    </BootstrapDialogTitle>
-                    <DialogContent dividers>
-                        <Typography gutterBottom>Name: {data?.basicInfo?.name}</Typography>
-                        <Typography gutterBottom>Email: {data?.basicInfo?.email}</Typography>
-                        <Typography gutterBottom>Scale: {data?.basicInfo?.scale}</Typography>
-                        <Typography gutterBottom>Experience: {data?.basicInfo?.experience}</Typography>
-                        <Typography gutterBottom>Designation: {data?.basicInfo?.designation}</Typography>
-                        <Typography gutterBottom>Department: {data?.basicInfo?.department}</Typography>
-                        <Typography gutterBottom>Type: {data?.basicInfo?.type}</Typography>
-                        <Typography gutterBottom>Category: {data?.basicInfo?.category}</Typography>
-                        {/* <Typography gutterBottom>
+                <div>
+                    <BootstrapDialog onClose={handleClose} aria-labelledby="customized-dialog-title" maxWidth="sm" fullWidth open={open}>
+                        <BootstrapDialogTitle className="font-bold text-2xl" onClose={handleClose}>
+                            {data?.basicInfo?.name}
+                        </BootstrapDialogTitle>
+                        <DialogContent dividers>
+                            <Typography gutterBottom>Name: {data?.basicInfo?.name}</Typography>
+                            <Typography gutterBottom>Email: {data?.basicInfo?.email}</Typography>
+                            <Typography gutterBottom>Scale: {data?.basicInfo?.scale}</Typography>
+                            <Typography gutterBottom>Experience: {data?.basicInfo?.experience}</Typography>
+                            <Typography gutterBottom>Designation: {data?.basicInfo?.designation}</Typography>
+                            <Typography gutterBottom>Department: {data?.basicInfo?.department}</Typography>
+                            <Typography gutterBottom>Type: {data?.basicInfo?.type}</Typography>
+                            <Typography gutterBottom>Category: {data?.basicInfo?.category}</Typography>
+                            {/* <Typography gutterBottom>
                             EMAIL: {data.email}
                         </Typography>
                         <Typography gutterBottom>
@@ -688,24 +708,27 @@ function ViewEmployees() {
                         <Typography gutterBottom>
                             EMAIL: {data.email}
                         </Typography> */}
-                        <Typography gutterBottom>
-                            CNIC: {data?.basicInfo?.cnic}
-                        </Typography>
-                        <Typography gutterBottom>
-                            Account No: {data?.basicInfo?.accountNo}
-                        </Typography>
-                        <Typography gutterBottom>
-                            Employee Category: {data?.basicInfo?.category}
-                        </Typography>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button autoFocus onClick={handleClose}>
-                            Close
-                        </Button>
-                    </DialogActions>
-                </BootstrapDialog>
+                            <Typography gutterBottom>
+                                CNIC: {data?.basicInfo?.cnic}
+                            </Typography>
+                            <Typography gutterBottom>
+                                Account No: {data?.basicInfo?.accountNo}
+                            </Typography>
+                            <Typography gutterBottom>
+                                Employee Category: {data?.basicInfo?.category}
+                            </Typography>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button autoFocus onClick={handleClose}>
+                                Close
+                            </Button>
+                        </DialogActions>
+                    </BootstrapDialog>
+                </div>
             </div>
-        </div>
+        </>
+
+
     );
 }
 export default ViewEmployees;

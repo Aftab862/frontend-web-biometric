@@ -147,7 +147,7 @@ const FirebaseLogin = ({ ...others }) => {
                         if (res.data.role === 'admin') {
                             navigate('/dashboard');
                         } else {
-                            navigate('/search-records');
+                            navigate('/salary-slip');
                         }
                     } catch (err) {
                         alert("Connection Eror")

@@ -162,7 +162,7 @@ const TotalGrowthBarChart = ({ dataValues, yearValues, isLoading }) => {
         },
         series: [
             {
-                name: 'TotalAmount',
+                name: 'TotalInvest',
                 data: dataValues//[35000, 25000, 26000, 35000, 40000, 70000, 45000, 25000, 25000, 55000, 55000, 75000]
             },
             // {
@@ -193,11 +193,25 @@ const TotalGrowthBarChart = ({ dataValues, yearValues, isLoading }) => {
                 <SkeletonTotalGrowthBarChart />
             ) : (
                 <MainCard>
-                    <Grid container spacing={gridSpacing}>
-                        <Grid item xs={12}>
-                            <Chart {...chartData} />
+                    <Grid item>
+
+                        <Grid item>
+                            <Grid container direction="column" spacing={1}>
+                                <Grid item>
+                                    <Typography variant="h3">Previous Records</Typography>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid container spacing={gridSpacing}>
+                            <Grid item xs={12}>
+                                <Chart {...chartData} />
+                            </Grid>
                         </Grid>
                     </Grid>
+
+                    <Typography textAlign="left" className="ml-12 pl-5 " variant="h5">X-axis =   Years</Typography>
+                    <Typography textAlign="left" className="ml-12 pl-5" variant="h5">Y-axis =   Amounts in Millions(PKR)</Typography>
+
                 </MainCard>
             )}
         </>

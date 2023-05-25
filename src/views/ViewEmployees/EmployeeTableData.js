@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { TableRow, TableCell, IconButton, TextField, alpha, Input, FormControl, InputAdornment, makeStyles, createStyles } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
+import { TableRow, TableCell, IconButton, TextField, alpha, Input, FormControl, InputAdornment, makeStyles, createStyles, MenuItem, Select, InputLabel, SnackbarContent } from '@mui/material';
 import LaunchIcon from '@mui/icons-material/Launch';
 import SearchIcon from '@mui/icons-material/Search';
 // import ReactPdfTable from "react-pdf-table";
@@ -13,6 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import autoTable from 'jspdf-autotable'
 // import { DatePicker } from "@material-ui/pickers";
 import DatePicker from "react-date-picker";
+
 
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -32,6 +33,10 @@ import moment from 'moment';
 import { jsPDF } from "jspdf";
 
 
+import Snackbar from '@mui/material/Snackbar';
+// import Slide from '@mui/material/Slide';
+
+
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -42,8 +47,11 @@ import Paper from '@mui/material/Paper';
 import API from 'API/api';
 import { display } from '@mui/system';
 import { MoonLoader } from 'react-spinners';
-
-
+import { func } from 'prop-types';
+import { IconBell } from '@tabler/icons';
+import { blue, green } from '@mui/material/colors';
+import Groups2Icon from '@mui/icons-material/Groups2';
+import InsertInvitationIcon from '@mui/icons-material/InsertInvitation';
 
 const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue }) => {
     // console.log('employees', employees);
@@ -52,11 +60,22 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
     let [loading, setLoading] = useState(false);
     const [selectedDate, handleDateChange] = useState(new Date(new Date().getFullYear() - 1, new Date().getMonth(), new Date().getDate()))
 
+    const [openAlert, setOpenAlert] = React.useState(false);
+    const [transition, setTransition] = React.useState(undefined);
+    const [Alertmsg, setAlertmsg] = useState(null)
 
+
+    const TransitionRight = (props) => {
+        return <Slide {...props} direction="up" />;
+    }
+    const handleClosed = () => {
+        setOpenAlert(false);
+    };
+
+    const form = useRef()
     useEffect(() => {
 
     }, [data])
-    // console.log("salary", data)
     const [employeeId, setEmployeeId] = useState(null);
     const navigate = useNavigate();
     let [color, setColor] = useState("#36d7b7");
@@ -76,7 +95,6 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
                     'Content-Type': 'application/json'
                 }
             })
-
             setdata(res);
             console.log("res", res)
             setLoading(false);
@@ -90,9 +108,8 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
     // };
 
 
-    const Transition = React.forwardRef(function Transition(props, ref) {
-        return <Slide direction="up" ref={ref} {...props} />;
-    });
+
+
     const handleClickOpenn = (id) => {
         setEmployeeId(id);
         setOpen(true);
@@ -187,61 +204,61 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
             margin: { top: 170 },
             // styles:{font:10},
             body: [
-                data?.currentPay?.amolument?.basicPay > 0 && ['Basic Pay', data?.currentPay?.amolument?.basicPay],
-                data?.currentPay?.amolument?.adhocReliefAllowance > 0 && ['Adhoc Relief Allowance', data?.currentPay?.amolument?.adhocReliefAllowance],
-                data?.currentPay?.amolument?.chairmanAllowance > 0 && ['chairmanAllowance', data?.currentPay?.amolument?.chairmanAllowance],
-                data?.currentPay?.amolument?.conPetAllowance > 0 && ['ConPetAllowance', data?.currentPay?.amolument?.conPetAllowance],
-                data?.currentPay?.amolument?.conveyanceAllowance > 0 && ['Conveyance Allowance', data?.currentPay?.amolument?.conveyanceAllowance],
-                data?.currentPay?.amolument?.darenessAllowance > 0 && ['Dareness Allowance', data?.currentPay?.amolument?.darenessAllowance],
-                data?.currentPay?.amolument?.disableAllowance > 0 && ['DisableAllowance', data?.currentPay?.amolument?.disableAllowance],
-                data?.currentPay?.amolument?.entertainment > 0 && ['Entertainment Allowance ', data?.currentPay?.amolument?.entertainment],
-                data?.currentPay?.amolument?.extraAllowance > 0 && ['ExtraAllowance', data?.currentPay?.amolument?.extraAllowance],
-                data?.currentPay?.amolument?.healthProfnlAllowance > 0 && ['HealthProfnlAllowance', data?.currentPay?.amolument?.healthProfnlAllowance],
-                data?.currentPay?.amolument?.houseRent > 0 && ['House Rent Allowance ', data?.currentPay?.amolument?.houseRent],
-                data?.currentPay?.amolument?.medicalAllowance > 0 && ['Medical Allowance', data?.currentPay?.amolument?.medicalAllowance],
-                data?.currentPay?.amolument?.nonPracticingAllowance > 0 && ['Non-PracticingAllowance', data?.currentPay?.amolument?.nonPracticingAllowance],
-                data?.currentPay?.amolument?.personalAllowance > 0 && ['PersonalAllowance', data?.currentPay?.amolument?.personalAllowance],
-                data?.currentPay?.amolument?.qualificationAllowance > 0 && ['Qualification Allowance', data?.currentPay?.amolument?.qualificationAllowance],
-                data?.currentPay?.amolument?.rTWardenAllowance > 0 && ['rTWardenAllowance', data?.currentPay?.amolument?.rTWardenAllowance],
-                data?.currentPay?.amolument?.seniorPostAllowance > 0 && ['seniorPostAllowance', data?.currentPay?.amolument?.seniorPostAllowance],
-                data?.currentPay?.amolument?.socialSecuirtyBenefit > 0 && ['socialSecuirtyBenefit', data?.currentPay?.amolument?.socialSecuirtyBenefit],
-                data?.currentPay?.amolument?.specialHealthCareAllowance > 0 && ['SpecialHealthCareAllowance', data?.currentPay?.amolument?.specialHealthCareAllowance],
-                data?.currentPay?.amolument?.specialIncentiveAllowance > 0 && ['specialIncentiveAllowance', data?.currentPay?.amolument?.specialIncentiveAllowance],
-                data?.currentPay?.amolument?.specialReliefAllowance > 0 && ['specialReliefAllowance', data?.currentPay?.amolument?.specialReliefAllowance],
+                data?.currentPay?.amolument?.basicPay > 0 && ['BASIC PAY', data?.currentPay?.amolument?.basicPay],
+                data?.currentPay?.amolument?.adhocReliefAllowance > 0 && ['ADHOC RELIEF ALLOWANCE', data?.currentPay?.amolument?.adhocReliefAllowance],
+                data?.currentPay?.amolument?.chairmanAllowance > 0 && ['CHAIRMANALLOWANCE', data?.currentPay?.amolument?.chairmanAllowance],
+                data?.currentPay?.amolument?.conPetAllowance > 0 && ['CONPETALLOWANCE', data?.currentPay?.amolument?.conPetAllowance],
+                data?.currentPay?.amolument?.conveyanceAllowance > 0 && ['CONVEYANCE ALLOWANCE', data?.currentPay?.amolument?.conveyanceAllowance],
+                data?.currentPay?.amolument?.darenessAllowance > 0 && ['DARENESS ALLOWANCE', data?.currentPay?.amolument?.darenessAllowance],
+                data?.currentPay?.amolument?.disableAllowance > 0 && ['DISABLEALLOWANCE', data?.currentPay?.amolument?.disableAllowance],
+                data?.currentPay?.amolument?.entertainment > 0 && ['ENTERTAINMENT ALLOWANCE ', data?.currentPay?.amolument?.entertainment],
+                data?.currentPay?.amolument?.extraAllowance > 0 && ['EXTRAALLOWANCE', data?.currentPay?.amolument?.extraAllowance],
+                data?.currentPay?.amolument?.healthProfnlAllowance > 0 && ['HEALTHPROFNLALLOWANCE', data?.currentPay?.amolument?.healthProfnlAllowance],
+                data?.currentPay?.amolument?.houseRent > 0 && ['HOUSE RENT ALLOWANCE ', data?.currentPay?.amolument?.houseRent],
+                data?.currentPay?.amolument?.medicalAllowance > 0 && ['MEDICAL ALLOWANCE', data?.currentPay?.amolument?.medicalAllowance],
+                data?.currentPay?.amolument?.nonPracticingAllowance > 0 && ['NON-PRACTICINGALLOWANCE', data?.currentPay?.amolument?.nonPracticingAllowance],
+                data?.currentPay?.amolument?.personalAllowance > 0 && ['PERSONALALLOWANCE', data?.currentPay?.amolument?.personalAllowance],
+                data?.currentPay?.amolument?.qualificationAllowance > 0 && ['QUALIFICATION ALLOWANCE', data?.currentPay?.amolument?.qualificationAllowance],
+                data?.currentPay?.amolument?.rTWardenAllowance > 0 && ['RTWARDENALLOWANCE', data?.currentPay?.amolument?.rTWardenAllowance],
+                data?.currentPay?.amolument?.seniorPostAllowance > 0 && ['SENIORPOSTALLOWANCE', data?.currentPay?.amolument?.seniorPostAllowance],
+                data?.currentPay?.amolument?.socialSecuirtyBenefit > 0 && ['SOCIALSECUIRTYBENEFIT', data?.currentPay?.amolument?.socialSecuirtyBenefit],
+                data?.currentPay?.amolument?.specialHealthCareAllowance > 0 && ['SPECIALHEALTHCAREALLOWANCE', data?.currentPay?.amolument?.specialHealthCareAllowance],
+                data?.currentPay?.amolument?.specialIncentiveAllowance > 0 && ['SPECIALINCENTIVEALLOWANCE', data?.currentPay?.amolument?.specialIncentiveAllowance],
+                data?.currentPay?.amolument?.specialReliefAllowance > 0 && ['SPECIALRELIEFALLOWANCE', data?.currentPay?.amolument?.specialReliefAllowance],
                 data?.currentPay?.amolument?.ssbAllowance > 0 && ['  S.S.B   ', data?.currentPay?.amolument?.ssbAllowance],
-                data?.currentPay?.amolument?.tTAllowance > 0 && ['Teaching Allowance', data?.currentPay?.amolument?.tTAllowance],
-                data?.currentPay?.amolument?.totalAmoluments > 0 && ['  Total Emoluments  ', data?.currentPay?.amolument?.totalAmoluments],
+                data?.currentPay?.amolument?.tTAllowance > 0 && ['TEACHING ALLOWANCE', data?.currentPay?.amolument?.tTAllowance],
+                data?.currentPay?.amolument?.totalAmoluments > 0 && ['TOTAL EMOLUMENTS  ', data?.currentPay?.amolument?.totalAmoluments],
             ].filter(row => row !== false),
         })
 
-        const table2StartPosY = doc.autoTableEndPosY() + 5;
+        const table2StartPosY = doc.autoTableEndPosY() + 1;
         autoTable(doc, {
             styles: { fontSize: 6 },
             startY: table2StartPosY,
             margin: { top: 170 },
             // styles:{font:10},
             body: [
-                ['incomeTax', data?.currentPay?.deductions?.incomeTax],
-                ['gPFSubscription', data?.currentPay?.deductions?.gPFSubscription],
-                ['recGPF', data?.currentPay?.deductions?.recGPF],
-                ['houseRent ', data?.currentPay?.deductions?.houseRent],
-                ['waterCharges', data?.currentPay?.deductions?.waterCharges],
-                ['shortDays', data?.currentPay?.deductions?.shortDays],
-                ['convRecovery', data?.currentPay?.deductions?.convRecovery],
-                ['houseBuildingAdvance ', data?.currentPay?.deductions?.houseBuildingAdvance],
-                ['tSAFund', data?.currentPay?.deductions?.tSAFund],
-                ['benevolentFund', data?.currentPay?.deductions?.gPFSubscription],
-                ['groupInsurance', data?.currentPay?.deductions?.groupInsurance],
-                ['eidAdvance', data?.currentPay?.deductions?.eidAdvance],
-                ['busCharges', data?.currentPay?.deductions?.busCharges],
-                ['extraCausalLeaves', data?.currentPay?.deductions?.extraCausalLeaves],
-                ['tradeTax', data?.currentPay?.deductions?.tradeTax],
-                ['electricityCharges ', data?.currentPay?.deductions?.electricityCharges],
-                ['gIP', data?.currentPay?.deductions?.gIP],
-                ['carScooterAdvance', data?.currentPay?.deductions?.carScooterAdvance],
-                ['accomadationCharges', data?.currentPay?.deductions?.accomadationCharges],
-                ['otherCharges', data?.currentPay?.deductions?.otherCharges],
-                ['totalDeductions', data?.currentPay?.deductions?.totalDeductions]
+                data?.currentPay?.deductions?.incomeTax > 0 && ['INCOMETAX            &nbsp ', data?.currentPay?.deductions?.incomeTax],
+                data?.currentPay?.deductions?.gPFSubscription > 0 && ['GPF SUBSCRIPTION&nbsp', data?.currentPay?.deductions?.gPFSubscription],
+                data?.currentPay?.deductions?.recGPF > 0 && ['RECGPF&nbsp', data?.currentPay?.deductions?.recGPF],
+                data?.currentPay?.deductions?.houseRent > 0 && ['HOUSERENT ', data?.currentPay?.deductions?.houseRent],
+                data?.currentPay?.deductions?.waterCharges > 0 && ['WATER CHARGES', data?.currentPay?.deductions?.waterCharges],
+                data?.currentPay?.deductions?.shortDays > 0 && ['SHORT DAYS', data?.currentPay?.deductions?.shortDays],
+                data?.currentPay?.deductions?.convRecovery > 0 && ['CONVRECOVERY', data?.currentPay?.deductions?.convRecovery],
+                data?.currentPay?.deductions?.houseBuildingAdvance > 0 && ['HOUSE BUILDING ADVANCE ', data?.currentPay?.deductions?.houseBuildingAdvance],
+                data?.currentPay?.deductions?.tSAFund > 0 && ['TSAFUND', data?.currentPay?.deductions?.tSAFund],
+                data?.currentPay?.deductions?.benevolentFund > 0 && ['BENEVOLENT FUND', data?.currentPay?.deductions?.benevolentFund],
+                data?.currentPay?.deductions?.groupInsurance > 0 && ['GROUP INSURANCE', data?.currentPay?.deductions?.groupInsurance],
+                data?.currentPay?.deductions?.eidAdvance > 0 && ['EID ADVANCE', data?.currentPay?.deductions?.eidAdvance],
+                data?.currentPay?.deductions?.busCharges > 0 && ['BUS CHARGES', data?.currentPay?.deductions?.busCharges],
+                data?.currentPay?.deductions?.extraCausalLeaves > 0 && ['EXTRACASUAL LEAVES', data?.currentPay?.deductions?.extraCausalLeaves],
+                data?.currentPay?.deductions?.tradeTax > 0 && ['TRADE TAX', data?.currentPay?.deductions?.tradeTax],
+                data?.currentPay?.deductions?.electricityCharges > 0 && ['ELECTRICITY CHARGES ', data?.currentPay?.deductions?.electricityCharges],
+                data?.currentPay?.deductions?.gIP > 0 && ['GIP', data?.currentPay?.deductions?.gIP],
+                data?.currentPay?.deductions?.carScooterAdvance > 0 && ['CARSCOOTER ADVANCE', data?.currentPay?.deductions?.carScooterAdvance],
+                data?.currentPay?.deductions?.accomadationCharges > 0 && ['ACCOMADATION CHARGES', data?.currentPay?.deductions?.accomadationCharges],
+                data?.currentPay?.deductions?.otherCharges > 0 && ['OTHER CHARGES', data?.currentPay?.deductions?.otherCharges],
+                ['TOTAL DEDUCTIONS', data?.currentPay?.deductions?.totalDeductions]
 
             ].filter(row => row !== false),
         })
@@ -318,8 +335,90 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
         // ];
         generateXLSX(xlxdata);
     }
+    const [selectedOption, setSelectedOption] = useState('');
+
+
+    async function handleChange(value, eid) {
+        let data = employees.find((employee) => employee.id === eid)
+        setLoading(true)
+        let IdToken = localStorage.getItem('IdToken')
+        const params = {
+            id: eid,
+            value: value,
+            email: data?.basicInfo?.email,
+            token: IdToken
+        };
+        try {
+            let res = await API.get(`/employee/verify`, { params }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('IdToken')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log("resp", res.data)
+            // setEmployees(res.data)
+            setSelectedOption(value);
+
+        } catch (error) {
+            console.log('error', error);
+        }
+
+
+        setLoading(false)
+
+    }
+
+
+    const EmailSending = async (email) => {
+
+        setTransition(() => TransitionRight);
+        setOpenAlert(true);
+        setAlertmsg("Meeting link sent to " + email)
+        try {
+            let res = await API.post("/employee/meeting", { email }, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            window.scrollTo(0, 0);
+            if (res) {
+                setTransition(() => TransitionRight);
+                setOpenAlert(true);
+                setAlertmsg("Meeting link sent to " + email)
+            }
+        } catch (error) {
+            console.log("Something went wrong:", error);
+        }
+    }
+
+
+
+
+
+
+
     return (
         <>
+
+
+            <div>
+                <Snackbar
+                    open={openAlert}
+                    onClose={handleClosed}
+                    TransitionComponent={transition}
+                    autoHideDuration={3500}
+                    key={transition ? transition.name : ''}
+                >
+                    <SnackbarContent
+                        style={{ backgroundColor: blue[500] }}
+                        message={Alertmsg}
+                    />
+                </Snackbar>
+
+            </div >
+
+
             {
                 employees.map((employee, index) => (
                     <TableRow key={employee.id}>
@@ -342,35 +441,45 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
                             </Tooltip>
                         </TableCell>
                         {/* <Tooltip title="You don't have permission to do this" followCursor> */}
+
+
+
+                        {
+                            tabValue === 1 &&
+
+                            <TableCell>
+                                <Tooltip title="Alert Email">
+                                    <Button
+                                        onClick={() => EmailSending(employee?.basicInfo?.email)}
+                                    >
+                                        <InsertInvitationIcon />
+                                    </Button>
+                                </Tooltip>
+                            </TableCell>
+
+                        }
+
                         {tabValue === 1 && (
                             <TableCell>
-                                <Button
-                                    disabled={employee?.currentPay?.verified}
-                                    onClick={async () => {
-                                        try {
-                                            await API.get(`/employee/verify/${employee.id}`, {
-                                                headers: {
-                                                    Authorization: `Bearer ${localStorage.getItem('IdToken')}`
-                                                }
-                                            });
-                                            const index = employees.findIndex((em) => em.id === employee.id);
-                                            const updatedEmployees = employees;
-                                            updatedEmployees[index] = { ...employee, currentPay: { ...employee.currentPay, verified: true } };
-                                            setEmployees([...updatedEmployees]);
-                                        } catch (error) {
-                                            console.log('error', error);
-                                        }
-                                    }}
-                                    variant="outlined"
-                                    startIcon={<DomainVerification />}
-                                >
-                                    {employee?.currentPay?.verified ? 'Verified' : 'Un-verified'}
-                                </Button>
+                                {console.log("employee?.currentPay?.verified", employee?.currentPay?.verified)}
+                                <FormControl ref={form}>
+                                    <select
+                                        style={{
+                                            padding: "5PX",
+                                            border: "1px solid darkblue"
+                                        }}
+                                        defaultValue="" onChange={(e) => handleChange(e.target.value, employee?.id)}>
+                                        <option value="" disabled hidden>{employee?.currentPay?.verified}</option>
+                                        <option value="True">True</option>
+                                        <option value="False">False</option>
+                                    </select>
+                                </FormControl>
                             </TableCell>
                         )}
                         {/* </Tooltip> */}
                         {/* {tabValue === 1 && <TableCell>{employee.verified === 'true' && <Checkbox {...label} disabled checked />}</TableCell>}
                       {tabValue === 1 && <TableCell>{employee.verified === 'false' && <Checkbox {...label} disabled />}</TableCell>} */}
+
                         <TableCell>
                             <Tooltip title="Edit the Employee">
                                 <Button
@@ -422,13 +531,14 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
                                 </Button> */}
                             </Tooltip>
                         </TableCell>
-                    </TableRow>
+                    </TableRow >
                 ))
             }
 
-            <Dialog fullScreen open={open} onClose={handleClose} >
+            < Dialog fullScreen open={open} onClose={handleClose} >
                 {/* {console.log(employees.find((employee) => employee.id === employeeId)?.salaries)} */}
-                <AppBar sx={{ position: 'relative' }}>
+                < AppBar sx={{ position: 'relative' }
+                }>
                     <Toolbar className="h-32 d-flex justify-between">
                         <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
                             <CloseIcon />
@@ -441,26 +551,22 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
                                 save
                             </Button> */}
                         <div style={{ color: "black", fontSize: "20px", display: 'flex' }} >
-
                             <DatePicker
                                 value={selectedDate}
                                 onChange={handleDateChange}
                                 formatValue={yearMonthFormatter}
                                 format="yyyy"
                             />
-
                             <div style={{
                                 background: "seagreen",
                                 color: "white",
                                 textAlign: "center",
                                 margin: "0px 20px"
                             }}>
-
                                 <Button autoFocus color="inherit" onClick={searchRecords} >
                                     Search
                                 </Button>
                             </div>
-
                             <div style={{
                                 background: "seagreen",
                                 textAlign: "center",
@@ -471,13 +577,9 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
                                     Download Excel
                                 </Button>
                             </div>
-
                         </div>
-
-
-
                     </Toolbar>
-                </AppBar>
+                </AppBar >
 
 
                 <TableContainer component={Paper}>
@@ -520,14 +622,9 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
                                         marginTop: "10%"
                                     }
                                 }
-
                             />
-
                             : data?.data?.length > 0 ?
-
                                 (<TableBody>
-
-
                                     {data?.data?.map((row, index) => (
                                         <StyledTableRow key={index}>
                                             <StyledTableCell component="th" scope="row">
@@ -589,9 +686,7 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
                                         </StyledTableRow>
                                     ))}
                                 </TableBody>
-                                )
-
-                                : <Typography
+                                ) : <Typography
                                     style={{
                                         position: "absolute",
                                         left: "40%",
@@ -600,15 +695,10 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
                                     }}
                                     sx={{ ml: 2, flex: 1 }} variant="h2"
                                 >No Record found</Typography>
-
-
                         }
                     </Table>
                 </TableContainer>
-            </Dialog>
-
-
-
+            </Dialog >
         </>
     );
 };

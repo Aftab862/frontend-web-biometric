@@ -62,6 +62,8 @@ const ProfileSection = () => {
         localStorage.removeItem('rcet-userId');
         localStorage.removeItem('role');
         localStorage.removeItem('username');
+        localStorage.removeItem('status');
+
 
         dispatch(Actions.logout());
         navigate('/');

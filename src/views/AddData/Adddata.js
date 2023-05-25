@@ -180,7 +180,7 @@ export default function Adddata() {
         setalertmsg("Allowance updated")
         setTimeout(() => {
           handleClose()
-          navigate("/dashboard")
+          navigate("/increments")
         }, 2000);
       }
     } catch (error) {
@@ -337,14 +337,14 @@ export default function Adddata() {
           <TextField
             required
             id="input-field-3"
-            label="Percentage Amount"
+            label="Amount"
             className={classes.textField}
             margin="normal"
             onChange={(e) => setvalue(Number(e.target.value))}
             type="text"
-            inputProps={{ maxLength: 2 }}
+            
           />
-          <p style={{ color: 'green', position: "absolute", right: "-110%" }}>{value}% Increment will be added</p>
+          {/* <p style={{ color: 'green', position: "absolute", right: "-110%" }}>{value}% Increment will be added</p> */}
         </div>
 
         {/* : null} */}

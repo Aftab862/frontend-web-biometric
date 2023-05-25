@@ -41,8 +41,6 @@ const SearchRecords = () => {
     const [employeeData, setEmployeeData] = useState({});
     const employeeId = localStorage.getItem('rcet-userId')
     const username = localStorage.getItem('username')
-    // const { employee, name } = useSelector((state) => state.user);
-    // console.log("employeid", employee,name)
     const [selectedDate, handleDateChange] = useState(new Date(new Date().getFullYear() - 1, new Date().getMonth(), new Date().getDate()))
 
     const [loading, setLoading] = useState(false)
@@ -101,9 +99,9 @@ const SearchRecords = () => {
     const [employeepopup, setEmployeepopup] = React.useState({});
 
     const handleClickOpen = (id) => {
-        console.log("{id", id)
+
         setOpen(true);
-        // setEmployeepopup(employeeData.salary.find(s => s._id === id));
+        setEmployeepopup(employeeData.find(s => s.id === id));
     };
     const handleClose = () => {
         setOpen(false);
@@ -140,7 +138,6 @@ const SearchRecords = () => {
                 })
 
                 setEmployeeData(res.data);
-
                 setLoading(false);
             } catch (error) {
                 alert('error', error);
@@ -148,34 +145,9 @@ const SearchRecords = () => {
             }
         }
         fetchSalaries()
-
-        // setLoading(true)
-        // const id = localStorage.getItem('rcet-userId')
-        // const fetchData = async () => {
-        //     try {
-        //         const res = await API.get(`/employee/${id}`, {
-        //             headers: {
-        //                 Authorization: `Bearer ${localStorage.getItem('IdToken')}`
-        //             }
-        //         });
-        //         setEmployeeData({ ...res.data });
-        //         // console.log("emploueedata", res.data)
-        //         setLoading(false)
-        //     } catch (error) {
-        //         console.log('error', error);
-        //         setLoading(false)
-        //     }
-        // };
-        // fetchData();
     }, []);
 
-    // console.log('employee Data->', employeeData);
 
-    function createData(month, amolument, deduction, netPayable) {
-        return { month, amolument, deduction, netPayable };
-    }
-
-    // const [value, setValue] = (useState < Date) | (null > new Date());
 
     const Search = styled('div')(({ theme }) => ({
         position: 'relative',
@@ -218,14 +190,7 @@ const SearchRecords = () => {
             }
         }
     }));
-    function generateXLSX(xlxdata) {
-        const worksheet = XLSX.utils.json_to_sheet(xlxdata);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-        const xlsxBuffer = XLSX.write(workbook, { type: 'buffer' });
-        const fileName = 'myData.xlsx';
-        saveAs(new Blob([xlsxBuffer], { type: 'application/octet-stream' }), fileName);
-    }
+
 
 
     const yearMonthFormatter = (locale, value) =>
@@ -283,17 +248,32 @@ const SearchRecords = () => {
     }
 
 
+    function generateXLSX(xlxdata) {
+        const worksheet = XLSX.utils.json_to_sheet(xlxdata);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+        const xlsxBuffer = XLSX.write(workbook, { type: 'buffer' });
+        const fileName = 'myData.xlsx';
+        saveAs(new Blob([xlsxBuffer], { type: 'application/octet-stream' }), fileName);
+    }
 
-    // const [month, setMonth] = useState('');
-    // const [year, setYear] = useState('');
 
-    // const handleMonth = (event) => {
-    //     setMonth(event.target.value);
-    // };
-    // const handleYear = (event) => {
-    //     setYear(event.target.value);
-    // };
+    const individualHandler = (user) => {
 
+     
+        let array = [];
+        const newObj = {
+            date: user?.salary?.date,
+            ...user?.basicInfo,
+            ...user?.salary?.Emoulments,
+            ...user?.salary?.deductions,
+            totalPaid: user?.salary?.totalPaid,
+        };
+        array.push(newObj)
+        const xlxdata = array
+        generateXLSX(xlxdata);
+
+    }
     return (
         <>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -343,11 +323,11 @@ const SearchRecords = () => {
                         <TableHead>
                             <TableRow>
                                 <StyledTableCell>Month-Year</StyledTableCell>
-                                <StyledTableCell align="right">Amoluments</StyledTableCell>
-                                <StyledTableCell align="right">Deductions</StyledTableCell>
-                                <StyledTableCell align="right">netPayable</StyledTableCell>
-                                <StyledTableCell align="right">View Month data</StyledTableCell>
-                                <StyledTableCell align="right">Download Month data</StyledTableCell>
+                                <StyledTableCell align="center">Amoluments</StyledTableCell>
+                                <StyledTableCell align="center">Deductions</StyledTableCell>
+                                <StyledTableCell align="center">netPayable</StyledTableCell>
+                                <StyledTableCell align="center">View Month data</StyledTableCell>
+                                <StyledTableCell align="center">Download Month data</StyledTableCell>
                             </TableRow>
                         </TableHead>
                         {loading ?
@@ -381,40 +361,23 @@ const SearchRecords = () => {
                                             <StyledTableCell component="th" scope="row">
                                                 {empd?.salary?.date.slice(3, 10)}
                                             </StyledTableCell>
-                                            <StyledTableCell align="right">
+                                            <StyledTableCell align="center">
                                                 {empd?.salary?.Emoulments?.totalAmoluments}
                                             </StyledTableCell>
-                                            <StyledTableCell align="right">
+                                            <StyledTableCell align="center">
                                                 {empd?.salary?.deductions?.totalDeductions}
                                             </StyledTableCell>
-                                            <StyledTableCell align="right">{empd?.salary?.totalPaid}</StyledTableCell>
-                                            <StyledTableCell align="right"><Button variant="outlined" onClick={() => handleClickOpen(empd._id)}>View</Button></StyledTableCell>
-                                            <StyledTableCell align="right">
-
+                                            <StyledTableCell align="center">{empd?.salary?.totalPaid}</StyledTableCell>
+                                            <StyledTableCell align="center"><Button variant="outlined" onClick={() => handleClickOpen(empd.id)}>View</Button></StyledTableCell>
+                                            <StyledTableCell align="center">
                                                 <Button variant="outlined"
-                                                    color="secondary">
-                                                    <CsvDownload
-
-                                                        title="Download CSV"
-                                                        filename="previous_data.csv"
-                                                        // data={employees.find((employee, index) => (employee.id === employeeId)?.salaries[index])}
-                                                        data={
-                                                            employeeData?.salaries?.map((sal, ind) => {
-                                                                if (ind === index) {
-                                                                    return {
-                                                                        ...sal.amolument, ...sal.deductions, netPayable: sal.netPayable
-                                                                    }
-                                                                }
-
-                                                                return undefined
-                                                            })
-                                                                .filter((em) => em !== undefined)
-                                                        }
-                                                    >
-                                                        Download
-
-                                                    </CsvDownload>
+                                                    color="secondary"
+                                                    onClick={() => individualHandler(empd)}
+                                                >
+                                                    Download
                                                 </Button>
+
+
                                             </StyledTableCell>
 
                                         </StyledTableRow>
@@ -439,36 +402,35 @@ const SearchRecords = () => {
 
                     </Table>
                 </TableContainer>
-                {console.log("popup ", employeepopup)}
-                <BootstrapDialog                  
+                <BootstrapDialog
                     onClose={handleClose}
                     aria-labelledby="customized-dialog-title"
                     open={open}
 
                 >
-                    <BootstrapDialogTitle id="customized-dialog-title" style={{width:"699px"}} onClose={handleClose}>
-                        {employeepopup?.date}
+                    <BootstrapDialogTitle id="customized-dialog-title" style={{ width: "699px" }} onClose={handleClose}>
+                        {employeepopup?.salary?.date}
                     </BootstrapDialogTitle>
                     <DialogContent dividers>
                         <Typography variant="h4" gutterBottom>
                             Amoluments
                         </Typography>
                         <Typography gutterBottom>
-                            Basic Pay :{employeepopup?.amolument?.basicPay}<br />
-                            Non-Practicing-Allowance: {employeepopup?.amolument?.nonPracticingAllowance}<br />
-                            specialHealthCareAllowance: {employeepopup?.amolument?.specialHealthCareAllowance}<br />
-                            healthProfnlAllowance:  {employeepopup?.amolument?.healthProfnlAllowance}<br />
-                            houseRent:  {employeepopup?.amolument?.houseRent}<br />
-                            conPetAllowance:  {employeepopup?.amolument?.conPetAllowance}<br />
-                            qualificationAllowance:  {employeepopup?.amolument?.qualificationAllowance}<br />
-                            entertainment: : {employeepopup?.amolument?.entertainment}<br />
-                            personalAllowance:  {employeepopup?.amolument?.personalAllowance}<br />
-                            tTAllowance:  {employeepopup?.amolument?.tTAllowance}<br />
-                            medicalAllowance:  {employeepopup?.amolument?.medicalAllowance}<br />
-                            socialSecuirtyBenefit:  {employeepopup?.amolument?.socialSecuirtyBenefit}<br />
-                            seniorPostAllowance:  {employeepopup?.amolument?.seniorPostAllowance}<br />
-                            chairmanAllowance:  {employeepopup?.amolument?.chairmanAllowance}<br />
-                            rTWardenAllowance:  {employeepopup?.amolument?.rTWardenAllowance}<br />
+                            BASIC Pay &nbsp; : &nbsp;{employeepopup?.salary?.Emoulments?.basicPay}<br />
+                            NON Practicing-Allowance &nbsp;:&nbsp; {employeepopup?.salary?.Emoulments?.nonPracticingAllowance}<br />
+                            SPECIALHEALTHCAREALLOWANCE&nbsp;:&nbsp; {employeepopup?.salary?.Emoulments?.specialHealthCareAllowance}<br />
+                            HEALTHPROFNLALLOWANCE&nbsp;:&nbsp;  {employeepopup?.salary?.Emoulments?.healthProfnlAllowance}<br />
+                            HOUSERENT&nbsp;:&nbsp;  {employeepopup?.salary?.Emoulments?.houseRent}<br />
+                            CONPETALLOWANCE&nbsp;:&nbsp;  {employeepopup?.salary?.Emoulments?.conPetAllowance}<br />
+                            QUALIFICATIONALLOWANCE&nbsp;:&nbsp;  {employeepopup?.salary?.Emoulments?.qualificationAllowance}<br />
+                            ENTERTAINMENT&nbsp;:&nbsp; : {employeepopup?.salary?.Emoulments?.entertainment}<br />
+                            PERSONALALLOWANCE&nbsp;:&nbsp;  {employeepopup?.salary?.Emoulments?.personalAllowance}<br />
+                            TTALLOWANCE&nbsp;:&nbsp;  {employeepopup?.salary?.Emoulments?.tTAllowance}<br />
+                            MEDICALALLOWANCE&nbsp;:&nbsp;  {employeepopup?.salary?.Emoulments?.medicalAllowance}<br />
+                            SOCIALSECUIRTYBENEFIT&nbsp;:&nbsp;  {employeepopup?.salary?.Emoulments?.socialSecuirtyBenefit}<br />
+                            SENIORPOSTALLOWANCE&nbsp;:&nbsp;  {employeepopup?.salary?.Emoulments?.seniorPostAllowance}<br />
+                            CHAIRMANALLOWANCE&nbsp;:&nbsp;  {employeepopup?.salary?.Emoulments?.chairmanAllowance}<br />
+                            RTWARDENALLOWANCE&nbsp;:&nbsp;  {employeepopup?.salary?.Emoulments?.rTWardenAllowance}<br />
 
                         </Typography>
                         <DialogContent dividers>
@@ -476,27 +438,27 @@ const SearchRecords = () => {
                                 Deductions
                             </Typography>
                             <Typography gutterBottom>
-                                accomadationCharges :{employeepopup?.deductions?.accomadationCharges}<br />
-                                benevolentFund :{employeepopup?.deductions?.benevolentFund}<br />
-                                busCharges :{employeepopup?.deductions?.busCharges}<br />
-                                convRecovery :{employeepopup?.deductions?.convRecovery}<br />
-                                conveyanceAllowance :{employeepopup?.deductions?.benevolentFund}<br />
-                                disableAllowance :{employeepopup?.deductions?.disableAllowance}<br />
-                                eidAdvance :{employeepopup?.deductions?.eidAdvance}<br />
-                                gIP :{employeepopup?.deductions?.gIP}<br />
-                                gPFSubscription :{employeepopup?.deductions?.gPFSubscription}<br />
-                                groupInsurance :{employeepopup?.deductions?.groupInsurance}<br />
-                                houseRentR :{employeepopup?.deductions?.houseRentR}<br />
-                                incomeTax :{employeepopup?.deductions?.incomeTax}<br />
-                                integratedAllowance :{employeepopup?.deductions?.integratedAllowance}<br />
-                                recEidAdvance :{employeepopup?.deductions?.recEidAdvance}<br />
-                                recGPF :{employeepopup?.deductions?.recGPF}<br />
-                                sSB :{employeepopup?.deductions?.sSB}<br />
-                                shortDays :{employeepopup?.deductions?.shortDays}<br />
-                                speciialIncentive :{employeepopup?.deductions?.speciialIncentive}<br />
-                                tSAFund :{employeepopup?.deductions?.tSAFund}<br />
-                                uniTTAllowance :{employeepopup?.deductions?.uniTTAllowance}<br />
-                                waterCharges :{employeepopup?.deductions?.waterCharges}<br />
+                                ACCOMADATIONCHARGES :{employeepopup?.salary?.deductions?.accomadationCharges}<br />
+                                BENEVOLENTFUND :{employeepopup?.salary?.deductions?.benevolentFund}<br />
+                                BUSCHARGES :{employeepopup?.salary?.deductions?.busCharges}<br />
+                                CONVRECOVERY :{employeepopup?.salary?.deductions?.convRecovery}<br />
+                                CONVEYANCEALLOWANCE :{employeepopup?.salary?.deductions?.benevolentFund}<br />
+                                DISABLEALLOWANCE :{employeepopup?.salary?.deductions?.disableAllowance}<br />
+                                EIDADVANCE :{employeepopup?.salary?.deductions?.eidAdvance}<br />
+                                GIP :{employeepopup?.salary?.deductions?.gIP}<br />
+                                GPFSUBSCRIPTION :{employeepopup?.salary?.deductions?.gPFSubscription}<br />
+                                GROUPINSURANCE :{employeepopup?.salary?.deductions?.groupInsurance}<br />
+                                HOUSERENTR :{employeepopup?.salary?.deductions?.houseRentR}<br />
+                                INCOMETAX :{employeepopup?.salary?.deductions?.incomeTax}<br />
+                                INTEGRATEDALLOWANCE :{employeepopup?.salary?.deductions?.integratedAllowance}<br />
+                                RECEIDADVANCE :{employeepopup?.salary?.deductions?.recEidAdvance}<br />
+                                RECGPF :{employeepopup?.salary?.deductions?.recGPF}<br />
+                                SSB :{employeepopup?.salary?.deductions?.sSB}<br />
+                                SHORTDAYS :{employeepopup?.salary?.deductions?.shortDays}<br />
+                                SPECIIALINCENTIVE :{employeepopup?.salary?.deductions?.speciialIncentive}<br />
+                                TSAFUND :{employeepopup?.salary?.deductions?.tSAFund}<br />
+                                UNITTALLOWANCE :{employeepopup?.salary?.deductions?.uniTTAllowance}<br />
+                                WATERCHARGES :{employeepopup?.salary?.deductions?.waterCharges}<br />
                             </Typography>
                         </DialogContent>
                         <DialogContent dividers>
@@ -504,8 +466,7 @@ const SearchRecords = () => {
                                 Net Payable
                             </Typography>
                             <Typography gutterBottom>
-                                {employeepopup?.netPayable}<br />
-
+                                {employeepopup?.salary?.totalPaid}<br />
                             </Typography>
                         </DialogContent>
 

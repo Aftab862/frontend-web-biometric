@@ -70,6 +70,17 @@ const TotalOrderLineChartCard = ({ isLoading,count }) => {
     const handleChangeTime = (event, newValue) => {
         setTimeValue(newValue);
     };
+    const currentDate = new Date();
+
+    // Get the previous month and year values
+    const previousMonth = currentDate.getMonth() - 1;
+    const previousYear = currentDate.getFullYear();
+
+    const previousDate = new Date(previousYear, previousMonth);
+
+    // Get the previous month's name and year
+    const previousMonthName = previousDate.toLocaleString('en-US', { month: 'long' });
+    const previousYearValue = previousDate.getFullYear();
 
     return (
         <>
@@ -103,7 +114,7 @@ const TotalOrderLineChartCard = ({ isLoading,count }) => {
                                             sx={{ color: 'inherit' }}
                                             onClick={(e) => handleChangeTime(e, true)}
                                         >
-                                            Month
+                                            {previousMonthName  } {  previousYearValue}
                                         </Button>
                                     </Grid>
                                 </Grid>
@@ -115,7 +126,7 @@ const TotalOrderLineChartCard = ({ isLoading,count }) => {
                                             <Grid item>
                                                 
                                                     <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>
-                                                    {count??"Loading..."}
+                                                    {count??"Loading..."} PKR
                                                    
                                                     </Typography>
                                                 
@@ -140,7 +151,7 @@ const TotalOrderLineChartCard = ({ isLoading,count }) => {
                                                         color: theme.palette.primary[200]
                                                     }}
                                                 >
-                                                    Total calculated Income
+                                                    Total calculated Expenditure
                                                 </Typography>
                                             </Grid>
                                         </Grid>
