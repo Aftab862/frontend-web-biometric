@@ -262,13 +262,6 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
 
             ].filter(row => row !== false),
         })
-
-        // doc.setFontSize(8);
-        // doc.text(15, 65, 'Emoluments')
-
-        // doc.setFontSize(8);
-        // doc.text(15, 155, 'Deductions')
-
         const StartPosY = doc.autoTableEndPosY() + 10;
 
         doc.setFontSize(8);
@@ -325,14 +318,7 @@ const EmployeeTableData = ({ employees, setEmployees, handleClickOpen, tabValue 
             };
             array.push(newObj);
         });
-        console.log("array", array)
-
         const xlxdata = array
-        // [
-        //     { name: 'John', age: 25 },
-        //     { name: 'Jane', age: 30 },
-        //     { name: 'Bob', age: 35 },
-        // ];
         generateXLSX(xlxdata);
     }
     const [selectedOption, setSelectedOption] = useState('');
